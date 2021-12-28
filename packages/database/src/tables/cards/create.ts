@@ -1,7 +1,7 @@
-// TODO refactor with pg-promise instead
-import { DbPool } from '../../db-pool';
+import { db } from '../../db';
+import { DatabaseError } from 'pg';
 
-export interface Card {
+export interface CardCreate {
   /** Primary Key */
   cardId: string;
   charId: string;
@@ -13,26 +13,34 @@ export interface Card {
   cardType: 'character' | 'material';
 }
 
-export async function create(params: Card): Promise<void> {
-  const {
-    cardId,
-    charId,
-    rarity,
-    name,
-    nameNormalized,
-    jpName = null,
-    linkName,
-    cardType,
-  } = params;
+export interface CardDb {
+  card_id: string;
+  char_id: string;
+  rarity: string;
+  name: string;
+  name_normalized: string;
+  jp_name: string | null;
+  linkName: string;
+  card_type: 'character' | 'material';
+}
 
-  const updatedAt = new Date();
+export async function create(params: CardCreate): Promise<number> {
+  const insert: CardDb = {
+    card_id: params.cardId,
+    char_id: params.charId,
+    rarity: params.rarity,
+    name: params.name,
+    name_normalized: params.nameNormalized,
+    jp_name: params.jpName || null,
+    linkName: params.linkName,
+    card_type: params.cardType,
+  };
 
-  const client = await DbPool.connect();
   try {
-    await client.query(
+    const result = await db.result(
       `
-      INSERT INTO cards(card_id, char_id, rarity, name, name_normalized, jp_name, link_name, card_type, updated_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO cards ($1:name)
+      VALUES ($1:csv)
       ON CONFLICT (card_id)
       DO UPDATE SET
         char_id = EXCLUDED.char_id,
@@ -44,9 +52,15 @@ export async function create(params: Card): Promise<void> {
         card_type = EXCLUDED.card_type,
         updated_at = EXCLUDED.updated_at
       `,
-      [cardId, charId, rarity, name, nameNormalized, jpName, linkName, cardType, updatedAt],
+      [insert],
     );
-  } finally {
-    client.release();
+
+    return result.rowCount;
+  } catch (err) {
+    if (err instanceof DatabaseError) {
+      throw Error(err.detail);
+    } else {
+      throw Error(`Failed to insert card ${params.cardId} ${params.name}`);
+    }
   }
 }
