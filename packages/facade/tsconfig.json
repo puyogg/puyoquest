@@ -8,5 +8,8 @@
     "strict": true,
     "resolveJsonModule": true,
     "declaration": true,
-  }
+  },
+  "references": [
+    { "path": "../database" }
+  ]
 }
