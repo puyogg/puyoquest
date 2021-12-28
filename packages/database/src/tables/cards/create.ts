@@ -12,6 +12,7 @@ export async function create(params: CardCreate): Promise<number> {
     jp_name: params.jpName || null,
     link_name: params.linkName,
     card_type: params.cardType,
+    updated_at: new Date(),
   };
 
   try {

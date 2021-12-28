@@ -23,7 +23,10 @@ export interface CardDb {
   jp_name: string | null;
   link_name: CardCreate['linkName'];
   card_type: CardCreate['cardType'];
+  updated_at: Date;
 }
 
 /** Public representation for a card row. */
-export type CardPublic = PublicEntity<CardCreate>;
+export type CardPublic = PublicEntity<CardCreate> & {
+  updatedAt: CardDb['updated_at'];
+};
