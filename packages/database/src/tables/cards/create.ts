@@ -1,28 +1,6 @@
 import { db } from '../../db';
 import { DatabaseError } from 'pg';
-
-export interface CardCreate {
-  /** Primary Key */
-  cardId: string;
-  charId: string;
-  rarity: string;
-  name: string;
-  nameNormalized: string;
-  jpName?: string;
-  linkName: string;
-  cardType: 'character' | 'material';
-}
-
-export interface CardDb {
-  card_id: string;
-  char_id: string;
-  rarity: string;
-  name: string;
-  name_normalized: string;
-  jp_name: string | null;
-  link_name: string;
-  card_type: 'character' | 'material';
-}
+import type { CardCreate, CardDb } from './types';
 
 export async function create(params: CardCreate): Promise<number> {
   const insert: CardDb = {
