@@ -3,7 +3,7 @@ import { DatabaseError } from 'pg';
 import * as Util from '../../util';
 import type { CardDb, CardPublic } from './types';
 
-export async function listCharacterCards(params: {
+export async function listByCharId(params: {
   charId: string;
   includeMaterials?: boolean;
 }): Promise<CardPublic[]> {

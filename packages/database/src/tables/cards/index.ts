@@ -1,3 +1,3 @@
 export * from './create';
-export * from './list-character-cards';
+export * from './list-by-char-id';
 export * from './types';
