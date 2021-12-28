@@ -20,7 +20,7 @@ export interface CardDb {
   name: string;
   name_normalized: string;
   jp_name: string | null;
-  linkName: string;
+  link_name: string;
   card_type: 'character' | 'material';
 }
 
@@ -32,7 +32,7 @@ export async function create(params: CardCreate): Promise<number> {
     name: params.name,
     name_normalized: params.nameNormalized,
     jp_name: params.jpName || null,
-    linkName: params.linkName,
+    link_name: params.linkName,
     card_type: params.cardType,
   };
 
