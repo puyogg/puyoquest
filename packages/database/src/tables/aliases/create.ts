@@ -1,24 +1,24 @@
 import { db } from '../../db';
 import { DatabaseError } from 'pg';
 
-export interface Alias {
+export interface AliasCreate {
   alias: string;
   charId: string;
   updatedAt?: Date;
 }
 
-export interface DbAlias {
+export interface AliasDb {
   alias: string;
   char_id: string;
-  updated_at?: Date;
+  updated_at: Date;
 }
 
-export async function create(params: Alias): Promise<number> {
+export async function create(params: AliasCreate): Promise<number> {
   const { alias, charId } = params;
 
   const updatedAt = new Date();
 
-  const insert: DbAlias = {
+  const insert: AliasDb = {
     alias,
     char_id: charId,
     updated_at: updatedAt,
