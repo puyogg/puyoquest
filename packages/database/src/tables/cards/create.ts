@@ -1,5 +1,4 @@
 import { db } from '../../db';
-import { DatabaseError } from 'pg';
 import type { CardCreate, CardDb } from './types';
 
 export async function create(params: CardCreate): Promise<number> {
@@ -15,31 +14,23 @@ export async function create(params: CardCreate): Promise<number> {
     updated_at: new Date(),
   };
 
-  try {
-    const result = await db.result(
-      `
-      INSERT INTO cards ($1:name)
-      VALUES ($1:csv)
-      ON CONFLICT (card_id)
-      DO UPDATE SET
-        char_id = EXCLUDED.char_id,
-        rarity = EXCLUDED.rarity,
-        name = EXCLUDED.name,
-        name_normalized = EXCLUDED.name_normalized,
-        jp_name = EXCLUDED.jp_name,
-        link_name = EXCLUDED.link_name,
-        card_type = EXCLUDED.card_type,
-        updated_at = EXCLUDED.updated_at
-      `,
-      [insert],
-    );
+  const result = await db.result(
+    `
+    INSERT INTO cards ($1:name)
+    VALUES ($1:csv)
+    ON CONFLICT (card_id)
+    DO UPDATE SET
+      char_id = EXCLUDED.char_id,
+      rarity = EXCLUDED.rarity,
+      name = EXCLUDED.name,
+      name_normalized = EXCLUDED.name_normalized,
+      jp_name = EXCLUDED.jp_name,
+      link_name = EXCLUDED.link_name,
+      card_type = EXCLUDED.card_type,
+      updated_at = EXCLUDED.updated_at
+    `,
+    [insert],
+  );
 
-    return result.rowCount;
-  } catch (err) {
-    if (err instanceof DatabaseError) {
-      throw Error(err.detail);
-    } else {
-      throw Error(`Failed to insert card ${params.cardId} ${params.name}`);
-    }
-  }
+  return result.rowCount;
 }

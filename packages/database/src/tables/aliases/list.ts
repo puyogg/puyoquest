@@ -1,9 +1,9 @@
 import { db } from '../../db';
 import { AliasDb } from './create';
 
-export async function list(): Promise<void> {
+export async function list(): Promise<AliasDb[]> {
   const result = await db.manyOrNone<AliasDb>('SELECT * FROM aliases');
-  console.log(result);
+  return result;
 }
 
 // (async () => {
