@@ -18,14 +18,6 @@ services:
       POSTGRES_DB: ${DISCORD_BOT_DB_NAME}
     volumes:
       - discordbot-db-volume:/var/lib/postgresql/data
-  
-  discordbot-db-test:
-    image: postgres:latest
-    ports:
-      - ${DISCORD_BOT_DB_HOST_TEST}:5432
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${DISCORD_BOT_DB_NAME}
 
   discordbot:
     depends_on:

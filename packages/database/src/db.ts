@@ -15,7 +15,10 @@ if (NODE_ENV === 'test') {
 }
 
 // export type pgDatabase = pgPromise.IDatabase<object, pgSubset.IClient>;
-export const db = pgp(dbUrl);
+export const db = pgp({
+  connectionString: dbUrl,
+  allowExitOnIdle: NODE_ENV === 'test',
+});
 
 /** https://stackoverflow.com/a/21247009/17719705 */
 export async function dropTables() {
@@ -31,14 +34,23 @@ export async function dropTables() {
 }
 
 /** Create tables with indexes */
-export async function createTables(filepath?: string) {
-  const query = Config.getInitSql(filepath);
-  await db.query(query);
+export async function createTables(insertFilepath?: string) {
+  const initQuery = Config.getInitSql();
+  await db.query(initQuery);
+
+  if (insertFilepath) {
+    const insertQuery = Config.loadSql(insertFilepath);
+    await db.query(insertQuery);
+  }
 }
 
 /** Drop any existing tables, then reinitialize */
-export async function dropAndCreateTables(filepath?: string) {
+export async function dropAndCreateTables(insertFilepath?: string) {
   Assert(NODE_ENV === 'test', 'dropAndCreate should only be used in the test env.');
   await dropTables();
-  await createTables(filepath);
+  await createTables(insertFilepath);
+}
+
+export async function close() {
+  await db.$pool.end();
 }

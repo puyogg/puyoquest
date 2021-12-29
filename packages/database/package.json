@@ -8,7 +8,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test:unit": "jest .unit.test.ts --config ./jest.unit.config.js",
-    "test:int.read": "jest .int.read.test.ts --config ./jest.int.read.config.js",
+    "test:int.read": "jest .int.read.test.ts --config ./jest.int.read.config.js --runInBand",
     "test:int.write": "jest .int.write.test.ts --config ./jest.int.write.config.js --runInBand",
     "test": "pnpm run test:unit && pnpm run test:int.read && pnpm run test:int.write"
   },

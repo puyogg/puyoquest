@@ -1,6 +1,6 @@
 import * as Db from '../../../src/db';
 import { Database } from '../../../src';
-import { CardCreate } from '../../../src/tables/cards';
+import type { CardCreate } from '../../../src/tables/cards';
 
 describe('Database.Cards.create()', () => {
   beforeEach(async () => {
