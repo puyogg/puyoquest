@@ -1,8 +1,8 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname, // Need this so eslint within the api project resolves to api/tsconfig.json
+    // project: 'tsconfig.json',
+    // tsconfigRootDir: __dirname, // Need this so eslint within the api project resolves to api/tsconfig.json
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint/eslint-plugin'],
@@ -16,7 +16,7 @@ module.exports = {
     jest: true,
   },
   ignorePatterns: ['.eslintrc.js', '**/*.js'],
-  rules: {
-    '@typescript-eslint/explicit-function-return-type': 'error',
-  }
+  // rules: {
+  //   '@typescript-eslint/explicit-function-return-type': 'error',
+  // }
 };
