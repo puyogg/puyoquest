@@ -1,4 +1,3 @@
-import * as Db from '../../../src/db';
 import { Database } from '../../../src';
 import type { CardPublic } from '../../../src/tables/cards';
 import * as pgPromise from 'pg-promise';
@@ -6,10 +5,6 @@ import * as pgPromise from 'pg-promise';
 const QueryResultError = pgPromise.errors.QueryResultError;
 
 describe('Database.Cards.get()', () => {
-  afterAll(async () => {
-    await Db.close();
-  });
-
   it('gets the card if the card exists', async () => {
     const card = await Database.Cards.get('420307');
     expect(card).toEqual<CardPublic>({
