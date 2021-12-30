@@ -1,58 +1,66 @@
-function isOpener(str: string): boolean {
-  return /(({{{)|({{))/.test(str);
+interface BracketToken {
+  type: string;
+  index: number;
 }
 
-function isCloser(str: string): boolean {
-  return /((}}})|(}}))/.test(str);
+interface BracketPair {
+  start: number;
+  end: number;
+  depth: number;
 }
 
-export function getCurlyIndexPairs(template: string): [number, number][] {
-  const curlyBracketMatches = [...template.matchAll(/({{)|(}})/g)];
+function bracketToken(match: RegExpMatchArray): BracketToken {
+  return {
+    type: match[0],
+    index: match.index as number,
+  };
+}
 
-  if (curlyBracketMatches.length % 2 !== 0) {
-    throw new Error('Unable to parse template. Curly brackets are unbalanced.');
+function findBracketPairs(template: string) {
+  const openers = [...template.matchAll(/{/g)];
+  const closers = [...template.matchAll(/}/g)];
+
+  if (openers.length !== closers.length) {
+    throw Error('Unable to parse template. Curly brackets are unbalanced.');
   }
 
-  const indexPairs: [number, number][] = [];
-  const stack: RegExpMatchArray[][] = [];
+  const brackets = [...template.matchAll(/{|}/g)];
 
-  curlyBracketMatches.forEach((curlyBracketMatch) => {
-    const index = curlyBracketMatch.index;
-    if (index === undefined) return;
+  let depth = 0;
+  const bracketPairs: BracketPair[] = [];
+  const stack: BracketToken[] = [];
 
-    if (isOpener(curlyBracketMatch[0])) {
-      stack.push([curlyBracketMatch]);
-    } else if (isCloser(curlyBracketMatch[0])) {
-      const [opener] = stack.pop() || [];
-      if (opener.index && curlyBracketMatch.index) {
-        indexPairs.push([opener.index, curlyBracketMatch.index]);
-      }
+  brackets.forEach((match) => {
+    const currToken = bracketToken(match);
+    if (currToken.type === '{') {
+      stack.push(currToken);
+      depth += 1;
+    } else if (currToken.type === '}') {
+      const leftCurly = stack.pop() as BracketToken;
+      depth -= 1;
+      bracketPairs.push({
+        start: leftCurly.index,
+        end: currToken.index,
+        depth,
+      });
     }
   });
-
-  return indexPairs;
+  return bracketPairs;
 }
 
-export function parseTemplate(template: string): Record<string, string> {
-  // Remove leading {{ and trailing }}
-  // Reduce inner triples {{{}}} to doubles {{}}
-  // Remove comments? <!--(.+?)-->
-  const cleanTemplate = template
-    .trim()
-    .replace(/(^{{)|(}}$)/g, '')
-    .replace(/(?<!\})\}{3}(?!\})/g, '}}')
-    .replace(/(?<!\{)\{{3}(?!\{)/g, '{{')
-    .replace(/<!--(.+?)-->/g, '');
-  const curlyIndexPairs = getCurlyIndexPairs(cleanTemplate);
+export function parseTemplate(template: string) {
+  const templateNoComments = template.replace(/<!--[\S\s]+-->/g, '');
 
-  // Keep keys that are NOT in-between curly brackets
-  const keyMatches = [...cleanTemplate.matchAll(/(\|)(\w+?)(=)/g)];
+  const bracketPairs = findBracketPairs(templateNoComments);
+  const ignoreIndexPairs = bracketPairs.filter((pair) => pair.depth >= 2);
+
+  const keyMatches = [...templateNoComments.matchAll(/(\|)(\w+?)(=)/g)];
   const validKeys = keyMatches.filter((keyMatch) => {
     const { index } = keyMatch;
     if (index === undefined) return;
 
-    const indexPair = curlyIndexPairs.find((pair) => {
-      return pair[0] < index && index < pair[1];
+    const indexPair = ignoreIndexPairs.find((pair) => {
+      return pair.start < index && index < pair.end;
     });
 
     return !indexPair;
@@ -63,17 +71,17 @@ export function parseTemplate(template: string): Record<string, string> {
   validKeys.forEach((validKey, i) => {
     let targetIndex: number;
     if (i === validKeys.length - 1) {
-      targetIndex = cleanTemplate.length;
+      targetIndex = templateNoComments.length - 2; // '}}'
     } else {
       targetIndex = validKeys[i + 1].index as number;
     }
 
     const startIndex = validKey.index as number;
-    const value = cleanTemplate.slice(startIndex + validKey[0].length, targetIndex).trim();
+    const value = templateNoComments.slice(startIndex + validKey[0].length, targetIndex).trim();
     values.push(value);
   });
 
-  const keyValueMap = keyMatches.reduce((acc, key, i) => {
+  const keyValueMap = validKeys.reduce((acc, key, i) => {
     const cleanKey = key[2];
     const value = values[i];
     acc[cleanKey] = value;
