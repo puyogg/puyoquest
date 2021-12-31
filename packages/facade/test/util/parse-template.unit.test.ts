@@ -1,4 +1,4 @@
-import { Util } from '../../lib/util';
+import { Util } from '../../src/util';
 
 describe('Facade Util.parseTemplate()', () => {
   test('Parses template with {{{...}}} or [[...]]', () => {
