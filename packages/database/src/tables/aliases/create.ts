@@ -1,16 +1,5 @@
 import { db } from '../../db';
-
-export interface AliasCreate {
-  alias: string;
-  charId: string;
-  updatedAt?: Date;
-}
-
-export interface AliasDb {
-  alias: string;
-  char_id: string;
-  updated_at: Date;
-}
+import { AliasCreate, AliasDb } from './types';
 
 export async function create(params: AliasCreate): Promise<number> {
   const { alias, charId } = params;
