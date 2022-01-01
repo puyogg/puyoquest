@@ -9,6 +9,6 @@ describe('Facade Util.normalizeString()', () => {
   test('Detects Legamünt as non-Japanese', () => {
     const text = 'Legamünt';
     const result = Util.isJapanese(text);
-    expect(result).toBe(true);
+    expect(result).toBe(false);
   });
 });

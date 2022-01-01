@@ -4,7 +4,6 @@ import * as pMap from 'p-map';
 import Axios from 'axios';
 import { Logger } from '../logger';
 import { parseTemplate } from './parse-template';
-import { normalizeString } from '..';
 import { Database } from '@ppq-wiki/database';
 
 export async function buildIndex(): Promise<void> {
@@ -23,9 +22,8 @@ export async function buildIndex(): Promise<void> {
     async (categoryPage) => {
       const linkNames = await Util.getAllCategoryLinkNames(categoryPage);
 
-      await pMap(
-        linkNames,
-        async (linkName) => {
+      for (const linkName of linkNames) {
+        try {
           if (linkNameSet.has(linkName)) {
             return;
           }
@@ -66,7 +64,7 @@ export async function buildIndex(): Promise<void> {
           );
           const cardIds = cardKeys.map((key) => characterData[key]);
           await Promise.all(
-            cardIds.map(async (cardId, i) => {
+            cardIds.map(async (cardId, j) => {
               const cardTemplatePageUrl = `${WIKI_BASE_URL}/Template:${cardId}?action=raw`;
               const cardTemplatePageRes = await Axios.get<string>(cardTemplatePageUrl);
               Logger.AxiosResponse(cardTemplatePageRes);
@@ -74,33 +72,40 @@ export async function buildIndex(): Promise<void> {
               const cardTemplate = cardTemplatePageRes.data;
               const parsedCard = parseTemplate(cardTemplate);
 
-              const cardKey = cardKeys[i];
+              const cardKey = cardKeys[j];
               const cardType = /card/i.test(cardKey) ? 'character' : 'material';
+
+              const linkName = parsedCard['link'] || parsedCard['name'];
+              const rarityModifier = Util.parseRarityModifier(linkName);
 
               await Database.Cards.create({
                 cardId: parsedCard['code'],
                 charId,
                 rarity: parsedCard['rarity'],
+                rarityModifier,
                 name: parsedCard['name'],
-                nameNormalized: normalizeString(parsedCard['name']),
+                nameNormalized: Util.normalizeString(parsedCard['name']),
                 jpName: parsedCard['jpname'],
-                linkName: parsedCard['link'] || parsedCard['name'],
+                jpNameNormalized: Util.normalizeString(parsedCard['jpname']),
+                linkName,
+                linkNameNormalized: Util.normalizeString(linkName),
                 cardType,
               });
             }),
           );
-        },
-        { concurrency: 1 },
-      );
+        } catch (err) {
+          console.error(linkName, err);
+        }
+      }
     },
     { concurrency: 1 },
   );
 }
 
-// (async () => {
-//   try {
-//     await buildIndex();
-//   } catch (err) {
-//     console.error(err);
-//   }
-// })();
+(async () => {
+  try {
+    await buildIndex();
+  } catch (err) {
+    console.error(err);
+  }
+})();

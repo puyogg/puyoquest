@@ -19,5 +19,5 @@ pnpm add -D eslint
 ### Initialize Databases
 
 ```bash
-docker compose exec discordbot-db psql -U postgres -d discordbot-db < ./scripts/init.sql
+docker compose exec discordbot-db psql -U postgres -d discordbot-db < ./packages/database/sql/init.sql
 ```

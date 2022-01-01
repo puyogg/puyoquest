@@ -13,6 +13,10 @@ describe('Facade Util.normalizeString()', () => {
     const result = Util.normalizeString('Space☆Ecolo');
     expect(result).toBe('space ecolo');
   });
+  test(`Removes rarity stars`, () => {
+    const result = Util.normalizeString('Paprisu/Red/★4');
+    expect(result).toBe('paprisu/red/4');
+  });
   test('Trims leading or trailing spaces; collapse multiple spaces to one', () => {
     const result = Util.normalizeString('   Space    Ecolo   ');
     expect(result).toBe('space ecolo');

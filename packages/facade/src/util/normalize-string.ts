@@ -6,9 +6,10 @@
  */
 export function normalizeString(str: string): string {
   return str
-    .normalize('NFD')
+    .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace('☆', ' ')
+    .replace('★', '')
     .replace(/\s\s+/g, ' ')
     .replace(/\s/g, ' ')
     .trim()

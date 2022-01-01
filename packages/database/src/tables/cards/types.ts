@@ -6,10 +6,13 @@ export interface CardCreate {
   cardId: string;
   charId: string;
   rarity: string;
+  rarityModifier?: string;
   name: string;
   nameNormalized: string;
   jpName?: string;
+  jpNameNormalized?: string;
   linkName: string;
+  linkNameNormalized: string;
   cardType: 'character' | 'material';
 }
 
@@ -18,10 +21,13 @@ export interface CardDb {
   card_id: CardCreate['cardId'];
   char_id: CardCreate['charId'];
   rarity: CardCreate['rarity'];
+  rarity_modifier: string | null;
   name: CardCreate['name'];
   name_normalized: CardCreate['nameNormalized'];
   jp_name: string | null;
+  jp_name_normalized: string | null;
   link_name: CardCreate['linkName'];
+  link_name_normalized: CardCreate['linkNameNormalized'];
   card_type: CardCreate['cardType'];
   updated_at: Date;
 }
