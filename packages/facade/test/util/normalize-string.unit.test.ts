@@ -15,7 +15,7 @@ describe('Facade Util.normalizeString()', () => {
   });
   test(`Removes rarity stars`, () => {
     const result = Util.normalizeString('Paprisu/Red/★4');
-    expect(result).toBe('paprisu/red/4');
+    expect(result).toBe('paprisu/red');
   });
   test('Trims leading or trailing spaces; collapse multiple spaces to one', () => {
     const result = Util.normalizeString('   Space    Ecolo   ');
@@ -25,9 +25,12 @@ describe('Facade Util.normalizeString()', () => {
     const result = Util.normalizeString('Puyo Puyo　Tetris 2');
     expect(result).toEqual('puyo puyo tetris 2');
   });
-  test(`NFD normalization does weird things to Japanese text`, () => {
-    const text = 'ぷよぷよフィーバー';
-    const result = Util.normalizeString('ぷよぷよフィーバー');
-    expect(result).not.toBe(text);
+  test('Removes S modifier when dropS = true', () => {
+    const result = Util.normalizeString('Santa Ringo S');
+    expect(result).toEqual('santa ringo');
+  });
+  test('Removes S modifier for Japanese names', () => {
+    const result = Util.normalizeString('サンタりんご・S');
+    expect(result).toEqual('サンタりんご');
   });
 });

@@ -36,6 +36,8 @@ CREATE INDEX ON cards (link_name_normalized);
 CREATE TABLE IF NOT EXISTS aliases (
   alias TEXT PRIMARY KEY,
   char_id TEXT,
+  internal BOOLEAN,
+  card_type TEXT,
   updated_at TIMESTAMPTZ,
   CONSTRAINT fk_characters FOREIGN KEY(char_id) REFERENCES characters(char_id) ON DELETE CASCADE
 );

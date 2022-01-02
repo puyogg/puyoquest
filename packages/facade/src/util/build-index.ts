@@ -6,8 +6,8 @@ import { Logger } from '../logger';
 import { parseTemplate } from './parse-template';
 import { Database } from '@ppq-wiki/database';
 
-export async function buildIndex(): Promise<void> {
-  const categoryPages = [
+export async function buildIndex(pages?: string[]): Promise<void> {
+  const categoryPages = pages || [
     'Category:PPQ:Red_Color',
     'Category:PPQ:Blue_Color',
     'Category:PPQ:Green_Color',
@@ -75,20 +75,47 @@ export async function buildIndex(): Promise<void> {
               const cardKey = cardKeys[j];
               const cardType = /card/i.test(cardKey) ? 'character' : 'material';
 
+              const nameNormalized = Util.normalizeString(parsedCard['name']);
               const linkName = parsedCard['link'] || parsedCard['name'];
+              const linkNameNormalized = Util.normalizeString(linkName);
               const rarityModifier = Util.parseRarityModifier(linkName);
 
-              await Database.Cards.create({
+              const jpNameNormalized = Util.normalizeString(parsedCard['jpname']);
+
+              await Database.Aliases.upsert({
+                alias: nameNormalized,
+                charId,
+                internal: true,
+                cardType,
+              });
+
+              await Database.Aliases.upsert({
+                alias: linkNameNormalized,
+                charId,
+                internal: true,
+                cardType,
+              });
+
+              if (jpNameNormalized) {
+                await Database.Aliases.upsert({
+                  alias: jpNameNormalized,
+                  charId,
+                  internal: true,
+                  cardType,
+                });
+              }
+
+              await Database.Cards.upsert({
                 cardId: parsedCard['code'],
                 charId,
                 rarity: parsedCard['rarity'],
                 rarityModifier,
                 name: parsedCard['name'],
-                nameNormalized: Util.normalizeString(parsedCard['name']),
+                nameNormalized,
                 jpName: parsedCard['jpname'],
-                jpNameNormalized: Util.normalizeString(parsedCard['jpname']),
+                jpNameNormalized,
                 linkName,
-                linkNameNormalized: Util.normalizeString(linkName),
+                linkNameNormalized,
                 cardType,
               });
             }),

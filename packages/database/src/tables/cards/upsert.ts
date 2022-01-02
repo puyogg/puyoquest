@@ -1,7 +1,7 @@
 import { db } from '../../db';
 import type { CardCreate, CardDb } from './types';
 
-export async function create(params: CardCreate): Promise<number> {
+export async function upsert(params: CardCreate): Promise<number> {
   const insert: CardDb = {
     card_id: params.cardId,
     char_id: params.charId,

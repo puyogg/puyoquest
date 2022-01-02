@@ -10,9 +10,9 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --build --watch",
-    "test:unit": "jest .unit.test.ts --config ./jest.unit.config.js --runInBand",
-    "test:int.read": "jest .int.read.test.ts --config ./jest.int.read.config.js --runInBand",
-    "test:int.write": "jest .int.write.test.ts --config ./jest.int.write.config.js --runInBand",
+    "test:unit": "NODE_ENV=test jest .unit.test.ts --config ./jest.unit.config.js --runInBand",
+    "test:int.read": "NODE_ENV=test jest .int.read.test.ts --config ./jest.int.read.config.js --runInBand",
+    "test:int.write": "NODE_ENV=test jest .int.write.test.ts --config ./jest.int.write.config.js --runInBand",
     "test": "pnpm run test:unit && pnpm run test:int.read && pnpm run test:int.write"
   },
   "keywords": [],
