@@ -47,7 +47,7 @@ export async function buildIndex(pages?: string[]): Promise<void> {
           const charTemplatePageRes = await Axios.get<string>(charTemplatePageUrl);
 
           const charTemplate = charTemplatePageRes.data;
-          const characterData = parseTemplate(charTemplate);
+          const characterData = parseTemplate<Record<string, string>>(charTemplate);
           await Database.Characters.create({
             charId,
             name: characterData['name'],
@@ -70,7 +70,7 @@ export async function buildIndex(pages?: string[]): Promise<void> {
               Logger.AxiosResponse(cardTemplatePageRes);
 
               const cardTemplate = cardTemplatePageRes.data;
-              const parsedCard = parseTemplate(cardTemplate);
+              const parsedCard = parseTemplate<Record<string, string>>(cardTemplate);
 
               const cardKey = cardKeys[j];
               const cardType = /card/i.test(cardKey) ? 'character' : 'material';

@@ -26,7 +26,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - 9229:9229
     environment:
+      DISCORD_BOT_CLIENT_ID: ${DISCORD_BOT_CLIENT_ID}
       DISCORD_BOT_DB_NAME: ${DISCORD_BOT_DB_NAME}
       DISCORD_BOT_DB_HOST: ${DISCORD_BOT_DB_HOST}
       DISCORD_BOT_DB_URL: postgres://postgres:${POSTGRES_PASSWORD}@discordbot-db:5432/${DISCORD_BOT_DB_NAME}

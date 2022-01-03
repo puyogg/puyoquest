@@ -48,7 +48,7 @@ function findBracketPairs(template: string) {
   return bracketPairs;
 }
 
-export function parseTemplate(template: string) {
+export function parseTemplate<T>(template: string): T {
   const templateNoComments = template.replace(/<!--[\S\s]+-->/g, '');
 
   const bracketPairs = findBracketPairs(templateNoComments);
@@ -84,9 +84,9 @@ export function parseTemplate(template: string) {
   const keyValueMap = validKeys.reduce((acc, key, i) => {
     const cleanKey = key[2];
     const value = values[i];
-    acc[cleanKey] = value;
+    Object.assign(acc, { [cleanKey]: value });
     return acc;
-  }, {} as Record<string, string>);
+  }, {} as T);
 
   return keyValueMap;
 }
