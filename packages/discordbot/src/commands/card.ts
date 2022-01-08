@@ -1,7 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction } from 'discord.js';
 import { Command } from '../types';
-import * as Facade from '@ppq-wiki/facade';
 import * as Util from '../util';
 
 export const Card: Command = {
@@ -18,38 +17,26 @@ export const Card: Command = {
   async execute(interaction: CommandInteraction<CacheType>) {
     const query = interaction.options.getString('query', true);
 
-    const parsedQuery = Util.parseCharAndRarityQuery(query);
-
-    if (parsedQuery.query) {
-      try {
-        const { name, rarity } = parsedQuery.query;
-
-        const wikiCard = await Facade.Cards.getByNameAndRarity({ name, rarity });
-        const embed = await Util.cardEmbed(wikiCard);
-        await interaction.reply({ embeds: [embed] });
-      } catch (cardLookupError) {
-        // Fallback for characters whose actual names end in a number.
-        // E.g.:
-        // - Kamen Rider 1
-        // - Schezo ver. Division 24
-        try {
-          const { name } = parsedQuery.fallback;
-          const cards = await Facade.Characters.getByName({ name, includeMaterials: true });
-          const { embed, component } = await Util.rarityResponse(cards);
-          interaction.reply({ embeds: [embed], components: [component] });
-        } catch (charLookupError) {
-          throw charLookupError;
-        }
-      }
-    } else {
-      try {
-        const { name } = parsedQuery.fallback;
-        const cards = await Facade.Characters.getByName({ name, includeMaterials: true });
-        const { embed, component } = await Util.rarityResponse(cards);
-        interaction.reply({ embeds: [embed], components: [component] });
-      } catch (charLookupError) {
-        throw charLookupError;
-      }
+    let resolvedQuery: Awaited<ReturnType<typeof Util.resolveCharacterRarityQuery>>;
+    try {
+      resolvedQuery = await Util.resolveCharacterRarityQuery(query);
+    } catch (error) {
+      // A similarity search should be attempted here once I get around
+      // to implementing it
+      return interaction.reply({ content: `Unable to parse query: ${query}`, ephemeral: true });
     }
+
+    if (resolvedQuery.type === 'card') {
+      const embed = await Util.cardEmbed(resolvedQuery.wikiCard);
+      return interaction.reply({ embeds: [embed] });
+    }
+
+    if (resolvedQuery.type === 'character') {
+      const { embed, component } = await Util.rarityResponse(resolvedQuery.characterData);
+      return interaction.reply({ embeds: [embed], components: [component] });
+    }
+
+    await interaction.reply(`Failed to lookup card by query: ${query}`);
+    throw Error(`Failed to lookup card by query: ${query}`);
   },
 };
