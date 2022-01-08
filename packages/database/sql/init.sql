@@ -2,6 +2,7 @@ SET timezone = 'UTC';
 CREATE TABLE IF NOT EXISTS characters (
   char_id TEXT PRIMARY KEY,
   name TEXT,
+  link_name TEXT,
   jp_name TEXT,
   main_color TEXT,
   side_color TEXT,

@@ -3,6 +3,7 @@ import { PublicEntity } from '../../util';
 export interface CharacterCreate {
   charId: string;
   name: string;
+  linkName: string;
   jpName?: string;
   mainColor: string;
   sideColor?: string;
@@ -14,6 +15,7 @@ export interface CharacterCreate {
 export interface CharacterDb {
   char_id: CharacterCreate['charId'];
   name: CharacterCreate['name'];
+  link_name: CharacterCreate['linkName'];
   jp_name: Exclude<CharacterCreate['jpName'], undefined> | null;
   main_color: CharacterCreate['mainColor'];
   side_color: Exclude<CharacterCreate['sideColor'], undefined> | null;

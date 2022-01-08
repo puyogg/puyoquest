@@ -5,6 +5,7 @@ export async function create(params: CharacterCreate): Promise<number> {
   const insert: CharacterDb = {
     char_id: params.charId,
     name: params.name,
+    link_name: params.linkName,
     jp_name: params.jpName || null,
     main_color: params.mainColor,
     side_color: params.sideColor || null,
@@ -21,6 +22,7 @@ export async function create(params: CharacterCreate): Promise<number> {
     ON CONFLICT (char_id)
     DO UPDATE SET
       name = EXCLUDED.name,
+      link_name = EXCLUDED.link_name,
       jp_name = EXCLUDED.jp_name,
       main_color = EXCLUDED.main_color,
       side_color = EXCLUDED.side_color,
