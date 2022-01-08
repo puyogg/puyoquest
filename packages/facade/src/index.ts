@@ -1,3 +1,2 @@
-import { normalizeString } from './util/normalize-string';
-
-export { normalizeString };
+export * from './entities';
+export * from './util';

@@ -1,4 +1,4 @@
-import { WikiPage } from '../wiki-page';
+import { WikiPage } from '../../util/wiki-page';
 
 export async function getSeriesIdFromPage(pageTitle: string): Promise<string> {
   const rawText = await WikiPage.getRawText(pageTitle);

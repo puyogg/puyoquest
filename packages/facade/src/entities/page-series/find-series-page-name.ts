@@ -1,4 +1,4 @@
-import { WikiPage } from '../wiki-page';
+import { WikiPage } from '../../util/wiki-page';
 import { distance as LevenDistance } from 'fastest-levenshtein';
 
 export async function findSeriesPageName(userString: string): Promise<string> {

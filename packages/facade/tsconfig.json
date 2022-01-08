@@ -3,10 +3,21 @@
     "module": "commonjs",
     "target": "ES2021",
     "sourceMap": true,
+    "rootDir": "./src",
     "outDir": "./lib",
     "incremental": true,
+    "composite": true,
     "strict": true,
     "resolveJsonModule": true,
     "declaration": true,
-  }
+  },
+  "references": [
+    {
+      "path": "../database"
+    }
+  ],
+  "exclude": [
+    "test/**/*",
+    "lib/**/*"
+  ]
 }

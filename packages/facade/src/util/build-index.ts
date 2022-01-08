@@ -4,11 +4,10 @@ import * as pMap from 'p-map';
 import Axios from 'axios';
 import { Logger } from '../logger';
 import { parseTemplate } from './parse-template';
-import { normalizeString } from '..';
 import { Database } from '@ppq-wiki/database';
 
-export async function buildIndex(): Promise<void> {
-  const categoryPages = [
+export async function buildIndex(pages?: string[]): Promise<void> {
+  const categoryPages = pages || [
     'Category:PPQ:Red_Color',
     'Category:PPQ:Blue_Color',
     'Category:PPQ:Green_Color',
@@ -23,9 +22,8 @@ export async function buildIndex(): Promise<void> {
     async (categoryPage) => {
       const linkNames = await Util.getAllCategoryLinkNames(categoryPage);
 
-      await pMap(
-        linkNames,
-        async (linkName) => {
+      for (const linkName of linkNames) {
+        try {
           if (linkNameSet.has(linkName)) {
             return;
           }
@@ -49,10 +47,14 @@ export async function buildIndex(): Promise<void> {
           const charTemplatePageRes = await Axios.get<string>(charTemplatePageUrl);
 
           const charTemplate = charTemplatePageRes.data;
-          const characterData = parseTemplate(charTemplate);
+          const characterData = parseTemplate<Record<string, string>>(charTemplate);
+
+          const characterLinkName = characterData['link'] || characterData['name'];
+
           await Database.Characters.create({
             charId,
             name: characterData['name'],
+            linkName: characterLinkName,
             jpName: characterData['jpname'],
             mainColor: characterData['color'],
             sideColor: characterData['color2'],
@@ -66,41 +68,75 @@ export async function buildIndex(): Promise<void> {
           );
           const cardIds = cardKeys.map((key) => characterData[key]);
           await Promise.all(
-            cardIds.map(async (cardId, i) => {
+            cardIds.map(async (cardId, j) => {
               const cardTemplatePageUrl = `${WIKI_BASE_URL}/Template:${cardId}?action=raw`;
               const cardTemplatePageRes = await Axios.get<string>(cardTemplatePageUrl);
               Logger.AxiosResponse(cardTemplatePageRes);
 
               const cardTemplate = cardTemplatePageRes.data;
-              const parsedCard = parseTemplate(cardTemplate);
+              const parsedCard = parseTemplate<Record<string, string>>(cardTemplate);
 
-              const cardKey = cardKeys[i];
+              const cardKey = cardKeys[j];
               const cardType = /card/i.test(cardKey) ? 'character' : 'material';
 
-              await Database.Cards.create({
+              const nameNormalized = Util.normalizeString(parsedCard['name']);
+              const linkName = parsedCard['link'] || parsedCard['name'];
+              const linkNameNormalized = Util.normalizeString(linkName);
+              const rarityModifier = Util.parseRarityModifier(linkName);
+
+              const jpNameNormalized = Util.normalizeString(parsedCard['jpname']);
+
+              await Database.Aliases.upsert({
+                alias: nameNormalized,
+                charId,
+                internal: true,
+                cardType,
+              });
+
+              await Database.Aliases.upsert({
+                alias: linkNameNormalized,
+                charId,
+                internal: true,
+                cardType,
+              });
+
+              if (jpNameNormalized) {
+                await Database.Aliases.upsert({
+                  alias: jpNameNormalized,
+                  charId,
+                  internal: true,
+                  cardType,
+                });
+              }
+
+              await Database.Cards.upsert({
                 cardId: parsedCard['code'],
                 charId,
                 rarity: parsedCard['rarity'],
+                rarityModifier,
                 name: parsedCard['name'],
-                nameNormalized: normalizeString(parsedCard['name']),
+                nameNormalized,
                 jpName: parsedCard['jpname'],
-                linkName: parsedCard['link'] || parsedCard['name'],
+                jpNameNormalized,
+                linkName,
+                linkNameNormalized,
                 cardType,
               });
             }),
           );
-        },
-        { concurrency: 1 },
-      );
+        } catch (err) {
+          console.error(linkName, err);
+        }
+      }
     },
     { concurrency: 1 },
   );
 }
 
-// (async () => {
-//   try {
-//     await buildIndex();
-//   } catch (err) {
-//     console.error(err);
-//   }
-// })();
+(async () => {
+  try {
+    await buildIndex();
+  } catch (err) {
+    console.error(err);
+  }
+})();
