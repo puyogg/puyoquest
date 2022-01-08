@@ -48,9 +48,13 @@ export async function buildIndex(pages?: string[]): Promise<void> {
 
           const charTemplate = charTemplatePageRes.data;
           const characterData = parseTemplate<Record<string, string>>(charTemplate);
+
+          const characterLinkName = characterData['link'] || characterData['name'];
+
           await Database.Characters.create({
             charId,
             name: characterData['name'],
+            linkName: characterLinkName,
             jpName: characterData['jpname'],
             mainColor: characterData['color'],
             sideColor: characterData['color2'],

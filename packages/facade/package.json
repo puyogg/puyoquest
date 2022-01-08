@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --build --watch",
+    "lint": "eslint src --ext .ts",
     "test:unit": "NODE_ENV=test jest .unit.test.ts --config ./jest.unit.config.js --runInBand",
     "test:int.read": "NODE_ENV=test jest .int.read.test.ts --config ./jest.int.read.config.js --runInBand",
     "test:int.write": "NODE_ENV=test jest .int.write.test.ts --config ./jest.int.write.config.js --runInBand",

@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Facade from '@ppq-wiki/facade';
 import { colorHex } from '../constants';
+import * as Util from '../util';
 
 const activationPuyo: Record<string, string> = {
   red: '<:red:429944006135382017>',
@@ -27,7 +28,7 @@ export async function cardEmbed(card: Facade.Cards.WikiCard): Promise<Discord.Me
   if (thumbnailUrl) em.setThumbnail(thumbnailUrl);
 
   // Add card main color to the left of embed
-  if (card.color) em.setColor(colorHex[card.color]);
+  if (card.color) em.setColor(colorHex[card.color.toLowerCase()]);
 
   // Max LV Stats
   em.addField(
@@ -41,39 +42,30 @@ export async function cardEmbed(card: Facade.Cards.WikiCard): Promise<Discord.Me
 
   // Leader Skill
   if (card.ls) {
+    const jpLS = card.jpls ? ` (${card.jpls}${(card.lslv && ` Lv. ${card.lslv}`) || ''})` : '';
     em.addField(
-      `[LS] ${card.ls}${(card.lslv && ` Lv. ${card.lslv}`) || ''} (${card.jpls}${
-        (card.lslv && ` Lv. ${card.lslv}`) || ''
-      })`,
+      `[LS] ${card.ls}${(card.lslv && ` Lv. ${card.lslv}`) || ''}` + jpLS,
       card.lse ? card.lse : '?',
     );
   }
 
   // Leader Skill (Special Training Skill)
   if (card.lst) {
-    em.addField(
-      `[LS+] ${card.lst}` + card.jplst ? ` (${card.jplst})` : '',
-      card.lste ? card.lste : '?',
-    );
+    const jpLST = card.jplst ? ` (${card.jplst})` : '';
+    em.addField(`[LS+] ${card.lst}` + jpLST, card.lste ? card.lste : '?');
   } else if (card.lste) {
-    em.addField(
-      `[LS+] ${card.name} SP` + card.jpname ? ` (${card.jpname} SP)` : '',
-      card.lste ? card.lste : '?',
-    );
+    const jpName = card.jpname ? ` (${card.jpname} SP)` : '';
+    em.addField(`[LS+] ${card.name} SP` + jpName, card.lste ? card.lste : '?');
   }
 
   if (card.lst2) {
-    em.addField(
-      `[LS+] ${card.lst2}` + card.jplst2 ? ` (${card.jplst2})` : '',
-      card.lst2e ? card.lst2e : '?',
-    );
+    const jpLST2 = card.jplst2 ? ` (${card.jplst2})` : '';
+    em.addField(`[LS+] ${card.lst2}` + jpLST2, card.lst2e ? card.lst2e : '?');
   }
 
   if (card.lst3) {
-    em.addField(
-      `[LS+] ${card.lst3}` + card.jplst3 ? ` (${card.jplst3})` : '',
-      card.lst3e ? card.lst3e : '?',
-    );
+    const jpLST3 = card.jplst3 ? ` (${card.jplst3})` : '';
+    em.addField(`[LS+] ${card.lst3}` + jpLST3, card.lst3e ? card.lst3e : '?');
   }
 
   // Active Skill
@@ -156,35 +148,16 @@ export async function cardEmbed(card: Facade.Cards.WikiCard): Promise<Discord.Me
 
   let description = '';
 
-  const seriesData = await Facade.Characters.getSeriesLink({
-    charId: card.code.slice(0, 4), // Might not work for characters like Evil Incarnation Gemini Saga
+  const seriesLink = await Util.seriesMarkdownLink({
+    charId: card.code.slice(0, 4), // Might not work for Evil Incarnation Gemini Saga
     linkName: card.link,
   });
 
-  if (seriesData) {
-    const { seriesName, isLore } = seriesData;
-    const seriesNameURI = encodeURI(seriesName);
-    const seriesText = `[${seriesName}${
-      isLore ? ' (Lore)' : ''
-    }](https://puyonexus.com/wiki/Category:PPQ:${seriesNameURI})\n`;
-
-    description += seriesText;
+  if (seriesLink) {
+    description += seriesLink + '\n';
   }
 
-  const combinations = [
-    card.combin1,
-    card.combin2,
-    card.combin3,
-    card.combin4,
-    card.combin5,
-    card.combin6,
-  ].filter((combin): combin is string => !!combin);
-
-  const combinationLinks = combinations.map((combination) => {
-    const combinationURI = encodeURI(combination);
-    return `[[${combination}]](https://puyonexus.com/wiki/Category:PPQ:${combinationURI}_Combination)`;
-  });
-  const combinationText = combinationLinks.join(' ');
+  const combinationText = Util.combinationMarkdownLinks(card);
   if (combinationText.length > 0) description += combinationText;
 
   if (description) em.setDescription(description);

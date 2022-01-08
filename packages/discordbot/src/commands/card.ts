@@ -24,18 +24,19 @@ export const Card: Command = {
       try {
         const { name, rarity } = parsedQuery.query;
 
-        const data = await Facade.Cards.getByNameAndRarity({ name, rarity });
-        const embed = await Util.cardEmbed(data);
+        const wikiCard = await Facade.Cards.getByNameAndRarity({ name, rarity });
+        const embed = await Util.cardEmbed(wikiCard);
         await interaction.reply({ embeds: [embed] });
       } catch (cardLookupError) {
-        console.log(cardLookupError);
         // Fallback for characters whose actual names end in a number.
         // E.g.:
         // - Kamen Rider 1
         // - Schezo ver. Division 24
         try {
           const { name } = parsedQuery.fallback;
-          interaction.reply('Fallback stub for getting the rarity list');
+          const cards = await Facade.Characters.getByName({ name, includeMaterials: true });
+          const { embed, component } = await Util.rarityResponse(cards);
+          interaction.reply({ embeds: [embed], components: [component] });
         } catch (charLookupError) {
           throw charLookupError;
         }
@@ -43,7 +44,9 @@ export const Card: Command = {
     } else {
       try {
         const { name } = parsedQuery.fallback;
-        interaction.reply('Stub for getting the rarity list');
+        const cards = await Facade.Characters.getByName({ name, includeMaterials: true });
+        const { embed, component } = await Util.rarityResponse(cards);
+        interaction.reply({ embeds: [embed], components: [component] });
       } catch (charLookupError) {
         throw charLookupError;
       }
