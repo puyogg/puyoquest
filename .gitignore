@@ -4,3 +4,4 @@ lib
 .env
 backup*.sql
 tsconfig.tsbuildinfo
+/cache

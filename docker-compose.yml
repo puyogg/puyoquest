@@ -30,6 +30,7 @@ services:
       - 9229:9229
     command: pnpm run start:dev --filter "@ppq-wiki/discordbot"
     environment:
+      CACHE_DIR: ${WORKING_DIR}/cache
       DISCORD_BOT_CLIENT_ID: ${DISCORD_BOT_CLIENT_ID}
       DISCORD_BOT_DB_NAME: ${DISCORD_BOT_DB_NAME}
       DISCORD_BOT_DB_HOST: ${DISCORD_BOT_DB_HOST}
