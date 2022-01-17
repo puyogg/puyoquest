@@ -1,12 +1,14 @@
 import * as Discord from 'discord.js';
 import * as Facade from '@ppq-wiki/facade';
 import { colorHex } from '../constants';
-import { Card as CardResponse } from '../select-menu-responses';
+import { Card as CardResponse, FullArt as FullArtResponse } from '../select-menu-responses';
 
-type CharacterData = Awaited<ReturnType<typeof Facade.Characters.getByName>>;
+type CharacterData = Awaited<ReturnType<typeof Facade.Characters.getByName>> & {
+  responseType: 'card' | 'fullart';
+};
 
-export async function rarityResponse(params: CharacterData) {
-  const { character, cards } = params;
+export async function rarityEmbed(params: CharacterData) {
+  const { character, cards, responseType } = params;
 
   const em = new Discord.MessageEmbed();
 
@@ -59,21 +61,28 @@ export async function rarityResponse(params: CharacterData) {
     em.addField('Character-specific materials', materialLinks.join('\n'));
   }
 
-  const row = new Discord.MessageActionRow().addComponents(
-    new Discord.MessageSelectMenu()
-      .setCustomId(CardResponse.customId)
-      .setPlaceholder('Request card:')
-      .addOptions(
-        charCards.map((card) => {
-          return {
-            label:
-              `[★${card.rarityModifier || card.rarity}] ${card.name}` +
-              (card.jpName ? ` (${card.jpName})` : ''),
-            value: card.cardId,
-          };
-        }),
-      ),
+  const selectMenu = new Discord.MessageSelectMenu().setPlaceholder('Request card:');
+  switch (responseType) {
+    case 'fullart':
+      selectMenu.setCustomId(FullArtResponse.customId);
+      break;
+    case 'card':
+    default:
+      selectMenu.setCustomId(CardResponse.customId);
+  }
+
+  selectMenu.addOptions(
+    charCards.map((card) => {
+      return {
+        label:
+          `[★${card.rarityModifier || card.rarity}] ${card.name}` +
+          (card.jpName ? ` (${card.jpName})` : ''),
+        value: card.cardId,
+      };
+    }),
   );
+
+  const row = new Discord.MessageActionRow().addComponents(selectMenu);
 
   return { embed: em, component: row };
 }

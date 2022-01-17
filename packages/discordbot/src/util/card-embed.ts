@@ -15,12 +15,7 @@ const activationPuyo: Record<string, string> = {
 export async function cardEmbed(card: Facade.Cards.WikiCard): Promise<Discord.MessageEmbed> {
   const em = new Discord.MessageEmbed();
 
-  // Parse rarity and linkName to set embed title and URL
-  const displayedRarity = card.link.match(/\/★6-2$/) ? '6S' : card.rarity;
-  let title = `${card.name} ★${displayedRarity}`;
-  if (card.jpname) title += ` (${card.jpname})`;
-
-  const url = encodeURI(`https://puyonexus.com/wiki/PPQ:${card.link}`);
+  const { title, url } = Util.cardTitleRarityLink(card);
   em.setTitle(title).setURL(url);
 
   // Fetch card icon url for thumbnail

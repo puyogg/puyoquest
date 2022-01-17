@@ -3,7 +3,8 @@ import * as Assert from 'assert';
 import { deployCommands } from './deploy-commands';
 import * as Commands from './commands';
 import * as SelectMenuResponses from './select-menu-responses';
-import { Command, SelectMenuResponse } from './types';
+import * as ButtonResponses from './button-responses';
+import { ButtonResponse, Command, SelectMenuResponse } from './types';
 
 const { DISCORD_BOT_API_TOKEN } = process.env;
 Assert(DISCORD_BOT_API_TOKEN, 'DISCORD_BOT_API_TOKEN not defined.');
@@ -17,6 +18,11 @@ Object.values(Commands).forEach((command) => {
 const selectMenuCollection = new Collection<string, SelectMenuResponse>();
 Object.values(SelectMenuResponses).forEach((selectMenuResponse) => {
   selectMenuCollection.set(selectMenuResponse.customId, selectMenuResponse);
+});
+
+const buttonCollection = new Collection<string, ButtonResponse>();
+Object.values(ButtonResponses).forEach((buttonResponse) => {
+  buttonCollection.set(buttonResponse.customId, buttonResponse);
 });
 
 client.once('ready', () => {
@@ -51,6 +57,26 @@ client.on('interactionCreate', async (interaction) => {
       console.error(error);
       await interaction.reply({
         content: 'There was an error processing your selection.',
+        ephemeral: true,
+      });
+    }
+  }
+
+  if (interaction.isButton()) {
+    const idMatch = interaction.customId.match(/(.*):/);
+    if (!idMatch) return;
+    const customId = idMatch[1];
+
+    const buttonResponse = buttonCollection.get(customId);
+
+    if (!buttonResponse) return;
+
+    try {
+      await buttonResponse.execute(interaction);
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({
+        content: 'There was an error processing your action.',
         ephemeral: true,
       });
     }

@@ -3,10 +3,10 @@ import { CacheType, CommandInteraction } from 'discord.js';
 import { Command } from '../types';
 import * as Util from '../util';
 
-export const Card: Command = {
+export const FullArt: Command = {
   data: new SlashCommandBuilder()
-    .setName('card')
-    .setDescription('Look up a character or card from the PPQ Wiki')
+    .setName('fullart')
+    .setDescription(`Display a character's full body portrait`)
     .addStringOption((option) =>
       option
         .setName('query')
@@ -20,26 +20,26 @@ export const Card: Command = {
     let resolvedQuery: Awaited<ReturnType<typeof Util.resolveCharacterRarityQuery>>;
     try {
       resolvedQuery = await Util.resolveCharacterRarityQuery(query);
-    } catch (error) {
+    } catch {
       // A similarity search should be attempted here once I get around
       // to implementing it
       return interaction.reply({ content: `Unable to parse query: ${query}`, ephemeral: true });
     }
 
     if (resolvedQuery.type === 'card') {
-      const embed = await Util.cardEmbed(resolvedQuery.wikiCard);
-      return interaction.reply({ embeds: [embed] });
+      const { embed, component } = await Util.fullArtEmbed({ card: resolvedQuery.wikiCard });
+      return interaction.reply({
+        embeds: [embed],
+        ...(component ? { components: [component] } : {}),
+      });
     }
 
     if (resolvedQuery.type === 'character') {
       const { embed, component } = await Util.rarityEmbed({
         ...resolvedQuery.characterData,
-        responseType: 'card',
+        responseType: 'fullart',
       });
       return interaction.reply({ embeds: [embed], components: [component] });
     }
-
-    await interaction.reply(`Failed to lookup card by query: ${query}`);
-    throw Error(`Failed to lookup card by query: ${query}`);
   },
 };

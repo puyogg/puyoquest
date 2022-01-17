@@ -1,5 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CacheType, CommandInteraction, SelectMenuInteraction } from 'discord.js';
+import {
+  ButtonInteraction,
+  CacheType,
+  CommandInteraction,
+  SelectMenuInteraction,
+} from 'discord.js';
 
 export interface Command {
   /** If you specify top-level options, the type changes to remove subcommand stuff. */
@@ -11,4 +16,9 @@ export interface Command {
 export interface SelectMenuResponse {
   customId: string;
   execute(interaction: SelectMenuInteraction<CacheType>): Promise<void>;
+}
+
+export interface ButtonResponse {
+  customId: string;
+  execute(interaction: ButtonInteraction<CacheType>): Promise<void>;
 }
