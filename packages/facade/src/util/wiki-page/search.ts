@@ -6,6 +6,7 @@ interface SearchResult {
   ns: number;
   timestamp: string;
   title: string;
+  pageid: string;
 }
 
 interface SearchResponse {

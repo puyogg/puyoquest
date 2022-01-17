@@ -20,7 +20,7 @@ export async function buildIndex(pages?: string[]): Promise<void> {
   await pMap(
     categoryPages,
     async (categoryPage) => {
-      const linkNames = await Util.getAllCategoryLinkNames(categoryPage);
+      const linkNames = await Util.WikiPage.getAllCategoryLinkNames(categoryPage);
 
       for (const linkName of linkNames) {
         try {

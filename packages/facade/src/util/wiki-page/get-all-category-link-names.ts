@@ -1,6 +1,7 @@
 import Axios, { AxiosResponse } from 'axios';
-import { Logger } from '../logger';
-import { MEDIAWIKI_API_URL } from '../constants';
+import { Logger } from '../../logger';
+import { MEDIAWIKI_API_URL } from '../../constants';
+import { Util } from '../index';
 
 interface CategoryResponse {
   batchcomplete: '';
@@ -46,7 +47,7 @@ export async function getAllCategoryLinkNames(categoryPage: string): Promise<str
     }
 
     const linkNames = data.query.categorymembers.map((member) =>
-      member.title.replace(/^PPQ:|\/★.+$/g, ''),
+      Util.normalizeString(member.title.replace(/^PPQ:|\/★.+$/g, '')),
     );
     linkNames.forEach((linkName) => linkNameSet.add(linkName));
   }

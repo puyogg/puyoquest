@@ -3,11 +3,15 @@ export const WIKI_BASE_URL = 'https://puyonexus.com/wiki';
 
 export const VALID_RARITY_REQUESTS = ['1', '2', '3', '4', '5', '6', '6s', '6-1', '6-2', '7'];
 
-interface WikiTextToEmoji {
-  [key: string]: string;
-}
+export const puyoColorIntMap: Record<string, string> = {
+  red: '1',
+  blue: '2',
+  green: '3',
+  yellow: '4',
+  purple: '5',
+};
 
-export const wikiTextToEmoji: WikiTextToEmoji = {
+export const wikiTextToEmoji: Record<string, string> = {
   'Red Puyo []': '<:red:429944006135382017>',
   'Blue Puyo []': '<:blue:429944006601080849>',
   'Green Puyo []': '<:green:429944006948945931>',
