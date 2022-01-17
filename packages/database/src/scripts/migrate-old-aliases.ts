@@ -1,5 +1,9 @@
-import * as Fs from 'node:fs';
-import * as Path from 'node:path';
+/**
+ * Migrate aliases from Yotarou v1
+ */
+
+import * as Fs from 'fs';
+import * as Path from 'path';
 import { db } from '../db';
 import { Database } from '..';
 import { AliasDb } from '../tables/aliases/types';
