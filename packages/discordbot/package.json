@@ -5,7 +5,7 @@
   "main": "./lib/index.js",
   "scripts": {
     "build": "tsc",
-    "start:dev": "tsc --build --watch --preserveWatchOutput & nodemon --inspect=0.0.0.0:9229 -d 0.5 --watch ../database/lib --watch ../facade/lib --watch ./lib ./lib/index.js",
+    "start:dev": "tsc --build --watch --preserveWatchOutput & nodemon --inspect=0.0.0.0:9229 --delay 500ms --watch ../database/lib --watch ../facade/lib --watch ./lib ./lib/index.js",
     "lint": "eslint src --ext .ts"
   },
   "keywords": [],
@@ -15,6 +15,7 @@
     "@discordjs/builders": "^0.11.0",
     "@discordjs/rest": "^0.2.0-canary.0",
     "@ppq-wiki/facade": "workspace:^1.0.0",
+    "canvas": "^2.8.0",
     "discord-api-types": "^0.26.1",
     "discord.js": "^13.3.1"
   },
