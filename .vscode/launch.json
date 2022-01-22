@@ -14,7 +14,8 @@
               "/srv/*": "${workspaceFolder}/*"
           },
           "localRoot": "${workspaceFolder}",
-          "remoteRoot": "/srv"
+          "remoteRoot": "/srv",
+          "restart": true
       }
 
   ]

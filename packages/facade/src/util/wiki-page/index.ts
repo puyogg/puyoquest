@@ -3,6 +3,7 @@ import { getPageImageFilenames } from './get-page-image-filenames';
 import { getRawText } from './get-raw-text';
 import { search } from './search';
 import { getImageUrl } from './get-image-url';
+import { parseWikiText } from './parse-wiki-text';
 
 export const WikiPage = {
   getAllCategoryLinkNames,
@@ -10,4 +11,5 @@ export const WikiPage = {
   getRawText,
   search,
   getImageUrl,
+  parseWikiText,
 };

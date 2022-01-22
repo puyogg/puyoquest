@@ -1,8 +1,7 @@
-import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import * as Facade from '@ppq-wiki/facade';
 import { colorHex } from '../constants';
 import * as Util from '../util';
-import { FullArtUrls } from '@ppq-wiki/facade/src/entities/cards';
 
 function specialLabel(card: Facade.Cards.WikiCard): string {
   if (card.ca) return 'CROSS ABILITY';

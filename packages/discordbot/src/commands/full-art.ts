@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction } from 'discord.js';
 import { Command } from '../types';
 import * as Util from '../util';
+import { CardQuery, CharacterQuery } from '../util';
 
 export const FullArt: Command = {
   data: new SlashCommandBuilder()
@@ -17,9 +18,9 @@ export const FullArt: Command = {
   async execute(interaction: CommandInteraction<CacheType>) {
     const query = interaction.options.getString('query', true);
 
-    let resolvedQuery: Awaited<ReturnType<typeof Util.resolveCharacterRarityQuery>>;
+    let resolvedQuery: CardQuery | CharacterQuery;
     try {
-      resolvedQuery = await Util.resolveCharacterRarityQuery(query);
+      resolvedQuery = await Util.resolveCharacterRarityQuery({ query, desiredType: 'card' });
     } catch {
       // A similarity search should be attempted here once I get around
       // to implementing it

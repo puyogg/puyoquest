@@ -39,10 +39,10 @@ client.on('interactionCreate', async (interaction) => {
       await command.execute(interaction);
     } catch (error) {
       console.error(error);
-      await interaction.reply({
-        content: 'There was an error while executing this command!',
-        ephemeral: true,
-      });
+      // await interaction.reply({
+      //   content: 'There was an error while executing this command!',
+      //   ephemeral: true,
+      // });
     }
   }
 
@@ -55,10 +55,10 @@ client.on('interactionCreate', async (interaction) => {
       await selectMenuResponse.execute(interaction);
     } catch (error) {
       console.error(error);
-      await interaction.reply({
-        content: 'There was an error processing your selection.',
-        ephemeral: true,
-      });
+      // await interaction.reply({
+      //   content: 'There was an error processing your selection.',
+      //   ephemeral: true,
+      // });
     }
   }
 
@@ -75,10 +75,10 @@ client.on('interactionCreate', async (interaction) => {
       await buttonResponse.execute(interaction);
     } catch (error) {
       console.error(error);
-      await interaction.reply({
-        content: 'There was an error processing your action.',
-        ephemeral: true,
-      });
+      // await interaction.reply({
+      //   content: 'There was an error processing your action.',
+      //   ephemeral: true,
+      // });
     }
   }
 });

@@ -1,10 +1,14 @@
 import * as Discord from 'discord.js';
 import * as Facade from '@ppq-wiki/facade';
 import { colorHex } from '../constants';
-import { Card as CardResponse, FullArt as FullArtResponse } from '../select-menu-responses';
+import {
+  Card as CardResponse,
+  FullArt as FullArtResponse,
+  Lore as LoreResponse,
+} from '../select-menu-responses';
 
 type CharacterData = Awaited<ReturnType<typeof Facade.Characters.getByName>> & {
-  responseType: 'card' | 'fullart';
+  responseType: 'card' | 'fullart' | 'lore';
 };
 
 export async function rarityEmbed(params: CharacterData) {
@@ -65,6 +69,9 @@ export async function rarityEmbed(params: CharacterData) {
   switch (responseType) {
     case 'fullart':
       selectMenu.setCustomId(FullArtResponse.customId);
+      break;
+    case 'lore':
+      selectMenu.setCustomId(LoreResponse.customId);
       break;
     case 'card':
     default:

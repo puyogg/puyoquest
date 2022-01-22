@@ -2,12 +2,12 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction } from 'discord.js';
 import { Command } from '../types';
 import * as Util from '../util';
-import { CardQuery, CharacterQuery } from '../util';
+import { CharacterQuery, LoreQuery } from '../util';
 
-export const Card: Command = {
+export const Lore: Command = {
   data: new SlashCommandBuilder()
-    .setName('card')
-    .setDescription('Look up a character or card from the PPQ Wiki')
+    .setName('lore')
+    .setDescription(`Read a card's flavor text.`)
     .addStringOption((option) =>
       option
         .setName('query')
@@ -18,29 +18,26 @@ export const Card: Command = {
   async execute(interaction: CommandInteraction<CacheType>) {
     const query = interaction.options.getString('query', true);
 
-    let resolvedQuery: CardQuery | CharacterQuery;
+    let resolvedQuery: LoreQuery | CharacterQuery;
     try {
-      resolvedQuery = await Util.resolveCharacterRarityQuery({ query, desiredType: 'card' });
-    } catch (error) {
+      resolvedQuery = await Util.resolveCharacterRarityQuery({ query, desiredType: 'lore' });
+    } catch {
       // A similarity search should be attempted here once I get around
       // to implementing it
       return interaction.reply({ content: `Unable to parse query: ${query}`, ephemeral: true });
     }
 
-    if (resolvedQuery.type === 'card') {
-      const embed = await Util.cardEmbed(resolvedQuery.wikiCard);
+    if (resolvedQuery.type === 'lore') {
+      const embed = await Util.loreEmbed(resolvedQuery.wikiLore);
       return interaction.reply({ embeds: [embed] });
     }
 
     if (resolvedQuery.type === 'character') {
       const { embed, component } = await Util.rarityEmbed({
         ...resolvedQuery.characterData,
-        responseType: 'card',
+        responseType: 'lore',
       });
       return interaction.reply({ embeds: [embed], components: [component] });
     }
-
-    await interaction.reply(`Failed to lookup card by query: ${query}`);
-    throw Error(`Failed to lookup card by query: ${query}`);
   },
 };
