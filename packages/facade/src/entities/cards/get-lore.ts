@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import * as _ from 'lodash';
-import { Util } from '../..';
+import * as Util from '../../util';
 import { WIKI_BASE_URL } from '../../constants';
 
 export interface WikiLore {

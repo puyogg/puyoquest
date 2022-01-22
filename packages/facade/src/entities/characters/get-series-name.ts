@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import { WIKI_BASE_URL } from '../../constants';
-import { Util } from '../..';
+import * as Util from '../../util';
 
 export async function getSeriesLink(params: {
   charId: string;

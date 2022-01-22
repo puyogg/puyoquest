@@ -1,4 +1,4 @@
-import { WikiPage } from '../../util/wiki-page';
+import * as Util from '../../util';
 import { distance as LevenDistance } from 'fastest-levenshtein';
 
 export async function findSeriesPageName(userString: string): Promise<string> {
@@ -6,7 +6,7 @@ export async function findSeriesPageName(userString: string): Promise<string> {
     ? `${userString} Series`
     : userString;
   const categorySeriesName = `Category:PPQ:${seriesName}`;
-  const pageNames = await WikiPage.search(categorySeriesName);
+  const pageNames = await Util.WikiPage.search(categorySeriesName);
 
   if (pageNames.length === 0) {
     throw new Error(`Searching for ${categorySeriesName} returned no results.`);

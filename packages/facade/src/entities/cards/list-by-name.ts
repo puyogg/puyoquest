@@ -1,5 +1,5 @@
 import { Database } from '@ppq-wiki/database';
-import { Util } from '../../util';
+import * as Util from '../../util';
 
 export async function listByName(params: {
   name: string;

@@ -1,6 +1,5 @@
 import * as pMap from 'p-map';
-import { Util } from '../../util';
-import { WikiPage } from '../../util/wiki-page';
+import * as Util from '../../util';
 
 const cachedPage = new Map<string, string>();
 
@@ -15,7 +14,7 @@ export async function fetchIconsByIds(cardIds: string[]): Promise<Buffer[]> {
       if (cachedUrl) {
         return Util.ImageCache.get(cachedUrl);
       } else {
-        const imageUrl = await WikiPage.getImageUrl(filePage);
+        const imageUrl = await Util.WikiPage.getImageUrl(filePage);
 
         if (!imageUrl) return;
 

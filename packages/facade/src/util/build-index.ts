@@ -1,5 +1,5 @@
 import { WIKI_BASE_URL } from '../constants';
-import { Util } from './index';
+import * as Util from '../util';
 import * as pMap from 'p-map';
 import Axios from 'axios';
 import { Logger } from '../logger';

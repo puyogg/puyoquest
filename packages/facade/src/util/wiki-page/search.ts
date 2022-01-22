@@ -2,14 +2,14 @@ import Axios from 'axios';
 import { MEDIAWIKI_API_URL } from '../../constants';
 import { Logger } from '../../logger';
 
-interface SearchResult {
+export interface SearchResult {
   ns: number;
   timestamp: string;
   title: string;
   pageid: string;
 }
 
-interface SearchResponse {
+export interface SearchResponse {
   batchcomplete: string;
   query: {
     search: SearchResult[];

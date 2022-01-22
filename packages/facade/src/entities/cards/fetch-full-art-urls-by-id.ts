@@ -1,4 +1,4 @@
-import { WikiPage } from '../../util/wiki-page';
+import * as Util from '../../util';
 
 const cachedPage = new Map<string, string>();
 
@@ -26,7 +26,7 @@ export async function fetchFullArtUrlsById(cardId: string): Promise<FullArtUrls>
         } else {
           let imageUrl: string | undefined;
           try {
-            imageUrl = await WikiPage.getImageUrl(filePage);
+            imageUrl = await Util.WikiPage.getImageUrl(filePage);
           } finally {
             if (!imageUrl) return;
 

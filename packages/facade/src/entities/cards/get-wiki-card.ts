@@ -2,7 +2,7 @@ import Axios from 'axios';
 import * as _ from 'lodash';
 import { WIKI_BASE_URL } from '../../constants';
 import { Logger } from '../../logger';
-import { Util } from '../..';
+import * as Util from '../../util';
 
 interface BackAST {
   ast?: string; // Special Training skill name

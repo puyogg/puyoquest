@@ -1,5 +1,5 @@
 import { Database } from '@ppq-wiki/database';
-import { Util } from '../../util';
+import * as Util from '../../util';
 import { getWikiCard } from './get-wiki-card';
 
 export async function getByNameAndRarity(params: {

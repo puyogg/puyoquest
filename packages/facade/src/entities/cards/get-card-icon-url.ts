@@ -1,4 +1,4 @@
-import { Util } from '../..';
+import * as Util from '../../util';
 
 export async function getCardIconUrl(cardId: string): Promise<string | undefined> {
   const filePage = `File:Img${cardId}.png`;

@@ -1,4 +1,4 @@
-import { Util } from '../../util';
+import * as Util from '../../util';
 import * as leven from 'fastest-levenshtein';
 import { Database } from '@ppq-wiki/database';
 import { puyoColorIntMap } from '../../constants';

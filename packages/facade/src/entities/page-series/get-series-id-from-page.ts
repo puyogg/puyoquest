@@ -1,7 +1,7 @@
-import { WikiPage } from '../../util/wiki-page';
+import * as Util from '../../util';
 
 export async function getSeriesIdFromPage(pageTitle: string): Promise<string> {
-  const rawText = await WikiPage.getRawText(pageTitle);
+  const rawText = await Util.WikiPage.getRawText(pageTitle);
 
   // The series tag will have the form {{s012|long}}
   const seriesIdMatch = rawText.match(/{{(.*?)\|/);

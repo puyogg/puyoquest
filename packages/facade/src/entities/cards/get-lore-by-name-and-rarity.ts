@@ -1,5 +1,5 @@
 import { Database } from '@ppq-wiki/database';
-import { Util } from '../../util';
+import * as Util from '../../util';
 import { getLore, WikiLore } from './get-lore';
 
 export async function getLoreByNameAndRarity(params: {

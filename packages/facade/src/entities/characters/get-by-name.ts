@@ -1,7 +1,7 @@
 import { Database } from '@ppq-wiki/database';
 import { CardPublic } from '@ppq-wiki/database/src/tables/cards';
 import { CharacterPublic } from '@ppq-wiki/database/src/tables/characters';
-import { Util } from '../../util';
+import * as Util from '../../util';
 
 export async function getByName(params: { name: string; includeMaterials: boolean }): Promise<{
   character: CharacterPublic;

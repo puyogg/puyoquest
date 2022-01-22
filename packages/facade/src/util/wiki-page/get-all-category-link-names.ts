@@ -1,7 +1,7 @@
 import Axios, { AxiosResponse } from 'axios';
 import { Logger } from '../../logger';
 import { MEDIAWIKI_API_URL } from '../../constants';
-import { Util } from '../index';
+import * as Util from '../../util';
 
 interface CategoryResponse {
   batchcomplete: '';

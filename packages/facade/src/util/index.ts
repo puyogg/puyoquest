@@ -1,17 +1,7 @@
-import { isJapanese } from './is-japanese';
-import { normalizeString } from './normalize-string';
-import { parseTemplate } from './parse-template';
-import { parseRarityModifier } from './parse-rarity-modifier';
-import { parseInputRarity } from './parse-input-rarity';
-import { WikiPage } from './wiki-page';
-import { ImageCache } from './image-cache';
-
-export const Util = {
-  isJapanese,
-  normalizeString,
-  parseTemplate,
-  parseRarityModifier,
-  parseInputRarity,
-  WikiPage,
-  ImageCache,
-};
+export * from './is-japanese';
+export * from './normalize-string';
+export * from './parse-template';
+export * from './parse-rarity-modifier';
+export * from './parse-input-rarity';
+export * as WikiPage from './wiki-page';
+export * from './image-cache';

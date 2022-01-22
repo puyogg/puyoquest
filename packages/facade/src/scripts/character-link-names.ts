@@ -1,5 +1,5 @@
 import { Db } from '@ppq-wiki/database';
-import { Util } from '../util';
+import * as Util from '../util';
 import { Database } from '@ppq-wiki/database';
 import Axios from 'axios';
 import { WIKI_BASE_URL } from '../constants';
