@@ -64,6 +64,10 @@ export async function listByCategories(params: {
 
   const { categoriesFound, categoriesNotFound } = await resolveCategoryNames(requestedCategories);
 
+  if (categoriesFound.length === 0) {
+    throw Error(`The requested categories could not be found: ${requestedCategories.join(', ')}`);
+  }
+
   const categoryMemberArrays = await Promise.all(
     categoriesFound.map((result) => Util.WikiPage.getAllCategoryLinkNames(result.title)),
   );
