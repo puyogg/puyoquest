@@ -9,6 +9,6 @@ export const FullArt: SelectMenuResponse = {
     const cardId = interaction.values[0];
     const wikiCard = await Facade.Cards.getWikiCard(cardId);
     const { embed, component } = await Util.fullArtEmbed({ card: wikiCard });
-    await interaction.update({ embeds: [embed], ...(component && { components: [component] }) });
+    await interaction.update({ embeds: [embed], components: component ? [component] : [] });
   },
 };

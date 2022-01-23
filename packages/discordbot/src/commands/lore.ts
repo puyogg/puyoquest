@@ -13,14 +13,25 @@ export const Lore: Command = {
         .setName('query')
         .setDescription('Look up a character or a character card. Ex: Legamunt 7')
         .setRequired(true),
+    )
+    .addBooleanOption((option) =>
+      option
+        .setName('material')
+        .setDescription('Look up the character-specific material instead.')
+        .setRequired(false),
     ),
   cooldown: 1,
   async execute(interaction: CommandInteraction<CacheType>) {
     const query = interaction.options.getString('query', true);
+    const material = interaction.options.getBoolean('material');
 
     let resolvedQuery: LoreQuery | CharacterQuery;
     try {
-      resolvedQuery = await Util.resolveCharacterRarityQuery({ query, desiredType: 'lore' });
+      resolvedQuery = await Util.resolveCharacterRarityQuery({
+        query,
+        desiredType: 'lore',
+        material: !!material,
+      });
     } catch {
       // A similarity search should be attempted here once I get around
       // to implementing it
@@ -39,5 +50,7 @@ export const Lore: Command = {
       });
       return interaction.reply({ embeds: [embed], components: [component] });
     }
+
+    return interaction.reply(`Failed to look up card: ${query}`);
   },
 };

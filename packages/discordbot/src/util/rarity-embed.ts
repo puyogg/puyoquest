@@ -88,6 +88,18 @@ export async function rarityEmbed(params: CharacterData) {
       };
     }),
   );
+  if (responseType === 'lore' || responseType === 'fullart') {
+    selectMenu.addOptions(
+      materials.map((card) => {
+        return {
+          label:
+            `[★${card.rarityModifier || card.rarity}] ${card.name}` +
+            (card.jpName ? ` (${card.jpName})` : ''),
+          value: card.cardId,
+        };
+      }),
+    );
+  }
 
   const row = new Discord.MessageActionRow().addComponents(selectMenu);
 

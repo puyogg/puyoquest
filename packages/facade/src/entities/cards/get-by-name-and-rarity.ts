@@ -7,6 +7,7 @@ export async function getByNameAndRarity(params: {
   name: string;
   /** Needs to be normalized to a valid rarity */
   rarity: string;
+  material?: boolean;
 }) {
   const { rarity, rarityModifier } = Util.parseInputRarity(params.rarity);
 
@@ -17,6 +18,7 @@ export async function getByNameAndRarity(params: {
     charId,
     rarity,
     rarityModifier,
+    material: params.material,
   });
   const { cardId } = cardPublic;
   return getWikiCard(cardId);

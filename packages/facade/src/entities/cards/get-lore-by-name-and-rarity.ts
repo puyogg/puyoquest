@@ -5,6 +5,7 @@ import { getLore, WikiLore } from './get-lore';
 export async function getLoreByNameAndRarity(params: {
   name: string;
   rarity: string;
+  material?: boolean;
 }): Promise<WikiLore> {
   const { rarity, rarityModifier } = Util.parseInputRarity(params.rarity);
 
@@ -15,6 +16,7 @@ export async function getLoreByNameAndRarity(params: {
     charId,
     rarity,
     rarityModifier,
+    ...(params.material && { material: params.material }),
   });
 
   const { cardId } = cardPublic;

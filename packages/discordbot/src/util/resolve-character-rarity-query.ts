@@ -19,16 +19,19 @@ export interface CharacterQuery {
 export async function resolveCharacterRarityQuery(params: {
   query: string;
   desiredType: 'lore';
+  material?: boolean;
 }): Promise<LoreQuery | CharacterQuery>;
 export async function resolveCharacterRarityQuery(params: {
   query: string;
   desiredType: 'card';
+  material?: boolean;
 }): Promise<CardQuery | CharacterQuery>;
 export async function resolveCharacterRarityQuery(params: {
   query: string;
   desiredType: 'card' | 'lore';
+  material?: boolean;
 }): Promise<CardQuery | LoreQuery | CharacterQuery> {
-  const { query, desiredType } = params;
+  const { query, desiredType, material = false } = params;
 
   const parsedQuery = Util.parseCharAndRarityQuery(query);
 
@@ -37,14 +40,14 @@ export async function resolveCharacterRarityQuery(params: {
       const { name, rarity } = parsedQuery.query;
 
       if (desiredType === 'card') {
-        const wikiCard = await Facade.Cards.getByNameAndRarity({ name, rarity });
+        const wikiCard = await Facade.Cards.getByNameAndRarity({ name, material, rarity });
         const cardQuery: CardQuery = {
           type: 'card',
           wikiCard,
         };
         return cardQuery;
       } else {
-        const wikiLore = await Facade.Cards.getLoreByNameAndRarity({ name, rarity });
+        const wikiLore = await Facade.Cards.getLoreByNameAndRarity({ name, material, rarity });
         const loreQuery: LoreQuery = {
           type: 'lore',
           wikiLore,
