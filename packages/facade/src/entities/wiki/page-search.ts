@@ -1,6 +1,18 @@
+import * as leven from 'fastest-levenshtein';
 import * as Util from '../../util';
-import type { SearchResult } from '../../util/wiki-page/search';
 
-export async function pageSearch(query: string): Promise<SearchResult[]> {
-  return Util.WikiPage.search(query);
+export async function pageSearch(query: string): Promise<string[]> {
+  const searchResults = await Util.WikiPage.search(query);
+
+  const titlesWithDistances = searchResults.map((result) => {
+    return {
+      title: result.title,
+      distance: leven.distance(Util.normalizeString(result.title), Util.normalizeString(query)),
+    };
+  });
+
+  titlesWithDistances.sort((a, b) => a.distance - b.distance);
+
+  const titles = titlesWithDistances.map((result) => result.title);
+  return titles;
 }
