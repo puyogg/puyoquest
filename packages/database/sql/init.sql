@@ -49,3 +49,9 @@ CREATE TABLE IF NOT EXISTS image_cache (
   filepath TEXT,
   updated_at TIMESTAMPTZ
 );
+
+CREATE TABLE IF NOT EXISTS enabled_roles (
+  role_id TEXT PRIMARY KEY,
+  guild_id TEXT,
+  updated_at TIMESTAMPTZ
+);

@@ -1,6 +1,7 @@
 import { Client, Collection, Intents } from 'discord.js';
 import * as Assert from 'assert';
 import { deployCommands } from './deploy-commands';
+import { setCommandPermissions } from './permissions';
 import * as Commands from './commands';
 import * as SelectMenuResponses from './select-menu-responses';
 import * as ButtonResponses from './button-responses';
@@ -25,24 +26,26 @@ Object.values(ButtonResponses).forEach((buttonResponse) => {
   buttonCollection.set(buttonResponse.customId, buttonResponse);
 });
 
-client.once('ready', () => {
+let botReady = false;
+
+client.once('ready', async () => {
+  await setCommandPermissions(client);
+  botReady = true;
+
   console.log('Ready!');
 });
 
 client.on('interactionCreate', async (interaction) => {
+  if (!botReady) return;
+
   if (interaction.isCommand()) {
     const command = commandCollection.get(interaction.commandName);
-
     if (!command) return;
 
     try {
       await command.execute(interaction);
     } catch (error) {
       console.error(error);
-      // await interaction.reply({
-      //   content: 'There was an error while executing this command!',
-      //   ephemeral: true,
-      // });
     }
   }
 
