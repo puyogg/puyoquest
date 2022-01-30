@@ -37,8 +37,8 @@ services:
       DISCORD_BOT_DB_URL: postgres://postgres:${POSTGRES_PASSWORD}@discordbot-db:5432/${DISCORD_BOT_DB_NAME}
       DISCORD_BOT_DB_URL_TEST: postgres://postgres:${POSTGRES_PASSWORD}@discordbot-db-test:5432/${DISCORD_BOT_DB_NAME}
       DISCORD_BOT_API_TOKEN: ${DISCORD_BOT_API_TOKEN}
-    volumes_from:
-      - base
+    volumes:
+      - .:/srv:cached
 
 volumes:
   discordbot-db-volume: #
