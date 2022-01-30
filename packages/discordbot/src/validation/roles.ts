@@ -57,9 +57,10 @@ export function roleMenuCanEnable(params: {
       errors.push(`You do not have permission to give other users this role: <@&${role.id}>`);
     } else if (!roleNormal) {
       errors.push(`Not a valid role for users: <@&${role.id}>`);
-    } else if (!roleMentionable) {
-      errors.push(`Not a mentionable role: <@&${role.id}>`);
     }
+    // else if (!roleMentionable) {
+    //   errors.push(`Not a mentionable role: <@&${role.id}>`);
+    // }
   });
 
   return {

@@ -1,5 +1,6 @@
 import { CacheType, GuildMember, MessageActionRow, SelectMenuInteraction } from 'discord.js';
 import { SelectMenuResponse } from '../types';
+import * as Facade from '@ppq-wiki/facade';
 
 export const RoleMenu: SelectMenuResponse = {
   customId: 'rolemenu',
@@ -42,6 +43,15 @@ export const RoleMenu: SelectMenuResponse = {
     }
 
     const hasRole = guildMember.roles.cache.has(role.id);
+
+    const enabledRoles = new Set(await Facade.Roles.listByGuildId(interaction.guild.id));
+    const roleEnabled = enabledRoles.has(role.id);
+    if (!roleEnabled) {
+      await interaction.followUp({
+        content: `This role (<@&${role.id}>) can't be assigned. Please message a moderator.`,
+        ephemeral: true,
+      });
+    }
 
     if (hasRole) {
       await guildMember.roles.remove(role.id);

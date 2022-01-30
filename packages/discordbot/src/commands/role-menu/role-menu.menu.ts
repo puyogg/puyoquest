@@ -17,7 +17,7 @@ const commandData = new SlashCommandSubcommandBuilder()
   .setName('menu')
   .setDescription('Create a role management menu.');
 
-const MAX_ROLES = 5;
+const MAX_ROLES = 20;
 for (let i = 1; i <= MAX_ROLES; i++) {
   const required = i === 1;
   commandData.addStringOption((option) =>

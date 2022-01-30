@@ -8,7 +8,7 @@ const commandData = new SlashCommandSubcommandBuilder()
   .setName('enable')
   .setDescription('Allow roles to be used in /rolemenu menu');
 
-const MAX_ROLES = 5;
+const MAX_ROLES = 20;
 for (let i = 1; i <= MAX_ROLES; i++) {
   const required = i === 1;
   commandData.addRoleOption((option) =>
