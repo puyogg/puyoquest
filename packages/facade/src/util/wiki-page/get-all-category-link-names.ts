@@ -18,7 +18,10 @@ interface CategoryResponse {
   };
 }
 
-export async function getAllCategoryLinkNames(categoryPage: string): Promise<string[]> {
+export async function getAllCategoryLinkNames(
+  categoryPage: string,
+  normalize = true,
+): Promise<string[]> {
   let hasContinue = true;
   let listContinue;
   let cmcontinue;
@@ -47,7 +50,7 @@ export async function getAllCategoryLinkNames(categoryPage: string): Promise<str
     }
 
     const linkNames = data.query.categorymembers.map((member) =>
-      Util.normalizeString(member.title.replace(/^PPQ:|\/★.+$/g, '')),
+      normalize ? Util.normalizeString(member.title.replace(/^PPQ:|\/★.+$/g, '')) : member.title,
     );
     linkNames.forEach((linkName) => linkNameSet.add(linkName));
   }

@@ -6,6 +6,7 @@ import * as Commands from './commands';
 import * as SelectMenuResponses from './select-menu-responses';
 import * as ButtonResponses from './button-responses';
 import { ButtonResponse, Command, SelectMenuResponse } from './types';
+import { Util as FacadeUtil } from '@ppq-wiki/facade';
 
 const { DISCORD_BOT_API_TOKEN } = process.env;
 Assert(DISCORD_BOT_API_TOKEN, 'DISCORD_BOT_API_TOKEN not defined.');
@@ -33,6 +34,9 @@ client.once('ready', async () => {
   botReady = true;
 
   console.log('Ready!');
+
+  const indexRebuilder = new FacadeUtil.IndexRebuilder();
+  indexRebuilder.start();
 });
 
 client.on('interactionCreate', async (interaction) => {
