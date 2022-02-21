@@ -4,3 +4,4 @@ export * from './get-raw-text';
 export * from './search';
 export * from './get-image-url';
 export * from './parse-wiki-text';
+export * from './get-recent-char-id-changes';

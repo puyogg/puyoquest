@@ -19,7 +19,7 @@ export class IndexRebuilder {
       'Category:PPQ:Purple_Color',
     ];
 
-    this.intervalMs = params?.intervalMs || 10000;
+    this.intervalMs = params?.intervalMs || 1000 * 60;
     this.linkNames = [];
   }
 
@@ -51,46 +51,61 @@ export class IndexRebuilder {
   }
 
   public async rebuildCharacter(): Promise<void> {
-    if (this.linkNames.length === 0) {
-      await this.initLinkNames();
-    }
+    let linkName: string | undefined;
+    try {
+      if (this.linkNames.length === 0) {
+        await this.initLinkNames();
+      }
 
-    const linkName = this.linkNames.pop();
+      linkName = this.linkNames.pop();
+      if (!linkName) {
+        throw Error('Invalid linkName');
+      }
 
-    const charPageUrl = `${WIKI_BASE_URL}/${linkName}?action=raw`;
-    const charPageRes = await Axios.get<string>(charPageUrl);
-    Logger.AxiosResponse(charPageRes);
+      const charPageUrl = `${WIKI_BASE_URL}/${linkName}?action=raw`;
+      const charPageRes = await Axios.get<string>(charPageUrl);
+      Logger.AxiosResponse(charPageRes);
 
-    const charPageRaw = charPageRes.data;
-    // Ex. {{184442L|long}} or {{2012|long}}
-    // Capture the character id string.
-    const charIdMatch = charPageRaw.match(/(\{\{)(\w+?)\|/);
-    if (!charIdMatch) return;
-    const charId = charIdMatch[2].trim();
+      const charPageRaw = charPageRes.data;
+      // Ex. {{184442L|long}} or {{2012|long}}
+      // Capture the character id string.
+      const charIdMatch = charPageRaw.match(/(\{\{)(\w+?)\|/);
+      if (!charIdMatch) return;
+      const charId = charIdMatch[2].trim();
 
-    const template = await this.fetchTemplate(charId);
-    const characterData = Util.parseTemplate<Record<string, string>>(template);
+      const template = await this.fetchTemplate(charId);
+      const characterData = Util.parseTemplate<Record<string, string>>(template);
 
-    const characterLinkName = characterData['link'] || characterData['name'];
-    await Database.Characters.create({
-      charId,
-      name: characterData['name'],
-      linkName: characterLinkName,
-      jpName: characterData['jpname'],
-      mainColor: characterData['color'],
-      sideColor: characterData['color2'],
-      type1: characterData['type1'],
-      type2: characterData['type2'],
-      voiceTrans: characterData['voicetrans'],
-    });
-
-    await this.rebuildCharacterCards(charId, characterData);
-
-    setTimeout(() => {
-      this.rebuildCharacter().catch((err) => {
-        console.error(err);
+      const characterLinkName = characterData['link'] || characterData['name'];
+      await Database.Characters.create({
+        charId,
+        name: characterData['name'],
+        linkName: characterLinkName,
+        jpName: characterData['jpname'],
+        mainColor: characterData['color'],
+        sideColor: characterData['color2'],
+        type1: characterData['type1'],
+        type2: characterData['type2'],
+        voiceTrans: characterData['voicetrans'],
       });
-    }, this.intervalMs + Math.random() * 5000);
+
+      await this.rebuildCharacterCards(charId, characterData);
+    } catch (err) {
+      if (linkName) this.linkNames.push(linkName);
+
+      if (Axios.isAxiosError(err)) {
+        console.error({
+          name: err.name,
+          code: err.code,
+          message: err.message,
+          url: err.config.url,
+        });
+      } else {
+        console.error(err);
+      }
+    } finally {
+      setTimeout(() => this.rebuildCharacter(), this.intervalMs + Math.random() * 5000);
+    }
   }
 
   public async rebuildCharacterCards(
@@ -156,8 +171,6 @@ export class IndexRebuilder {
 
   public start(): void {
     this.initLinkNames();
-    setTimeout(() => {
-      this.rebuildCharacter().catch((err) => console.error(err));
-    }, this.intervalMs);
+    this.rebuildCharacter();
   }
 }

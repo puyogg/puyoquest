@@ -55,3 +55,12 @@ CREATE TABLE IF NOT EXISTS enabled_roles (
   guild_id TEXT,
   updated_at TIMESTAMPTZ
 );
+
+CREATE TABLE IF NOT EXISTS cron_last_updated (
+  task TEXT PRIMARY KEY,
+  updated_at TIMESTAMPTZ
+);
+
+INSERT INTO cron_last_updated (task, updated_at)
+VALUES ('wiki_recent_changes', '2022-01-01 00:00:00.00+00')
+ON CONFLICT (task) DO NOTHING;

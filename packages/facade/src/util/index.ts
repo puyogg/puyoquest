@@ -6,3 +6,4 @@ export * from './parse-input-rarity';
 export * as WikiPage from './wiki-page';
 export * from './image-cache';
 export * from './index-rebuilder';
+export * from './index-rebuilder-recent-changes';
