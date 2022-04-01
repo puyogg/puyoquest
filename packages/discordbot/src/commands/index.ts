@@ -5,3 +5,7 @@ export * from './lore';
 export * from './page';
 export * from './refresh-index';
 export * from './role-menu';
+export * from './dms';
+export * from './say-in';
+export * from './userverify';
+export * from './warn';

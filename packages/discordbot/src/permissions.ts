@@ -6,7 +6,11 @@ export async function setCommandPermissions(client: Client): Promise<void> {
 
   if (!commands) return;
   const roleMenuCommand = commands.find((command) => command.name === 'rolemenu');
-  if (!roleMenuCommand) return;
+  const userVerifyCommand = commands.find((command) => command.name === 'userverify');
+  const warnCommand = commands.find((command) => command.name === 'warn');
+  const dmsCommand = commands.find((command) => command.name === 'dms');
+
+  if (!roleMenuCommand || !userVerifyCommand || !warnCommand || !dmsCommand) return;
 
   const permissions: GuildApplicationCommandPermissionData[] = [
     {
@@ -24,7 +28,39 @@ export async function setCommandPermissions(client: Client): Promise<void> {
         },
       ],
     },
+    {
+      id: userVerifyCommand.id,
+      permissions: [
+        {
+          id: '330759232087392259',
+          type: 'ROLE',
+          permission: true,
+        },
+      ],
+    },
+    {
+      id: warnCommand.id,
+      permissions: [
+        {
+          id: '330759232087392259',
+          type: 'ROLE',
+          permission: true,
+        },
+      ],
+    },
+    {
+      id: dmsCommand.id,
+      permissions: [
+        {
+          id: '330759232087392259',
+          type: 'ROLE',
+          permission: true,
+        },
+      ],
+    },
   ];
+
+  console.log('Setting permissions.');
   await client.guilds.cache
     .get('133012933260214272')
     ?.commands.permissions.set({ fullPermissions: permissions });

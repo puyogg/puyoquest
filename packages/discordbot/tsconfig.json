@@ -8,6 +8,7 @@
     "incremental": true,
     "composite": true,
     "strict": true,
+    "strictNullChecks": true,
     "resolveJsonModule": true,
     "declaration": true,
   },
