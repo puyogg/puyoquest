@@ -5,6 +5,7 @@
   "main": "./lib/index.js",
   "scripts": {
     "build": "tsc",
+    "watch": "tsc --build --watch",
     "start:dev": "tsc --build && eval 'tsc --build --watch --preserveWatchOutput & nodemon --inspect=0.0.0.0:9229 --delay 500ms --watch ../database/lib --watch ../facade/lib --watch ./lib ./lib/index.js'",
     "lint": "eslint src --ext .ts"
   },
