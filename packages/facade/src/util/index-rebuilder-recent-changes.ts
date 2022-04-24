@@ -5,6 +5,14 @@ import { Util } from '..';
 import { WIKI_BASE_URL } from '../constants';
 import { Database } from '@ppq-wiki/database';
 
+const colorFallBackMap: Record<string, string> = {
+  '1': 'Red',
+  '2': 'Blue',
+  '3': 'Green',
+  '4': 'Yellow',
+  '5': 'Purple',
+};
+
 export class IndexRebuilderRecentChanges {
   private intervalMs: number;
 
@@ -35,7 +43,7 @@ export class IndexRebuilderRecentChanges {
             name: characterData['name'],
             linkName: characterLinkName,
             jpName: characterData['jpname'],
-            mainColor: characterData['color'],
+            mainColor: characterData['color'] || colorFallBackMap[charId.charAt(0)],
             sideColor: characterData['color2'],
             type1: characterData['type1'],
             type2: characterData['type2'],
@@ -76,7 +84,9 @@ export class IndexRebuilderRecentChanges {
     charId: string,
     characterData: Record<string, string>,
   ): Promise<void> {
-    const cardKeys = Object.keys(characterData).filter((key) => /card(\d+)|mat(\d+)/.test(key));
+    const cardKeys = Object.keys(characterData).filter(
+      (key) => /card(\d+)|mat(\d+)/.test(key) && !!characterData[key],
+    );
     const cardIds = cardKeys.map((key) => characterData[key]);
 
     await Promise.all(
