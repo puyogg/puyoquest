@@ -8,3 +8,4 @@ export * from './icon-list-large';
 export * from './card-title-rarity-link';
 export * from './full-art-embed';
 export * from './lore-embed';
+export * from './alias-embed';

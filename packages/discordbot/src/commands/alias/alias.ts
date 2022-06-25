@@ -13,6 +13,7 @@ export const Alias: Command = {
   data: new SlashCommandBuilder()
     .setName('alias')
     .setDescription('Manage PPQ Wiki Aliases (Wiki editors only)')
+    .setDefaultPermission(false)
     .addSubcommand(AliasAdd.data as SlashCommandSubcommandBuilder)
     .addSubcommand(AliasList.data as SlashCommandSubcommandBuilder),
   cooldown: 1,

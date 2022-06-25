@@ -4,6 +4,7 @@ import { CommandInteraction, CacheType } from 'discord.js';
 import { Command } from '../../types';
 import * as Facade from '@ppq-wiki/facade';
 import { colorHex } from '../../constants';
+import * as Util from '../../util';
 
 export const AliasList: Command = {
   data: new SlashCommandSubcommandBuilder()
@@ -22,32 +23,11 @@ export const AliasList: Command = {
     const characterData = await Facade.Characters.getByName({ name, includeMaterials: false });
     const aliases = await Facade.Characters.aliasList(characterData.character.charId);
 
-    const { character, cards } = characterData;
-
-    const embed = new Discord.MessageEmbed();
-
-    embed.setTitle(character.name + (character.jpName ? ` (${character.jpName})` : ''));
-    embed.setURL(encodeURI(`https://puyonexus.com/wiki/PPQ:${character.linkName}`));
-
-    embed.setColor(colorHex[character.mainColor.toLowerCase()]);
-
-    if (cards.length) {
-      const charCards = cards
-        .filter((card) => card.cardType === 'character')
-        .sort((a, b) => {
-          const rarityA = a.rarityModifier || a.rarity;
-          const rarityB = b.rarityModifier || b.rarity;
-          return rarityA.localeCompare(rarityB);
-        });
-
-      const highestRarityCard = charCards[charCards.length - 1];
-      const thumbnailUrl = await Facade.Cards.getCardIconUrl(highestRarityCard.cardId);
-      if (thumbnailUrl) embed.setThumbnail(thumbnailUrl);
-    }
-
-    embed.setDescription(
-      `${character.name} has the following aliases:\n\`\`\`${aliases.join(', ')}\`\`\``,
-    );
+    const embed = await Util.aliasEmbed({
+      character: characterData.character,
+      cards: characterData.cards,
+      aliases,
+    });
 
     return interaction.reply({
       embeds: [embed],

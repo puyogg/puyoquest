@@ -9,3 +9,10 @@ export const colorHex: Record<string, HexColorString> = {
 };
 
 export const DISCORD_EMBED_CHARACTER_LIMIT = 6000;
+
+export const WIKI_EDITOR_ROLE_ID = '626074297772802048';
+export const VALID_ALIAS_CRUD_CHANNELS = [
+  '188877926786269184',
+  '718490542471643286',
+  '855941194722967553',
+];
