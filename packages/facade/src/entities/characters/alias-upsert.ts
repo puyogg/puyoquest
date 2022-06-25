@@ -1,6 +1,6 @@
 import { Database } from '@ppq-wiki/database';
 
-export async function aliasAdd(params: { charId: string; alias: string }): Promise<number> {
+export async function aliasUpsert(params: { charId: string; alias: string }): Promise<number> {
   const { charId, alias } = params;
 
   return Database.Aliases.upsert({
