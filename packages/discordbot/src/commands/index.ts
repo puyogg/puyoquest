@@ -10,3 +10,5 @@ export * from './say-in';
 export * from './userverify';
 export * from './warn';
 export * from './alias';
+export * from './pin';
+export * from './unpin';
