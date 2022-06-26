@@ -5,3 +5,4 @@ lib
 backup*.sql
 tsconfig.tsbuildinfo
 /cache
+.DS_Store

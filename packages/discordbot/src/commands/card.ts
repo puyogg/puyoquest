@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction } from 'discord.js';
 import { Command } from '../types';
 import * as Util from '../util';
-import { CardQuery, CharacterQuery } from '../util';
+import { CardWikiResponse, CharacterWikiResponse } from '../util';
 
 export const Card: Command = {
   data: new SlashCommandBuilder()
@@ -18,7 +18,7 @@ export const Card: Command = {
   async execute(interaction: CommandInteraction<CacheType>) {
     const query = interaction.options.getString('query', true);
 
-    let resolvedQuery: CardQuery | CharacterQuery;
+    let resolvedQuery: CardWikiResponse | CharacterWikiResponse;
     try {
       resolvedQuery = await Util.resolveCharacterRarityQuery({ query, desiredType: 'card' });
     } catch (error) {

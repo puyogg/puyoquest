@@ -1,7 +1,14 @@
-export function parseCharAndRarityQuery(query: string): {
-  query?: { name: string; rarity: string };
-  fallback: { name: string };
-} {
+export interface ParsedCharAndRarity {
+  query?: {
+    name: string;
+    rarity: string;
+  };
+  fallback: {
+    name: string;
+  };
+}
+
+export function parseCharAndRarityQuery(query: string): ParsedCharAndRarity {
   const trimmedQuery = query.trim().replace(/\s\s+/, ' ');
 
   const match = trimmedQuery.match(/(.+)( )(\d.*$)/);

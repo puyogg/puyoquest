@@ -30,7 +30,7 @@ Object.values(ButtonResponses).forEach((buttonResponse) => {
 let botReady = false;
 
 client.once('ready', async () => {
-  await setCommandPermissions(client);
+  // await setCommandPermissions(client);
   botReady = true;
 
   console.log('Ready!');

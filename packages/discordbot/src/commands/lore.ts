@@ -2,7 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction } from 'discord.js';
 import { Command } from '../types';
 import * as Util from '../util';
-import { CharacterQuery, LoreQuery } from '../util';
+import { CharacterWikiResponse, LoreWikiResponse } from '../util';
 
 export const Lore: Command = {
   data: new SlashCommandBuilder()
@@ -25,7 +25,7 @@ export const Lore: Command = {
     const query = interaction.options.getString('query', true);
     const material = interaction.options.getBoolean('material');
 
-    let resolvedQuery: LoreQuery | CharacterQuery;
+    let resolvedQuery: LoreWikiResponse | CharacterWikiResponse;
     try {
       resolvedQuery = await Util.resolveCharacterRarityQuery({
         query,

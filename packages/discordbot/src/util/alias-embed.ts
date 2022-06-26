@@ -31,9 +31,15 @@ export async function aliasEmbed(params: {
     if (thumbnailUrl) embed.setThumbnail(thumbnailUrl);
   }
 
-  embed.setDescription(
-    `${character.name} has the following aliases:\n\`\`\`${aliases.publicAliases.join(', ')}\`\`\``,
-  );
+  if (aliases.publicAliases.length) {
+    embed.setDescription(
+      `${character.name} has the following aliases:\n\`\`\`${aliases.publicAliases.join(
+        ', ',
+      )}\`\`\``,
+    );
+  } else {
+    embed.setDescription(`${character.name} does not have any aliases.`);
+  }
 
   return embed;
 }
