@@ -13,3 +13,4 @@ export * from './alias';
 export * from './pin';
 export * from './unpin';
 export * from './deck';
+export * from './ppqevents';
