@@ -1,0 +1,10 @@
+version: "3"
+services:
+  discordbot:
+    restart: always
+    command:
+      - /bin/bash
+      - -c
+      - |
+        pnpm clean
+        pnpm start:prod --filter "@ppq-wiki/discordbot"
