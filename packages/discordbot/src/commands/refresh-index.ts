@@ -21,7 +21,7 @@ export const RefreshCharacter: Command = {
       const { character, cards } = await Facade.Characters.refreshIndex(reqCharId);
       const embed = new MessageEmbed();
       embed.setTitle(`(${character.charId}) ${character.name}`);
-      embed.setURL(`https://puyonexus.com/wiki/PPQ:${character.linkName}`);
+      embed.setURL(encodeURI(`https://puyonexus.com/wiki/PPQ:${character.linkName}`));
 
       const description = cards
         .map((card) => {
