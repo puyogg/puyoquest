@@ -64,6 +64,7 @@ importers:
       eslint-config-prettier: ^8.3.0
       eslint-plugin-prettier: ^4.0.0
       jest: ^27.2.5
+      luxon: ^2.3.0
       nodemon: ^2.0.15
       prettier: ^2.3.2
       ts-jest: ^27.0.3
@@ -75,6 +76,7 @@ importers:
       canvas: 2.8.0
       discord-api-types: 0.26.1
       discord.js: 13.3.1
+      luxon: 2.3.0
     devDependencies:
       '@ppq-wiki/database': link:../database
       '@types/jest': 27.0.2
@@ -4525,7 +4527,7 @@ packages:
       '@types/jest': 27.0.2
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 27.3.1_ts-node@10.4.0
+      jest: 27.3.1_canvas@2.8.0+ts-node@10.4.0
       jest-util: 27.3.1
       json5: 2.2.0
       lodash.memoize: 4.1.2

@@ -19,7 +19,8 @@
     "@ppq-wiki/facade": "workspace:^1.0.0",
     "canvas": "^2.8.0",
     "discord-api-types": "^0.26.1",
-    "discord.js": "^13.3.1"
+    "discord.js": "^13.3.1",
+    "luxon": "^2.3.0"
   },
   "devDependencies": {
     "@ppq-wiki/database": "workspace:^1.0.0",
