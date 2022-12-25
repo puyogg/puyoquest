@@ -141,6 +141,41 @@ export async function cardEmbed(card: Facade.Cards.WikiCard): Promise<Discord.Me
     );
   }
 
+  // Extra Skill (Tokumori Skill)
+  if (card.ts) {
+    const effectTiers: { level: string; value: string }[] = [];
+    for (let i = 1; i <= 10; i++) {
+      const value = card[`tse${i}`];
+      if (!value) continue;
+
+      effectTiers.push({
+        level: `${i}`,
+        value,
+      });
+    }
+
+    let effectTiersText = '**Effect**: ?';
+    if (effectTiers.length === 0) {
+      effectTiersText = `**Effect (all levels)**: ${card.tse || '?'}`;
+    } else {
+      const joinedTierText = effectTiers
+        .map((effectTier) => {
+          return `Lv${effectTier.level}: ${effectTier.value}`;
+        })
+        .join(' | ');
+      effectTiersText = `**Effect**: ${card.tse || '?'}\n\t${joinedTierText}`;
+    }
+
+    let tsTitle = 'Extra ?? Skill';
+    if (card.tstype === 'killer') {
+      tsTitle = 'Extra Killer Skill';
+    } else if (card.tstype === 'support') {
+      tsTitle = 'Extra Support Skill';
+    }
+
+    em.addField(`[ES] ${tsTitle}`, `**Activation**: ${card.tsact || '?'}\n` + effectTiersText);
+  }
+
   let description = '';
 
   const seriesLink = await Util.seriesMarkdownLink({

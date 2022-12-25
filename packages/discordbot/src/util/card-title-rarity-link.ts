@@ -1,6 +1,6 @@
 import * as Facade from '@ppq-wiki/facade';
 
-export function cardTitleRarityLink(card: Facade.Cards.WikiCard) {
+export function cardTitleRarityLink(card: Facade.Cards.WikiCard | Facade.Cards.WikiLore) {
   const displayedRarity = card.link.match(/\/★6-2$/) ? '6S' : card.rarity;
   let title = `${card.name} ★${displayedRarity}`;
   if (card.jpname) title += ` (${card.jpname})`;

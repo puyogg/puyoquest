@@ -65,6 +65,15 @@ interface CrossAbility {
   caalt?: string; // Cross Ability alternate trigger
 }
 
+/** a.k.a. Tokumori Skill */
+interface ExtraSkill {
+  ts?: string;
+  tstype?: 'killer' | 'support';
+  tsact?: string;
+  tse?: string;
+  [key: `tse${number}`]: string | undefined;
+}
+
 interface Combinations {
   combin1?: string;
   combin2?: string;
@@ -90,6 +99,7 @@ export interface WikiCard
     LeaderSkill,
     BattleSkill,
     CrossAbility,
+    ExtraSkill,
     Combinations,
     EventSpecialSkill {
   name: string; // Card Name
@@ -185,6 +195,7 @@ export async function getWikiCard(cardId: string) {
     'bse',
     'sse',
     'cae',
+    'tse',
   ] as const;
 
   await Promise.all(
