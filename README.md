@@ -16,6 +16,12 @@ cd packages/facade
 pnpm add -D eslint
 ```
 
+## Production
+
+```
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
 ### Initialize Databases
 
 ```bash
