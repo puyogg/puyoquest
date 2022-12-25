@@ -22,6 +22,12 @@ pnpm add -D eslint
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ```
 
+## Backing up database
+
+```bash
+0 0 * * 1 cd /home/${USER}/puyoquest; ./dump-db.sh
+```
+
 ### Initialize Databases
 
 ```bash
