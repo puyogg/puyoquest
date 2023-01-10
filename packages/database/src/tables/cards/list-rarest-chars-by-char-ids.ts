@@ -1,18 +1,27 @@
 import { db } from '../../db';
 import * as Util from '../../util';
+import { CharacterDb, CharacterPublic } from '../characters';
 import type { CardDb, CardPublic } from './types';
 
-export async function listRarestCharsByCharIds(charIds: string[]): Promise<CardPublic[]> {
-  const dbCards = await db.many<CardDb>(
+type CardDbWithMainColor = CardDb & Pick<CharacterDb, 'main_color'>;
+type CardWithMainColor = CardPublic & Pick<CharacterPublic, 'mainColor'>;
+
+export async function listRarestCharsByCharIds(charIds: string[]): Promise<CardWithMainColor[]> {
+  const dbCards = await db.many<CardDbWithMainColor>(
     `
-    SELECT DISTINCT ON (char_id) *
-    FROM cards
-    WHERE char_id IN ($1:csv) AND card_type = 'character'
-    ORDER BY char_id, rarity_modifier DESC NULLS LAST, rarity DESC;
+    SELECT unique_cards.*, characters.main_color
+    FROM (
+      SELECT DISTINCT ON (char_id) *
+      FROM cards
+      WHERE char_id IN ($1:csv) AND card_type = 'character'
+      ORDER BY char_id, rarity DESC, rarity_modifier DESC NULLS LAST
+    ) as unique_cards
+    LEFT JOIN characters
+    ON unique_cards.char_id = characters.char_id;
     `,
     [charIds],
   );
 
-  const publicCards = dbCards.map((card) => Util.camelCase<CardPublic>(card));
+  const publicCards = dbCards.map((card) => Util.camelCase<CardWithMainColor>(card));
   return publicCards;
 }

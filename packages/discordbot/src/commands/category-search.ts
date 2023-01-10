@@ -21,7 +21,17 @@ for (let i = 2; i <= MAX_CATEGORIES; i++) {
 }
 
 data.addStringOption((option) =>
-  option.setName('maincolor').setDescription('Filter cards by main color').setRequired(false),
+  option
+    .setName('maincolor')
+    .setDescription('Filter cards by main color')
+    .addChoices([
+      ['red', 'red'],
+      ['blue', 'blue'],
+      ['green', 'green'],
+      ['yellow', 'yellow'],
+      ['purple', 'purple'],
+    ])
+    .setRequired(false),
 );
 
 function parseRequestedCategories(interaction: CommandInteraction<CacheType>): string[] {

@@ -97,8 +97,7 @@ export async function listByCategories(params: {
     normalizedMainColor &&
     Object.keys(puyoColorIntMap).some((key) => key === normalizedMainColor)
   ) {
-    const colorInt = puyoColorIntMap[normalizedMainColor];
-    cards = cards.filter((card) => card.cardId.startsWith(colorInt));
+    cards = cards.filter((card) => card.mainColor.toLowerCase() === normalizedMainColor);
   }
 
   return {
