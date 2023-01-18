@@ -88,7 +88,6 @@ export async function listByCategories(params: {
   }
 
   const validCharIds = await Database.Aliases.list(validMembers);
-  validCharIds.sort();
 
   let cards = await Database.Cards.listRarestCharsByCharIds(validCharIds);
 
@@ -99,6 +98,8 @@ export async function listByCategories(params: {
   ) {
     cards = cards.filter((card) => card.mainColor.toLowerCase() === normalizedMainColor);
   }
+
+  cards.sort((a, b) => a.cardId.localeCompare(b.cardId, 'en-US', { numeric: true }));
 
   return {
     cards,
