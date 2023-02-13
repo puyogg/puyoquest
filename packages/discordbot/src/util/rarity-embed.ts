@@ -50,7 +50,7 @@ export async function rarityEmbed(params: CharacterData) {
 
   const rarities = charCards.map((card) => card.rarityModifier || card.rarity);
   const links = rarities.map((rarity) => {
-    const url = encodeURI(`https://puyonexus.com/wiki/PPQ:${character.linkName}/${rarity}`);
+    const url = encodeURI(`https://puyonexus.com/wiki/PPQ:${character.linkName}/★${rarity}`);
     return `[[★${rarity}]](${url})`;
   });
 
