@@ -14,3 +14,4 @@ export * from './pin';
 export * from './unpin';
 export * from './deck';
 export * from './ppqevents';
+export * from './ten-roll';

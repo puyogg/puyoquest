@@ -35,9 +35,6 @@ client.once('ready', async () => {
 
   console.log('Ready!');
 
-  // const indexRebuilder = new FacadeUtil.IndexRebuilder();
-  // indexRebuilder.start();
-
   const indexRebuilderRecentChanges = new FacadeUtil.IndexRebuilderRecentChanges();
   indexRebuilderRecentChanges.start();
 });

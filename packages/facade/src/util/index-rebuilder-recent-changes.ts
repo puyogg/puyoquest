@@ -144,14 +144,10 @@ export class IndexRebuilderRecentChanges {
   }
 
   public async start(): Promise<void> {
-    try {
+    while (true) {
       const charIds = await Util.WikiPage.getRecentCharIdChanges();
-      await this.rebuildCharacters(charIds);
-    } finally {
-      setInterval(async () => {
-        const charIds = await Util.WikiPage.getRecentCharIdChanges();
-        await this.rebuildCharacters(charIds);
-      }, this.intervalMs);
+      await this.rebuildCharacters(charIds).catch((err) => console.error(err));
+      await Util.sleep(this.intervalMs);
     }
   }
 }
