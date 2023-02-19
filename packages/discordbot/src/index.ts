@@ -11,7 +11,9 @@ import { Util as FacadeUtil } from '@ppq-wiki/facade';
 const { DISCORD_BOT_API_TOKEN } = process.env;
 Assert(DISCORD_BOT_API_TOKEN, 'DISCORD_BOT_API_TOKEN not defined.');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
+});
 const commandCollection = new Collection<string, Command>();
 Object.values(Commands).forEach((command) => {
   commandCollection.set(command.data.name, command);
