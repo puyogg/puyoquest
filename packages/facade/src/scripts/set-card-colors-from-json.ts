@@ -13,7 +13,7 @@ async function setCardColors() {
     const result = await Db.db.result(
       `
       UPDATE cards
-        SET main_color = $2
+        SET main_color = $2,
             side_color = $3
       WHERE card_id = $1
       `,
