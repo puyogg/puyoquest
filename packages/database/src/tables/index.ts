@@ -4,3 +4,4 @@ export * as Characters from './characters';
 export * as ImageCache from './image-cache';
 export * as EnabledRoles from './enabled-roles';
 export * as Cron from './cron';
+export * as NtcLeaderboard from './ntc-leaderboard';

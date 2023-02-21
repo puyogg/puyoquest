@@ -14,6 +14,8 @@ export async function upsert(params: CardCreate): Promise<number> {
     link_name: params.linkName,
     link_name_normalized: params.linkNameNormalized,
     card_type: params.cardType,
+    main_color: params.mainColor,
+    side_color: params.sideColor,
     updated_at: new Date(),
   };
 
@@ -33,6 +35,8 @@ export async function upsert(params: CardCreate): Promise<number> {
       link_name = EXCLUDED.link_name,
       link_name_normalized = EXCLUDED.link_name_normalized,
       card_type = EXCLUDED.card_type,
+      main_color = EXCLUDED.main_color,
+      side_color = EXCLUDED.side_color,
       updated_at = EXCLUDED.updated_at
     `,
     [insert],

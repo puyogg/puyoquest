@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction, MessageEmbed } from 'discord.js';
 import { Command } from '../types';
 import * as Facade from '@ppq-wiki/facade';
+import { colorHex } from '../constants';
 
 const activeGameChannelIds = new Set<string>();
 
@@ -39,40 +40,53 @@ export const NameThatCard: Command = {
     const embed = new MessageEmbed();
     embed.setImage(fullArt.left);
 
+    embed.setColor(colorHex[card.mainColor.toLowerCase()]);
+
     activeGameChannelIds.add(channelId);
 
-    return interaction
-      .reply({
+    try {
+      await interaction.reply({
         content: 'Who is this card?',
         embeds: [embed],
-        fetchReply: true,
-      })
-      .then(() => {
-        return interaction.channel
-          ?.awaitMessages({
-            filter: (response) => {
-              const guessedName = Facade.Util.normalizeString(response.content);
-              return correctNames.has(guessedName);
-            },
-            max: 1,
-            time: 2 * 1000 * 60,
-            errors: ['time'],
-          })
-          .then(async (collected) => {
-            await interaction.followUp(
-              `${collected.first()?.author} got the correct answer!\nThe card was: **${
-                card.name
-              } [★${card.rarity}] (${card.jpName})**`,
-            );
-          })
-          .catch(async () => {
-            await interaction.followUp(
-              `The above card was: **${card.name} [★${card.rarity}] (${card.jpName})**`,
-            );
-          })
-          .finally(() => {
-            activeGameChannelIds.delete(channelId);
-          });
       });
+
+      await interaction.channel
+        ?.awaitMessages({
+          filter: (response) => {
+            const guessedName = Facade.Util.normalizeString(response.content);
+            return correctNames.has(guessedName);
+          },
+          max: 1,
+          time: 2 * 1000 * 60,
+          errors: ['time'],
+        })
+        .then(async (collected) => {
+          const message = collected.first();
+          if (!message) return;
+
+          const userId = message.author.id;
+          const serverId = message.guildId;
+          if (!serverId) return;
+
+          try {
+            await Facade.NtcLeaderboard.incrementCorrect({ userId, serverId });
+          } catch (err) {
+            console.error(err);
+          }
+
+          await interaction.followUp(
+            `${collected.first()?.author} got the correct answer!\nThe card was: **${card.name} [★${
+              card.rarity
+            }] (${card.jpName})**`,
+          );
+        })
+        .catch(async () => {
+          await interaction.followUp(
+            `The above card was: **${card.name} [★${card.rarity}] (${card.jpName})**`,
+          );
+        });
+    } finally {
+      activeGameChannelIds.delete(channelId);
+    }
   },
 };

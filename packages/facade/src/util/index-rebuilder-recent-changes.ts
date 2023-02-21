@@ -138,6 +138,8 @@ export class IndexRebuilderRecentChanges {
           linkName,
           linkNameNormalized,
           cardType,
+          mainColor: cardData['color'],
+          sideColor: cardData['color2'],
         });
       }),
     );

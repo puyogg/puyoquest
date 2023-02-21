@@ -86,6 +86,8 @@ export async function refreshIndex(
         linkName,
         linkNameNormalized,
         cardType: cardType as 'character' | 'material',
+        mainColor: card['color'],
+        sideColor: card['color2'],
       };
       databaseUpdates.push(Database.Cards.upsert(cardDatum));
 

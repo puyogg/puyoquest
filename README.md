@@ -31,5 +31,5 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 ### Initialize Databases
 
 ```bash
-docker compose exec discordbot-db psql -U postgres -d discordbot-db < ./packages/database/sql/init.sql
+docker compose exec -T discordbot-db psql -U postgres -d discordbot-db < ./packages/database/sql/init.sql
 ```

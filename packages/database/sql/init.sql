@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS cards (
   link_name_normalized TEXT,
   card_type TEXT,
   updated_at TIMESTAMPTZ,
+  main_color TEXT,
+  side_color TEXT,
   CONSTRAINT fk_characters FOREIGN KEY(char_id) REFERENCES characters(char_id) ON DELETE CASCADE
 );
 CREATE INDEX ON cards (char_id);
@@ -61,6 +63,22 @@ CREATE TABLE IF NOT EXISTS cron_last_updated (
   updated_at TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS ntc_leaderboard (
+  user_id TEXT,
+  server_id TEXT,
+  correct INTEGER,
+  PRIMARY KEY(user_id, server_id)
+);
+
+CREATE TABLE IF NOT EXISTS server_settings (
+  server_id TEXT PRIMARY KEY,
+  leaderboard_channel TEXT
+);
+
 INSERT INTO cron_last_updated (task, updated_at)
 VALUES ('wiki_recent_changes', '2022-01-01 00:00:00.00+00')
 ON CONFLICT (task) DO NOTHING;
+
+-- 2/20/2023
+ALTER TABLE cards ADD COLUMN IF NOT EXISTS main_color TEXT;
+ALTER TABLE cards ADD COLUMN IF NOT EXISTS side_color TEXT;

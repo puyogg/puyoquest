@@ -14,6 +14,8 @@ export interface CardCreate {
   linkName: string;
   linkNameNormalized: string;
   cardType: 'character' | 'material';
+  mainColor: string;
+  sideColor?: string;
 }
 
 /** Postgres representation for a card row. */
@@ -29,6 +31,8 @@ export interface CardDb {
   link_name: CardCreate['linkName'];
   link_name_normalized: CardCreate['linkNameNormalized'];
   card_type: CardCreate['cardType'];
+  main_color: CardCreate['mainColor'];
+  side_color: CardCreate['sideColor'] | null;
   updated_at: Date;
 }
 
