@@ -17,3 +17,4 @@ export * from './ppqevents';
 export * from './ten-roll';
 export * from './name-that-card';
 export * from './ntc-leaderboard';
+export * from './admin';
