@@ -11,3 +11,4 @@ export * from './lore-embed';
 export * from './alias-embed';
 export * from './combinations';
 export * from './encode-safe-url';
+export * from './ntc-leaderboard-embed';

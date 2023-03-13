@@ -1,12 +1,12 @@
 import { Client, Collection, Intents } from 'discord.js';
 import * as Assert from 'assert';
 import { deployCommands } from './deploy-commands';
-import { setCommandPermissions } from './permissions';
 import * as Commands from './commands';
 import * as SelectMenuResponses from './select-menu-responses';
 import * as ButtonResponses from './button-responses';
 import { ButtonResponse, Command, SelectMenuResponse } from './types';
 import { Util as FacadeUtil } from '@ppq-wiki/facade';
+import { LeaderboardReset } from './util/leaderboard-reset';
 
 const { DISCORD_BOT_API_TOKEN } = process.env;
 Assert(DISCORD_BOT_API_TOKEN, 'DISCORD_BOT_API_TOKEN not defined.');
@@ -39,6 +39,9 @@ client.once('ready', async () => {
 
   const indexRebuilderRecentChanges = new FacadeUtil.IndexRebuilderRecentChanges();
   indexRebuilderRecentChanges.start();
+
+  const leaderboard = new LeaderboardReset(client, '0 0 * * 1');
+  leaderboard.start();
 });
 
 client.on('interactionCreate', async (interaction) => {

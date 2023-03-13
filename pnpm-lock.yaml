@@ -53,11 +53,13 @@ importers:
       '@discordjs/rest': ^0.2.0-canary.0
       '@ppq-wiki/database': workspace:^1.0.0
       '@ppq-wiki/facade': workspace:^1.0.0
+      '@types/cron': ^2.0.0
       '@types/jest': 27.0.2
       '@types/node': ^16.0.0
       '@typescript-eslint/eslint-plugin': ^5.0.0
       '@typescript-eslint/parser': ^5.0.0
       canvas: ^2.8.0
+      cron: ^2.2.0
       discord-api-types: ^0.26.1
       discord.js: ^13.3.1
       eslint: ^8.0.1
@@ -66,6 +68,7 @@ importers:
       jest: ^27.2.5
       luxon: ^2.3.0
       nodemon: ^2.0.15
+      p-map: '4'
       prettier: ^2.3.2
       ts-jest: ^27.0.3
       typescript: ^4.3.5
@@ -74,11 +77,14 @@ importers:
       '@discordjs/rest': 0.2.0-canary.0
       '@ppq-wiki/facade': link:../facade
       canvas: 2.8.0
+      cron: 2.2.0
       discord-api-types: 0.26.1
       discord.js: 13.3.1
       luxon: 2.3.0
+      p-map: 4.0.0
     devDependencies:
       '@ppq-wiki/database': link:../database
+      '@types/cron': 2.0.0
       '@types/jest': 27.0.2
       '@types/node': 16.11.10
       '@typescript-eslint/eslint-plugin': 5.4.0_5c8ff4cecd5a55e744866c0654edac32
@@ -961,6 +967,13 @@ packages:
       '@babel/types': 7.16.0
     dev: true
 
+  /@types/cron/2.0.0:
+    resolution: {integrity: sha512-xZM08fqvwIXgghtPVkSPKNgC+JoMQ2OHazEvyTKnNf7aWu1aB6/4lBbQFrb03Td2cUGG7ITzMv3mFYnMu6xRaQ==}
+    dependencies:
+      '@types/luxon': 2.0.8
+      '@types/node': 16.11.10
+    dev: true
+
   /@types/graceful-fs/4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
     dependencies:
@@ -1667,6 +1680,12 @@ packages:
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
+
+  /cron/2.2.0:
+    resolution: {integrity: sha512-GPiI3OgMv83XRtEUc2gUdaLvJhO3XbLN288layOBkDTupg0RK5IECNGpkykIMHg+muVR2bxt29b0xvCAcBrjYQ==}
+    dependencies:
+      luxon: 3.3.0
+    dev: false
 
   /cross-spawn/7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -3539,6 +3558,11 @@ packages:
 
   /luxon/2.3.0:
     resolution: {integrity: sha512-gv6jZCV+gGIrVKhO90yrsn8qXPKD8HYZJtrUDSfEbow8Tkw84T9OnCyJhWvnJIaIF/tBuiAjZuQHUt1LddX2mg==}
+    engines: {node: '>=12'}
+    dev: false
+
+  /luxon/3.3.0:
+    resolution: {integrity: sha512-An0UCfG/rSiqtAIiBPO0Y9/zAnHUZxAMiCpTd5h2smgsj7GGmcenvrvww2cqNA8/4A5ZrD1gJpHN2mIHZQF+Mg==}
     engines: {node: '>=12'}
     dev: false
 

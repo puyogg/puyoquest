@@ -3,6 +3,7 @@ import { CacheType, CommandInteraction, MessageEmbed } from 'discord.js';
 import { Command } from '../../types';
 import * as Facade from '@ppq-wiki/facade';
 import { NtclPublic } from '@ppq-wiki/database/src/tables/ntc-leaderboard';
+import * as Util from '../../util';
 
 export const NtclMe: Command = {
   data: new SlashCommandSubcommandBuilder()
@@ -31,16 +32,11 @@ export const NtclMe: Command = {
       )
     ).filter((row): row is NtclPublic & { name: string } => !!row);
 
-    const embed = new MessageEmbed();
-    embed.setTitle('Name That Card: Your Ranking');
-    embed.setDescription(
-      leaderboardWithNames
-        .map((row) => {
-          const text = `${row.ranking}. ${row.name}: ${row.correct}`;
-          return row.userId === userId ? `**${text}**` : text;
-        })
-        .join('\n'),
-    );
+    const embed = Util.ntcLeaderboardEmbed({
+      rankings: leaderboardWithNames,
+      highlightedUserId: userId,
+      topTen: false,
+    });
 
     return interaction.reply({
       embeds: [embed],
