@@ -3,4 +3,3 @@ WORKDIR /srv
 
 # Install CLI tools or other OS library dependencies
 RUN npm install -g pnpm
-RUN pnpm add @nestjs/cli --global
