@@ -8,3 +8,5 @@ services:
       - |
         pnpm clean
         pnpm start:prod --filter "@ppq-wiki/discordbot"
+    environment:
+      NODE_ENV: production

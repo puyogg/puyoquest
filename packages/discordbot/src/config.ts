@@ -21,4 +21,9 @@ export class Config {
       emoji3: '792654400166428713',
     };
   }
+
+  static get NODE_ENV(): 'production' | 'development' | undefined {
+    const { NODE_ENV } = process.env;
+    return NODE_ENV as 'production' | 'development' | undefined;
+  }
 }
