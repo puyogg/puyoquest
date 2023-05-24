@@ -12,12 +12,15 @@ export const NameThatCard: Command = {
     .setDescription("Be the fastest to give a card's name or alias"),
   cooldown: 10,
   async execute(interaction: CommandInteraction<CacheType>) {
+    await interaction.deferReply();
+
     const { channelId } = interaction;
     if (activeGameChannelIds.has(channelId)) {
-      return interaction.reply({
+      await interaction.followUp({
         content: 'Error: An ntc game is already active in this channel!',
         ephemeral: true,
       });
+      return;
     }
 
     const [card] = await Facade.Cards.getRandomCards(1);
@@ -45,7 +48,7 @@ export const NameThatCard: Command = {
     activeGameChannelIds.add(channelId);
 
     try {
-      await interaction.reply({
+      await interaction.followUp({
         content: 'Who is this card?',
         embeds: [embed],
       });

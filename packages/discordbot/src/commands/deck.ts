@@ -146,6 +146,8 @@ export const Deck: Command = {
   data,
   cooldown: 1,
   async execute(interaction: CommandInteraction<CacheType>) {
+    await interaction.deferReply();
+
     const queries: string[] = [];
     for (let i = 1; i <= MAX_DECK_SIZE; i++) {
       const cardQuery = interaction.options.getString(`card${i}`);
@@ -155,7 +157,8 @@ export const Deck: Command = {
     }
     const supporterQuery = interaction.options.getString('supporter');
     if (queries.length === 0 && !supporterQuery) {
-      return interaction.reply(`You didn't provide any characters or cards`);
+      await interaction.followUp(`You didn't provide any characters or cards`);
+      return;
     }
 
     const { failed, wikiCards } = await resolveWikiCards(queries);
@@ -224,12 +227,13 @@ export const Deck: Command = {
     if (validWikiCards[0]) appendLeaderSkill(validWikiCards[0], embed);
     if (supporterCard) appendLeaderSkill(supporterCard, embed);
 
-    return interaction.reply({
+    await interaction.followUp({
       ...(failed.length && {
         content: `Failed to resolve these card queries: ${failed.join(', ')}`,
       }),
       embeds: [embed],
       files: [attachment],
     });
+    return;
   },
 };

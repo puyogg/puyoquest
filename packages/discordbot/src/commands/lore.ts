@@ -22,6 +22,8 @@ export const Lore: Command = {
     ),
   cooldown: 1,
   async execute(interaction: CommandInteraction<CacheType>) {
+    await interaction.deferReply();
+
     const query = interaction.options.getString('query', true);
     const material = interaction.options.getBoolean('material');
 
@@ -35,12 +37,14 @@ export const Lore: Command = {
     } catch {
       // A similarity search should be attempted here once I get around
       // to implementing it
-      return interaction.reply({ content: `Unable to parse query: ${query}`, ephemeral: true });
+      await interaction.followUp({ content: `Unable to parse query: ${query}`, ephemeral: true });
+      return;
     }
 
     if (resolvedQuery.type === 'lore') {
       const embed = await Util.loreEmbed(resolvedQuery.wikiLore);
-      return interaction.reply({ embeds: [embed] });
+      await interaction.followUp({ embeds: [embed] });
+      return;
     }
 
     if (resolvedQuery.type === 'character') {
@@ -48,9 +52,11 @@ export const Lore: Command = {
         ...resolvedQuery.characterData,
         responseType: 'lore',
       });
-      return interaction.reply({ embeds: [embed], components: [component] });
+      await interaction.followUp({ embeds: [embed], components: [component] });
+      return;
     }
 
-    return interaction.reply(`Failed to look up card: ${query}`);
+    await interaction.followUp(`Failed to look up card: ${query}`);
+    return;
   },
 };

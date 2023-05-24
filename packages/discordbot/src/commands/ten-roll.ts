@@ -62,6 +62,8 @@ export const TenRoll: Command = {
   data: new SlashCommandBuilder().setName('tenroll').setDescription('Dream of a better future'),
   cooldown: 10,
   async execute(interaction: CommandInteraction<CacheType>) {
+    await interaction.deferReply();
+
     const cards = await Facade.Cards.getRandomCards(10);
     const icons = await Facade.Cards.fetchIconsByIds(cards.map((card) => card.cardId));
     const iconImages = await Promise.all(icons.map((icon) => loadImage(icon)));
@@ -84,9 +86,10 @@ export const TenRoll: Command = {
 
     embed.setDescription(links.join(' '));
 
-    return interaction.reply({
+    await interaction.followUp({
       embeds: [embed],
       files: [attachment],
     });
+    return;
   },
 };

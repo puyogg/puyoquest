@@ -22,6 +22,8 @@ export const FullArt: Command = {
     ),
   cooldown: 1,
   async execute(interaction: CommandInteraction<CacheType>) {
+    await interaction.deferReply();
+
     const query = interaction.options.getString('query', true);
     const material = interaction.options.getBoolean('material');
 
@@ -35,15 +37,17 @@ export const FullArt: Command = {
     } catch {
       // A similarity search should be attempted here once I get around
       // to implementing it
-      return interaction.reply({ content: `Unable to parse query: ${query}`, ephemeral: true });
+      await interaction.followUp({ content: `Unable to parse query: ${query}`, ephemeral: true });
+      return;
     }
 
     if (resolvedQuery.type === 'card') {
       const { embed, component } = await Util.fullArtEmbed({ card: resolvedQuery.wikiCard });
-      return interaction.reply({
+      await interaction.followUp({
         embeds: [embed],
         ...(component ? { components: [component] } : {}),
       });
+      return;
     }
 
     if (resolvedQuery.type === 'character') {
@@ -51,9 +55,11 @@ export const FullArt: Command = {
         ...resolvedQuery.characterData,
         responseType: 'fullart',
       });
-      return interaction.reply({ embeds: [embed], components: [component] });
+      await interaction.followUp({ embeds: [embed], components: [component] });
+      return;
     }
 
-    return interaction.reply(`Failed to look up card: ${query}`);
+    await interaction.followUp(`Failed to look up card: ${query}`);
+    return;
   },
 };

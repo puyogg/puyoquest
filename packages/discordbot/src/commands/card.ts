@@ -15,7 +15,9 @@ export const Card: Command = {
         .setRequired(true),
     ),
   cooldown: 1,
-  async execute(interaction: CommandInteraction<CacheType>) {
+  async execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+    await interaction.deferReply();
+
     const query = interaction.options.getString('query', true);
 
     let resolvedQuery: CardWikiResponse | CharacterWikiResponse;
@@ -24,12 +26,14 @@ export const Card: Command = {
     } catch (error) {
       // A similarity search should be attempted here once I get around
       // to implementing it
-      return interaction.reply({ content: `Unable to parse query: ${query}`, ephemeral: true });
+      await interaction.followUp({ content: `Unable to parse query: ${query}`, ephemeral: true });
+      return;
     }
 
     if (resolvedQuery.type === 'card') {
       const embed = await Util.cardEmbed(resolvedQuery.wikiCard);
-      return interaction.reply({ embeds: [embed] });
+      await interaction.followUp({ embeds: [embed] });
+      return;
     }
 
     if (resolvedQuery.type === 'character') {
@@ -37,10 +41,11 @@ export const Card: Command = {
         ...resolvedQuery.characterData,
         responseType: 'card',
       });
-      return interaction.reply({ embeds: [embed], components: [component] });
+      await interaction.followUp({ embeds: [embed], components: [component] });
+      return;
     }
 
-    await interaction.reply(`Failed to lookup card by query: ${query}`);
+    await interaction.followUp(`Failed to lookup card by query: ${query}`);
     throw Error(`Failed to lookup card by query: ${query}`);
   },
 };
