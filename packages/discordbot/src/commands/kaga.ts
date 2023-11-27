@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CacheType, CommandInteraction, MessageEmbed } from 'discord.js';
 import { Command } from '../types';
 import * as Facade from '@ppq-wiki/facade';
+import { KagaPublic } from '@ppq-wiki/database/src/tables/kaga';
 
 export const Kaga: Command = {
   data: new SlashCommandBuilder()
@@ -17,10 +18,12 @@ export const Kaga: Command = {
   async execute(interaction: CommandInteraction<CacheType>) {
     const kagaId = interaction.options.getString('id', false);
 
-    const kaga =
-      kagaId === null || kagaId === ''
-        ? await Facade.Kaga.getRandomKaga()
-        : await Facade.Kaga.getById(kagaId);
+    let kaga: KagaPublic | undefined;
+    if (kagaId === null || kagaId === '') {
+      kaga = await Facade.Kaga.getRandomKaga();
+    } else {
+      kaga = await Facade.Kaga.getById(kagaId);
+    }
 
     if (!kaga) {
       return interaction.reply('Failed to find kaga image');
@@ -29,5 +32,9 @@ export const Kaga: Command = {
     const embed = new MessageEmbed();
     embed.setImage(kaga.url);
     embed.setFooter(`Kaga Reference id: ${kaga.kagaId}`);
+
+    return interaction.reply({
+      embeds: [embed],
+    });
   },
 };
