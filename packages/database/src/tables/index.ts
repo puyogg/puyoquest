@@ -6,3 +6,4 @@ export * as EnabledRoles from './enabled-roles';
 export * as Cron from './cron';
 export * as NtcLeaderboard from './ntc-leaderboard';
 export * as ServerSettings from './server-settings';
+export * as Kaga from './kaga';

@@ -18,3 +18,5 @@ export * from './ten-roll';
 export * from './name-that-card';
 export * from './ntc-leaderboard';
 export * from './admin';
+export * from './kaga';
+export * from './kaga-update';
