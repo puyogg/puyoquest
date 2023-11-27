@@ -7,6 +7,7 @@ import { Config } from '../config';
 export const KagaUpdate: Command = {
   data: new SlashCommandBuilder()
     .setName('kagaupdate')
+    .setDescription('Set url to kaga id')
     .addStringOption((option) => option.setName('id').setDescription('kagaId').setRequired(true))
     .addStringOption((option) =>
       option.setName('url').setDescription('url to kaga image').setRequired(true),
