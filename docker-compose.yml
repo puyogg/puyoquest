@@ -1,44 +1,35 @@
 version: "3"
 services:
-  # Base node image to reuse in ppq-api and discord-bot
-  base:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: pnpm install
-    volumes:
-      - .:/srv:cached
-
-  discordbot-db:
-    image: postgres:latest
+  api-db:
+    image: postgres:16
     ports:
-      - ${DISCORD_BOT_DB_HOST}:5432
+      - 35432:5432
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${DISCORD_BOT_DB_NAME}
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ppq_api_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
-      - discordbot-db-volume:/var/lib/postgresql/data
-
-  discordbot:
-    depends_on:
-      - base
-      - discordbot-db
-    build:
-      context: .
-      dockerfile: Dockerfile
+      - api-db-volume:/var/lib/postgresql/data
+  bot-db:
+    image: postgres:16
     ports:
-      - 9229:9229
-    command: pnpm run start:dev --filter "@ppq-wiki/discordbot"
+      - 35433:5432
     environment:
-      CACHE_DIR: ${WORKING_DIR}/cache
-      DISCORD_BOT_CLIENT_ID: ${DISCORD_BOT_CLIENT_ID}
-      DISCORD_BOT_DB_NAME: ${DISCORD_BOT_DB_NAME}
-      DISCORD_BOT_DB_HOST: ${DISCORD_BOT_DB_HOST}
-      DISCORD_BOT_DB_URL: postgres://postgres:${POSTGRES_PASSWORD}@discordbot-db:5432/${DISCORD_BOT_DB_NAME}
-      DISCORD_BOT_DB_URL_TEST: postgres://postgres:${POSTGRES_PASSWORD}@discordbot-db-test:5432/${DISCORD_BOT_DB_NAME}
-      DISCORD_BOT_API_TOKEN: ${DISCORD_BOT_API_TOKEN}
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ppq_bot_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
-      - .:/srv:cached
+      - bot-db-volume:/var/lib/postgresql/data
+
 
 volumes:
-  discordbot-db-volume: #
+  api-db-volume: #
+  bot-db-volume: #

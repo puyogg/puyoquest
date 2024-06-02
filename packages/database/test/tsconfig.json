@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2021",
-    "sourceMap": true,
-    "noEmit": true,
-    "strict": true
-  }
-}

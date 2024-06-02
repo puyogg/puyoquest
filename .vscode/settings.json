@@ -1,16 +1,20 @@
 {
   "editor.formatOnSave": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "[rust]": {
+    "files.autoSave": "afterDelay",
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.tabSize": 4
+  },
   "sqltools.connections": [
     {
       "previewLimit": 50,
-      "server": "127.0.0.1",
-      "port": 25432,
+      "server": "localhost",
+      "port": 35432,
       "driver": "PostgreSQL",
-      "password": "dev_postgres_password",
-      "database": "discordbot-db",
+      "name": "api-db",
+      "database": "ppq_api_db",
       "username": "postgres",
-      "name": "puyoquest"
+      "password": "password"
     }
   ]
 }
