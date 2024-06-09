@@ -7,6 +7,7 @@ edition = "2021"
 tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
 poise = "0.6.1"
 dotenv = "0.15.0"
+sdk = { path = "../sdk" }
 
 [dependencies.serenity]
 default-features = false

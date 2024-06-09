@@ -20,4 +20,8 @@ CREATE TRIGGER character_updated_at
 BEFORE UPDATE ON character
 FOR EACH ROW EXECUTE PROCEDURE on_update_timestamp();
 
+CREATE TRIGGER character_inserted_at
+BEFORE INSERT ON character
+FOR EACH ROW EXECUTE PROCEDURE on_update_timestamp();
+
 COMMIT;

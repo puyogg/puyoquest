@@ -23,6 +23,18 @@ cargo run -p api
 
 ### Tests
 
+First run this command to initialize an "admin_db". This db lets you clone the primary db, so the integration tests can run in parallel.
+
+```sh
+cargo run -p api --bin test_setup
+```
+
+Run integration tests:
+
+```sh
+cargo watch -x "test -p api --test '*'"
+```
+
 ### Adding new tables
 
 ###

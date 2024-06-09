@@ -1,14 +1,10 @@
-use poem_openapi::{payload::PlainText, ApiResponse, OpenApi, Tags};
+use poem_openapi::{payload::PlainText, ApiResponse, OpenApi};
+use crate::api_tag::ApiTag;
 
 #[derive(ApiResponse)]
 enum HealthcheckResponse {
     #[oai(status = 200)]
     Ok(PlainText<String>),
-}
-
-#[derive(Tags)]
-enum ApiTag {
-    Healthcheck,
 }
 
 pub struct Healthcheck;
