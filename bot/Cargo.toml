@@ -6,10 +6,19 @@ edition = "2021"
 [dependencies]
 tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
 poise = "0.6.1"
+poise_macros = "0.6.1"
 dotenv = "0.15.0"
 sdk = { path = "../sdk" }
 
-[dependencies.serenity]
-default-features = false
-features = ["builder", "client", "gateway", "model", "utils", "collector"]
-version = "0.12.1"
+# [dependencies.serenity]
+# default-features = false
+# features = [
+#   "builder",
+#   "client",
+#   "gateway",
+#   "model",
+#   "utils",
+#   "collector",
+#   "framework",
+# ]
+# version = "0.12.2"
