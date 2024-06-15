@@ -1,6 +1,5 @@
 use async_trait::async_trait;
 use serde_json::{Map, Value};
-use std::future::Future;
 
 use super::FetchRawTemplate;
 use crate::util::{parse_template, ParseTemplateError};
