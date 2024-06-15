@@ -1,4 +1,4 @@
-use wiki::wiki_client::{fetch_template, WikiClient};
+use wiki::wiki_client::{FetchTemplate, WikiClient};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 use serde_json::{json, Value};
@@ -34,7 +34,7 @@ async fn fetches_template() {
         .mount(&mock_server)
         .await;
     let client = WikiClient::new(reqwest::Client::new(), "N/A".to_string(), mock_server.uri());
-    let result = fetch_template(&client, "2012").await.unwrap();
+    let result = client.fetch_template("2012").await.unwrap();
 
     let Value::Object(expected_value) = json!({
         "acqg": "Magic Stone Gacha / Silver Ticket Gacha / Gold Ticket Gacha / Premium Ticket Gacha / [[PPQ:Once-per-day Free Gacha|Once-per-day Free Gacha]]",

@@ -1,3 +1,4 @@
+use async_trait::async_trait;
 use serde_json::{Map, Value};
 use std::future::Future;
 
@@ -32,26 +33,22 @@ impl From<ParseTemplateError> for FetchTemplateError {
     }
 }
 
+#[async_trait]
 pub trait FetchTemplate {
-    fn fetch_template(
-        &self,
-        id: &str,
-    ) -> impl Future<Output = Result<Map<String, Value>, FetchTemplateError>> + Send;
+    // fn fetch_template(
+    //     &self,
+    //     id: &str,
+    // ) -> impl Future<Output = Result<Map<String, Value>, FetchTemplateError>> + Send;
+    async fn fetch_template(&self, id: &str) -> Result<Map<String, Value>, FetchTemplateError>;
 }
 
+#[async_trait]
 impl FetchTemplate for super::WikiClient {
-    /// Fetches template and parses it into a serde json value.
+    /// Fetches template and parses it into a serde_json Map.
     async fn fetch_template(&self, id: &str) -> Result<Map<String, Value>, FetchTemplateError> {
         let raw_template = self.fetch_raw_template(id).await?;
         let result = parse_template(&raw_template)?;
 
         Ok(result)
     }
-}
-
-pub async fn fetch_template<T: FetchTemplate>(
-    client: &T,
-    id: &str,
-) -> Result<Map<String, Value>, FetchTemplateError> {
-    client.fetch_template(id).await
 }

@@ -1,12 +1,11 @@
-use std::future::Future;
+use async_trait::async_trait;
 
+#[async_trait]
 pub trait FetchRawTemplate {
-    fn fetch_raw_template(
-        &self,
-        id: &str,
-    ) -> impl Future<Output = Result<String, reqwest::Error>> + Send;
+    async fn fetch_raw_template(&self, id: &str) -> Result<String, reqwest::Error>;
 }
 
+#[async_trait]
 impl FetchRawTemplate for super::WikiClient {
     async fn fetch_raw_template(&self, id: &str) -> Result<String, reqwest::Error> {
         let template_url = format!("{}/Template:{}?action=raw", &self.base_url, &id);
@@ -14,8 +13,4 @@ impl FetchRawTemplate for super::WikiClient {
 
         result
     }
-}
-
-pub async fn fetch_raw_template<T: FetchRawTemplate>(client: &T, id: &str) -> Result<String, reqwest::Error> {
-    client.fetch_raw_template(id).await
 }

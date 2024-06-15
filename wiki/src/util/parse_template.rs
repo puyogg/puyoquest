@@ -2,7 +2,10 @@ use fancy_regex::{Captures, Match, Regex};
 use serde_json::{Map, Value};
 
 lazy_static::lazy_static! {
+    /// Matches HTML-style comments in mediawiki templates
     static ref RE_MEDIAWIKI_COMMENT: Regex = Regex::new(r"<!--[\S\s]+-->").unwrap();
+    /// Mediawiki template keys have the format: |name1=
+    /// This regex matches that and splits it into 3 capture groups: |, {name}, =
     static ref RE_TEMPLATE_KEY: Regex = Regex::new(r"(\|)(\w+?)(=)").unwrap();
 }
 
@@ -104,7 +107,7 @@ impl From<serde_json::Error> for ParseTemplateError {
     }
 }
 
-//Result<serde_json::Map<String, Value>, ParseTemplateError>
+/// Parses the top-level key-value pairs from a PPQ MediaWiki template.
 pub fn parse_template(
     raw_template: &str,
 ) -> Result<serde_json::Map<String, Value>, ParseTemplateError> {

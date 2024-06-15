@@ -99,16 +99,19 @@ dependencies = [
 name = "api"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "chrono",
  "lazy_static",
  "poem",
  "poem-openapi",
+ "reqwest 0.12.4",
  "serde",
  "serde_json",
  "sqlx",
  "tokio",
  "unicode-normalization",
  "uuid",
+ "wiki",
 ]
 
 [[package]]
@@ -3651,6 +3654,7 @@ dependencies = [
 name = "wiki"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "chrono",
  "fancy-regex",
  "html2text",

@@ -4,6 +4,7 @@ pub use fetch_raw_template::*;
 mod fetch_template;
 pub use fetch_template::*;
 
+#[derive(Debug, Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
     api_url: String,
