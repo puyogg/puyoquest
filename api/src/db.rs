@@ -10,8 +10,16 @@ pub struct PoolOpts<'a> {
     pub db: &'a str,
 }
 
-pub async fn create_pool_from_opts<'a>(opts: PoolOpts<'a>) -> Result<sqlx::Pool<sqlx::Postgres>, sqlx::Error>  {
-    let PoolOpts { username, password, host, port, db } = opts;
+pub async fn create_pool_from_opts<'a>(
+    opts: PoolOpts<'a>,
+) -> Result<sqlx::Pool<sqlx::Postgres>, sqlx::Error> {
+    let PoolOpts {
+        username,
+        password,
+        host,
+        port,
+        db,
+    } = opts;
     let connection_string = format!("postgres://{username}:{password}@{host}:{port}/{db}");
 
     sqlx::PgPool::connect(&connection_string).await

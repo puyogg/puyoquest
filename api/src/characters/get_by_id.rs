@@ -1,8 +1,13 @@
-use poem::{web::Data, Result, error::InternalServerError};
-use poem_openapi::{param::Path, payload::{Json, PlainText}, ApiResponse};
+use poem::{error::InternalServerError, web::Data, Result};
+use poem_openapi::{
+    param::Path,
+    payload::{Json, PlainText},
+    ApiResponse,
+};
 use sqlx::PgPool;
+use wiki::wiki_client::{FetchTemplate, FetchTemplateError};
 
-use super::Character;
+use super::{types::CharacterCreate, upsert, Character};
 
 #[derive(ApiResponse)]
 pub enum GetByIdResponse {
@@ -13,17 +18,18 @@ pub enum GetByIdResponse {
     NotFound(PlainText<String>),
 }
 
-pub async fn get_by_id(pool: Data<&PgPool>, id: Path<String>) -> Result<GetByIdResponse> {
-    let character: Option<Character> =
-        sqlx::query_as("
+pub async fn get_by_id(pool: &PgPool, id: &str) -> Result<GetByIdResponse> {
+    let character: Option<Character> = sqlx::query_as(
+        "
             SELECT *
             FROM character
             WHERE char_id = $1
-        ")
-        .bind(&id.0)
-        .fetch_optional(pool.0)
-        .await
-        .map_err(InternalServerError)?;
+        ",
+    )
+    .bind(&id)
+    .fetch_optional(pool)
+    .await
+    .map_err(InternalServerError)?;
 
     match character {
         Some(c) => {
@@ -31,10 +37,10 @@ pub async fn get_by_id(pool: Data<&PgPool>, id: Path<String>) -> Result<GetByIdR
             // let json = Json(&c).to_json_string();
             // println!("{json}");
             Ok(GetByIdResponse::Character(Json(c)))
-        },
+        }
         None => Ok(GetByIdResponse::NotFound(PlainText(format!(
             "Character with id {} not found",
-            &id.0,
-        ))))
+            &id,
+        )))),
     }
 }

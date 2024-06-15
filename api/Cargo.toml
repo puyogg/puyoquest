@@ -4,10 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+async-trait = "0.1.80"
 chrono = { version = "0.4", features = ["serde"] }
 lazy_static = "1.4.0"
 poem = { version = "3.0.0", features = ["server", "test"] }
 poem-openapi = { version = "5.0.0", features = ["swagger-ui", "chrono"] }
+reqwest = { version = "0.12.4", features = ["json"] }
 serde = "1.0.203"
 serde_json = { version = "1.0.117", features = ["raw_value"] }
 sqlx = { version = "0.7.4", features = [
@@ -20,6 +22,7 @@ tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 # tokio-stream = "0.1.15"
 unicode-normalization = "0.1.23"
 uuid = { version = "1.8.0", features = ["v4", "fast-rng"] }
+wiki = { path = "../wiki" }
 
 [[bin]]
 name = "test_setup"

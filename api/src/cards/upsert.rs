@@ -11,8 +11,8 @@ pub enum UpsertResponse {
 }
 
 pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResponse> {
-    let inserted_card: Result<Card, sqlx::Error> =
-        sqlx::query_as(r#"
+    let inserted_card: Result<Card, sqlx::Error> = sqlx::query_as(
+        r#"
             INSERT INTO card (
                 card_id,
                 char_id,
@@ -49,24 +49,25 @@ pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResp
                 wiki_template = EXCLUDED.wiki_template,
                 updated_at = EXCLUDED.updated_at
             RETURNING *
-        "#)
-        .bind(&card.card_id)
-        .bind(&card.char_id)
-        .bind(&card.rarity)
-        .bind(&card.rarity_modifier)
-        .bind(&card.name)
-        .bind(&card.name_normalized)
-        .bind(&card.jp_name)
-        .bind(&card.jp_name_normalized)
-        .bind(&card.link_name)
-        .bind(&card.link_name_normalized)
-        .bind(&card.card_type)
-        .bind(&card.main_color)
-        .bind(&card.side_color)
-        .bind(&card.wiki_template)
-        .bind(&card.updated_at)
-        .fetch_one(pool)
-        .await;
+        "#,
+    )
+    .bind(&card.card_id)
+    .bind(&card.char_id)
+    .bind(&card.rarity)
+    .bind(&card.rarity_modifier)
+    .bind(&card.name)
+    .bind(&card.name_normalized)
+    .bind(&card.jp_name)
+    .bind(&card.jp_name_normalized)
+    .bind(&card.link_name)
+    .bind(&card.link_name_normalized)
+    .bind(&card.card_type)
+    .bind(&card.main_color)
+    .bind(&card.side_color)
+    .bind(&card.wiki_template)
+    .bind(&card.updated_at)
+    .fetch_one(pool)
+    .await;
 
     match inserted_card {
         Ok(c) => {
@@ -77,8 +78,8 @@ pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResp
             sqlx::Error::Database(db_error) => {
                 println!("{}", &db_error);
                 Err(InternalServerError(db_error))
-            },
-            _ => Err(InternalServerError(e))
-        }
+            }
+            _ => Err(InternalServerError(e)),
+        },
     }
 }

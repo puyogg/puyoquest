@@ -1,7 +1,7 @@
+use super::{Character, CharacterCreate};
 use poem::error::InternalServerError;
 use poem_openapi::{payload::Json, ApiResponse};
 use sqlx::PgPool;
-use super::{Character, CharacterCreate};
 
 #[derive(ApiResponse)]
 pub enum UpsertResponse {
@@ -9,7 +9,11 @@ pub enum UpsertResponse {
     Ok(Json<Character>, #[oai(header = "Location")] String),
 }
 
-pub async fn upsert(pool: &PgPool, id: &str, character: &CharacterCreate) -> poem::Result<UpsertResponse> {
+pub async fn upsert(
+    pool: &PgPool,
+    id: &str,
+    character: &CharacterCreate,
+) -> poem::Result<UpsertResponse> {
     let character: Result<Character, sqlx::Error> =
         sqlx::query_as(r#"
             INSERT INTO character (char_id, name, jp_name, link_name, main_color, side_color, type1, type2, voice_trans, updated_at)
@@ -45,14 +49,17 @@ pub async fn upsert(pool: &PgPool, id: &str, character: &CharacterCreate) -> poe
         Ok(c) => {
             let char_id = String::from(&c.char_id);
             // println!("upserted: {:?}", &c.to_json());
-            Ok(UpsertResponse::Ok(Json(c), format!("/characters/{}", char_id)))
-        },
+            Ok(UpsertResponse::Ok(
+                Json(c),
+                format!("/characters/{}", char_id),
+            ))
+        }
         Err(e) => match e {
             sqlx::Error::Database(db_error) => {
                 println!("{}", &db_error);
                 Err(InternalServerError(db_error))
-            },
+            }
             _ => Err(InternalServerError(e)),
-        }
+        },
     }
 }
