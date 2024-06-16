@@ -112,6 +112,7 @@ dependencies = [
  "unicode-normalization",
  "uuid",
  "wiki",
+ "wiremock",
 ]
 
 [[package]]

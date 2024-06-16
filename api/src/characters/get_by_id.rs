@@ -1,13 +1,12 @@
-use poem::{error::InternalServerError, web::Data, Result};
+use chrono::Utc;
+use poem::{error::InternalServerError, Result};
 use poem_openapi::{
-    param::Path,
     payload::{Json, PlainText},
     ApiResponse,
 };
 use sqlx::PgPool;
-use wiki::wiki_client::{FetchTemplate, FetchTemplateError};
 
-use super::{types::CharacterCreate, upsert, Character};
+use super::Character;
 
 #[derive(ApiResponse)]
 pub enum GetByIdResponse {
@@ -33,9 +32,12 @@ pub async fn get_by_id(pool: &PgPool, id: &str) -> Result<GetByIdResponse> {
 
     match character {
         Some(c) => {
-            // println!("Fetched timestamp {:?}", c.updated_at);
-            // let json = Json(&c).to_json_string();
-            // println!("{json}");
+            let now = Utc::now();
+            let diff = now.signed_duration_since(c.updated_at);
+            if diff.num_minutes() >= 10i64 {
+                println!("Should update character!");
+            }
+
             Ok(GetByIdResponse::Character(Json(c)))
         }
         None => Ok(GetByIdResponse::NotFound(PlainText(format!(

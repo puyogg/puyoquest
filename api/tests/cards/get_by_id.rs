@@ -3,6 +3,7 @@ use poem::http::StatusCode;
 use poem::test::TestClient;
 
 use poem_openapi::types::ToJSON;
+use wiki::wiki_client::WikiClient;
 
 use crate::common::{create_test_pool, request_test_db, seed};
 
@@ -15,10 +16,12 @@ async fn gets_by_id() -> Result<(), Box<dyn std::error::Error>> {
     let character = CharacterCreate::from(seed::characters::ARLE.clone());
     let card = CardCreate::from(seed::cards::ARLE_07.clone());
 
-    let _ = api::characters::upsert::upsert(&pool, &seed::characters::ARLE.char_id, &character).await;
-    let _ = api::cards::upsert::upsert(&pool,  &card).await;
+    let _ =
+        api::characters::upsert::upsert(&pool, &seed::characters::ARLE.char_id, &character).await;
+    let _ = api::cards::upsert::upsert(&pool, &card).await;
 
-    let api = init_api(pool);
+    let wiki_client = WikiClient::new("N/A", "N/A");
+    let api = init_api(pool, wiki_client);
     let client = TestClient::new(api);
 
     let response = client.get("/cards/201207").send().await;

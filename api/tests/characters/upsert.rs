@@ -1,8 +1,12 @@
-use api::{characters::types::{Character, CharacterCreate}, init_api};
+use api::{
+    characters::types::{Character, CharacterCreate},
+    init_api,
+};
 use chrono::{TimeZone, Utc};
 use poem::http::StatusCode;
 use poem::test::TestClient;
 use poem_openapi::types::ToJSON;
+use wiki::wiki_client::WikiClient;
 
 use crate::common::{create_test_pool, request_test_db, seed};
 
@@ -11,7 +15,8 @@ async fn inserts_new_character() -> Result<(), Box<dyn std::error::Error>> {
     let test_db_name = request_test_db().await?;
 
     let pool = create_test_pool(&test_db_name).await?;
-    let api = init_api(pool);
+    let wiki_client = WikiClient::new("N/A", "N/A");
+    let api = init_api(pool, wiki_client);
     let client = TestClient::new(api);
 
     let character_create = CharacterCreate::from(seed::characters::ARLE.clone());
@@ -23,7 +28,9 @@ async fn inserts_new_character() -> Result<(), Box<dyn std::error::Error>> {
 
     response.assert_status(StatusCode::OK);
     response.assert_header("Location", "/characters/2012");
-    response.assert_json(seed::characters::ARLE.clone().to_json()).await;
+    response
+        .assert_json(seed::characters::ARLE.clone().to_json())
+        .await;
 
     Ok(())
 }
@@ -33,7 +40,8 @@ async fn updates_existing_character() -> Result<(), Box<dyn std::error::Error>> 
     let test_db_name = request_test_db().await?;
 
     let pool = create_test_pool(&test_db_name).await?;
-    let api = init_api(pool);
+    let wiki_client = WikiClient::new("N/A", "N/A");
+    let api = init_api(pool, wiki_client);
     let client = TestClient::new(api);
 
     let original_character = CharacterCreate::from(seed::characters::ARLE.clone());
@@ -67,7 +75,8 @@ async fn increases_updated_at_timestamp() -> Result<(), Box<dyn std::error::Erro
     let test_db_name = request_test_db().await?;
 
     let pool = create_test_pool(&test_db_name).await?;
-    let api = init_api(pool);
+    let wiki_client = WikiClient::new("N/A", "N/A");
+    let api = init_api(pool, wiki_client);
     let client = TestClient::new(api);
 
     let original_character = Character {
