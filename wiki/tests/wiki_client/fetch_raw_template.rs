@@ -1,4 +1,4 @@
-use wiki::wiki_client::{WikiClient, FetchRawTemplate};
+use wiki::wiki_client::{FetchRawTemplate, WikiClient};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 
@@ -32,7 +32,7 @@ async fn fetches_template() -> Result<(), Box<dyn std::error::Error>> {
         .respond_with(ResponseTemplate::new(200).set_body_string(ARLE))
         .mount(&mock_server)
         .await;
-    let client = WikiClient::new(reqwest::Client::new(), "N/A".to_string(), mock_server.uri());
+    let client = WikiClient::new("N/A", mock_server.uri());
 
     let result = client.fetch_raw_template("2012").await?;
     assert_eq!(result, ARLE);

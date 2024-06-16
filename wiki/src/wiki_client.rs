@@ -4,7 +4,7 @@ pub use fetch_raw_template::*;
 mod fetch_template;
 pub use fetch_template::*;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
     api_url: String,
@@ -12,7 +12,11 @@ pub struct WikiClient {
 }
 
 impl WikiClient {
-    pub fn new(client: reqwest::Client, api_url: String, base_url: String) -> WikiClient {
+    pub fn new(api_url: impl Into<String>, base_url: impl Into<String>) -> WikiClient {
+        let client = reqwest::Client::new();
+        let api_url = api_url.into();
+        let base_url = base_url.into();
+
         WikiClient {
             client,
             api_url,

@@ -1,7 +1,7 @@
+use serde_json::{json, Value};
 use wiki::wiki_client::{FetchTemplate, WikiClient};
 use wiremock::matchers::{method, path};
 use wiremock::{Mock, MockServer, ResponseTemplate};
-use serde_json::{json, Value};
 
 const ARLE: &str = r#"{{Char info/{{{1|line}}}|size={{{size}}}|main=Arle Nadja
 |code=2012
@@ -33,7 +33,7 @@ async fn fetches_template() {
         .respond_with(ResponseTemplate::new(200).set_body_string(ARLE))
         .mount(&mock_server)
         .await;
-    let client = WikiClient::new(reqwest::Client::new(), "N/A".to_string(), mock_server.uri());
+    let client = WikiClient::new("N/A", mock_server.uri());
     let result = client.fetch_template("2012").await.unwrap();
 
     let Value::Object(expected_value) = json!({
