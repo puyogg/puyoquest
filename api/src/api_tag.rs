@@ -5,4 +5,5 @@ pub enum ApiTag {
     Cards,
     Characters,
     Healthcheck,
+    Aliases,
 }

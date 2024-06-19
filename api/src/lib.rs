@@ -6,12 +6,12 @@ use poem_openapi::OpenApiService;
 use sqlx::{Pool, Postgres};
 use wiki::wiki_client::WikiClient;
 
+pub mod aliases;
 pub mod api_tag;
 pub mod cards;
 pub mod characters;
 pub mod db;
 pub mod healthcheck;
-pub mod aliases;
 
 pub fn init_api(
     pool: Pool<Postgres>,
@@ -25,6 +25,7 @@ pub fn init_api(
             healthcheck::Healthcheck,
             characters::CharactersRoute,
             cards::CardsRouter,
+            aliases::AliasesRouter,
         ),
         "PPQ API",
         "0.1.0",

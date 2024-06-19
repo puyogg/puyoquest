@@ -1,7 +1,7 @@
 -- Add migration script here
 BEGIN;
 
-CREATE TABLE IF NOT EXISTS card (
+CREATE TABLE IF NOT EXISTS alias (
   alias TEXT PRIMARY KEY,
   char_id TEXT NOT NULL,
   internal BOOLEAN NOT NULL,
