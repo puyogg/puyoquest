@@ -32,7 +32,7 @@ BEFORE UPDATE ON card
 FOR EACH ROW EXECUTE PROCEDURE on_update_timestamp();
 
 CREATE TRIGGER card_inserted_at
-BEFORE UPDATE ON card
+BEFORE INSERT ON card
 FOR EACH ROW EXECUTE PROCEDURE on_update_timestamp();
 
 COMMIT;

@@ -11,6 +11,7 @@ pub mod cards;
 pub mod characters;
 pub mod db;
 pub mod healthcheck;
+pub mod aliases;
 
 pub fn init_api(
     pool: Pool<Postgres>,
