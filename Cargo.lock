@@ -101,6 +101,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "chrono",
+ "fancy-regex",
  "lazy_static",
  "poem",
  "poem-openapi",
