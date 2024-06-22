@@ -14,13 +14,15 @@ pub mod db;
 pub mod healthcheck;
 pub mod util;
 
+pub type Api = poem::middleware::AddDataEndpoint<
+    poem::middleware::AddDataEndpoint<CorsEndpoint<Route>, Pool<Postgres>>,
+    WikiClient,
+>;
+
 pub fn init_api(
     pool: Pool<Postgres>,
     wiki_client: WikiClient,
-) -> poem::middleware::AddDataEndpoint<
-    poem::middleware::AddDataEndpoint<CorsEndpoint<Route>, Pool<Postgres>>,
-    WikiClient,
-> {
+) -> Api {
     let api = OpenApiService::new(
         (
             healthcheck::Healthcheck,
