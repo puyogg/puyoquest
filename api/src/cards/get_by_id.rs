@@ -23,6 +23,7 @@ pub async fn get_by_id(pool: Data<&PgPool>, id: Path<String>) -> Result<GetByIdR
             SELECT *
             FROM card
             WHERE card_id = $1
+            LIMIT 1
         "#,
     )
     .bind(&id.0)

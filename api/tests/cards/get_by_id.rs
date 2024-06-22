@@ -16,9 +16,8 @@ async fn gets_by_id() -> Result<(), Box<dyn std::error::Error>> {
     let character = CharacterCreate::from(seed::characters::ARLE.clone());
     let card = CardCreate::from(seed::cards::ARLE_07.clone());
 
-    let _ =
-        api::characters::upsert::upsert(&pool, &seed::characters::ARLE.char_id, &character).await;
-    let _ = api::cards::upsert::upsert(&pool, &card).await;
+    api::characters::upsert::upsert(&pool, &seed::characters::ARLE.char_id, &character).await.unwrap();
+    api::cards::upsert::upsert(&pool, &card).await.unwrap();
 
     let wiki_client = WikiClient::new("N/A", "N/A");
     let api = init_api(pool, wiki_client);
