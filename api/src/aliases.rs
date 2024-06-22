@@ -1,17 +1,21 @@
 use crate::api_tag::ApiTag;
 
 pub mod types;
-use find_by_alias::FindByAliasResponse;
 use poem::{web::Data, Result};
 use poem_openapi::{
-    param::{Path, Query},
-    OpenApi,
+    param::{Path, Query}, payload::Json, OpenApi
 };
 use sqlx::PgPool;
-use types::Alias;
+use types::{Alias, AliasCreate};
 
 pub mod find_by_alias;
-pub use find_by_alias::find_by_alias;
+pub use find_by_alias::{find_by_alias, FindByAliasResponse};
+
+pub mod list_by_char_id;
+pub use list_by_char_id::{list_by_char_id, ListByCharIdResponse};
+
+pub mod upsert;
+pub use upsert::{upsert, UpsertResponse};
 
 pub struct AliasesRouter;
 
@@ -24,7 +28,7 @@ impl AliasesRouter {
         pool: Data<&PgPool>,
         name: Path<String>,
     ) -> Result<FindByAliasResponse> {
-        find_by_alias::find_by_alias(pool.0, &name.0).await
+        find_by_alias(pool.0, &name.0).await
     }
 
     /// List aliases for a char_id
@@ -32,8 +36,13 @@ impl AliasesRouter {
     async fn list_by_char_id(
         &self,
         pool: Data<&PgPool>,
-        name: Query<Option<String>>,
-    ) -> Result<()> {
-        todo!()
+        char_id: Query<Option<String>>,
+    ) -> Result<ListByCharIdResponse> {
+        list_by_char_id(pool.0, &char_id.0).await
+    }
+
+    #[oai(path = "/:name", method = "put")]
+    async fn upsert(&self, pool: Data<&PgPool>, name: Path<String>, alias: Json<AliasCreate>) -> Result<UpsertResponse> {
+        upsert(pool.0, &name.0, &alias.0).await
     }
 }

@@ -6,6 +6,7 @@ use sqlx::FromRow;
 #[derive(Enum, Clone, Debug, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(type_name = "card_type", rename_all = "lowercase")]
 #[oai(rename_all = "lowercase")]
+#[serde(rename_all = "lowercase")]
 pub enum CardType {
     Character,
     Material,
