@@ -57,8 +57,10 @@ pub async fn request_test_db() -> Result<String, Box<dyn std::error::Error>> {
     Ok(db_name)
 }
 
+#[allow(dead_code)]
 pub type TestDbName = String;
 
+#[allow(dead_code)]
 pub async fn create_test_client(
     pn_api_url: &str,
     pn_base_url: &str,
