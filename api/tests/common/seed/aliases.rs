@@ -1,4 +1,4 @@
-use api::{aliases::types::Alias, cards::types::CardType};
+use api::{aliases::types::Alias, cards::types::CardType, util::normalize_name::normalize_name};
 use chrono::{TimeZone, Utc};
 use lazy_static::lazy_static;
 use unicode_normalization::UnicodeNormalization;
@@ -39,7 +39,7 @@ lazy_static! {
     };
 
     pub static ref SANTA_RINGO_JP: Alias = Alias {
-        alias: "アルル".nfkd().to_string(),
+        alias: normalize_name("サンタりんご"),
         char_id: "3212".to_string(),
         internal: false,
         card_type: CardType::Character,
@@ -49,6 +49,14 @@ lazy_static! {
     pub static ref LEGAMUNT_ORIGINAL: Alias = Alias {
         alias: "legamunt".to_string(),
         char_id: "4203".to_string(),
+        internal: true,
+        card_type: CardType::Character,
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref SPACE_ECOLO_JP: Alias = Alias {
+        alias: normalize_name("スペース☆エコロ"),
+        char_id: "5383".to_string(),
         internal: true,
         card_type: CardType::Character,
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),

@@ -7,6 +7,7 @@ pub use fetch_template::*;
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
+    #[allow(dead_code)]
     api_url: String,
     base_url: String,
 }
