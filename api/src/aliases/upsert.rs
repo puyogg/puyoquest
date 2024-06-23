@@ -1,9 +1,8 @@
 use poem::error::InternalServerError;
-use poem_openapi::{
-    payload::{Json, PlainText},
-    ApiResponse,
-};
+use poem_openapi::{payload::Json, ApiResponse};
 use sqlx::PgPool;
+
+use crate::util::{normalize_name::normalize_name, url_encode_nfc::url_encode_nfc};
 
 use super::types::{Alias, AliasCreate};
 
@@ -11,9 +10,6 @@ use super::types::{Alias, AliasCreate};
 pub enum UpsertResponse {
     #[oai(status = 200)]
     Ok(Json<Alias>, #[oai(header = "Location")] String),
-
-    #[oai(status = 400)]
-    MismatchedName(PlainText<String>),
 }
 
 pub async fn upsert(
@@ -21,13 +17,7 @@ pub async fn upsert(
     alias_name: &str,
     alias: &AliasCreate,
 ) -> poem::Result<UpsertResponse> {
-    if alias_name != &alias.alias {
-        return Ok(UpsertResponse::MismatchedName(PlainText(format!(
-            "Mismatched names: {}, {}",
-            alias_name, &alias.alias
-        ))));
-    }
-
+    let normalized_alias = normalize_name(&alias_name);
     let alias: Result<Alias, sqlx::Error> = sqlx::query_as(
         r#"
         INSERT INTO alias (alias, char_id, internal, card_type, updated_at)
@@ -41,7 +31,7 @@ pub async fn upsert(
         RETURNING *
     "#,
     )
-    .bind(&alias.alias)
+    .bind(&normalized_alias)
     .bind(&alias.char_id)
     .bind(&alias.internal)
     .bind(&alias.card_type)
@@ -52,13 +42,14 @@ pub async fn upsert(
     match alias {
         Ok(a) => {
             let name = a.alias.clone();
-            Ok(UpsertResponse::Ok(Json(a), format!("/aliases/{}", name)))
+            let location = format!("/aliases/{}", url_encode_nfc(&name));
+            Ok(UpsertResponse::Ok(Json(a), location))
         }
         Err(e) => match e {
             sqlx::Error::Database(db_error) => {
                 println!("{}", &db_error);
                 Err(InternalServerError(db_error))
-            },
+            }
             _ => Err(InternalServerError(e)),
         },
     }
