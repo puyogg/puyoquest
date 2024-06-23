@@ -8,6 +8,8 @@ use uuid::Uuid;
 use wiki::wiki_client::WikiClient;
 pub mod seed;
 
+pub type IntTestResult = Result<(), Box<dyn std::error::Error>>;
+
 pub async fn create_test_pool(db_name: &str) -> Result<sqlx::Pool<sqlx::Postgres>, sqlx::Error> {
     create_pool_from_opts(PoolOpts {
         username: "postgres",

@@ -5,6 +5,8 @@ use poem_openapi::{
 };
 use sqlx::PgPool;
 
+use crate::util::normalize_name::normalize_name;
+
 use super::Alias;
 
 #[derive(ApiResponse)]
@@ -20,13 +22,14 @@ pub enum FindByAliasResponse {
 }
 
 pub async fn find_by_alias(pool: &PgPool, alias_name: &str) -> Result<FindByAliasResponse> {
-    // TODO: normalize alias_name before looking it up in the database
+    let alias_name = normalize_name(&alias_name);
 
     let alias: Option<Alias> = sqlx::query_as(
         r#"
             SELECT *
             FROM alias
             WHERE alias = $1
+            LIMIT 1
         "#,
     )
     .bind(&alias_name)
