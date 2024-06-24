@@ -1,6 +1,7 @@
 use crate::aliases;
 use crate::api_tag::ApiTag;
 use poem::{web::Data, Result};
+use poem_openapi::param::Query;
 use poem_openapi::{param::Path, payload::Json, OpenApi};
 use sqlx::PgPool;
 
@@ -9,8 +10,10 @@ use get_by_id::get_by_id;
 use get_by_id::GetByIdResponse;
 
 pub mod upsert;
-use upsert::upsert;
-use upsert::UpsertResponse;
+pub use upsert::{upsert, UpsertResponse};
+
+pub mod find;
+pub use find::{find, FindResponse};
 
 pub mod types;
 use types::{Character, CharacterCreate};
@@ -41,19 +44,19 @@ impl CharactersRoute {
     async fn list_aliases(
         &self,
         pool: Data<&PgPool>,
-        id: Path<String>
+        id: Path<String>,
     ) -> Result<aliases::list_by_char_id::ListByCharIdResponse> {
         aliases::list_by_char_id(pool.0, &Some(id.0)).await
     }
 
-    // /// Find by [name + rarity] or by [category]
-    // #[oai(path = "/", method = "get")]
-    // async fn find(&self) -> Result<()> {
-    //     todo!();
-    // }
-
-    // #[oai(path = "/:id/cards", method = "get")]
-    // async fn cards(&self) -> Result<()> {
-    //     todo!();
-    // }
+    /// Find by alias or category
+    #[oai(path = "/", method = "get")]
+    async fn find(
+        &self,
+        pool: Data<&PgPool>,
+        alias: Query<Option<String>>,
+    ) -> Result<FindResponse> {
+        let alias_name: Option<&str> = alias.0.as_deref();
+        find(pool.0, alias_name).await
+    }
 }
