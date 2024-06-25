@@ -4,10 +4,12 @@ pub use fetch_raw_template::*;
 mod fetch_template;
 pub use fetch_template::*;
 
+mod card_categories;
+pub use card_categories::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
-    #[allow(dead_code)]
     api_url: String,
     base_url: String,
 }
