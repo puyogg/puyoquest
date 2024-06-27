@@ -7,6 +7,9 @@ pub use fetch_template::*;
 mod card_categories;
 pub use card_categories::*;
 
+mod page_image_filenames;
+pub use page_image_filenames::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
