@@ -1,5 +1,55 @@
 # api
 
+## Data Model
+```mermaid
+erDiagram
+  character ||--o{ card : "has many"
+  character ||--o{ alias : "also called by"
+  character {
+    string char_id PK
+    string name
+    string jp_name
+    string link_name
+    string main_color
+    date updated_at
+    _ _
+  }
+
+  card ||--o{ card_category: "in many"
+  card ||--o{ image_cache: ""
+  card {
+    string card_id PK
+    string char_id FK
+    string rarity
+    string rarity_modifier
+    string name_normalized
+    json wiki_template
+    date updated_at
+    _ _
+  }
+
+  alias {
+    string alias PK
+    string char_id FK
+    _ _
+  }
+
+  card_category {
+    string card_id FK
+    string char_id FK
+    string category "UNIQUE(card_id, category)"
+  }
+
+  image_cache {
+    string filepath PK
+    string card_id FK
+    string bucket_url
+    enum image_type "(portrait, card)"
+    enum image_subtype "(left, right, fp)"
+    date updated_at
+  }
+```
+
 ## Development
 
 ### Execute migrations and seeds
