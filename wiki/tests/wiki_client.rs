@@ -3,4 +3,5 @@ mod wiki_client {
     mod fetch_raw_template;
     mod fetch_template;
     mod page_image_filenames;
+    mod image_url;
 }

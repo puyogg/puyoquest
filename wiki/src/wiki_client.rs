@@ -10,6 +10,9 @@ pub use card_categories::*;
 mod page_image_filenames;
 pub use page_image_filenames::*;
 
+mod image_url;
+pub use image_url::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
