@@ -13,6 +13,9 @@ pub use page_image_filenames::*;
 mod image_url;
 pub use image_url::*;
 
+mod recent_char_changes;
+pub use recent_char_changes::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,

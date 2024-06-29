@@ -4,4 +4,5 @@ mod wiki_client {
     mod fetch_template;
     mod page_image_filenames;
     mod image_url;
+    mod recent_char_changes;
 }
