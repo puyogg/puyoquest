@@ -56,13 +56,13 @@ impl RecentCharChanges for super::WikiClient {
         let rcstart = start.to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
         let rcend = end.to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
 
-        let mut iter = 0;
+        // let mut iter = 0;
         while has_continue {
-            println!("{}", iter);
-            iter += 1;
-            if iter == 10 {
-                panic!("TOO MANY!!");
-            }
+            // println!("{}", iter);
+            // iter += 1;
+            // if iter == 10 {
+            //     panic!("TOO MANY!!");
+            // }
 
             let mut query_params = vec![
                 ("action", "query"),
