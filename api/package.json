@@ -1,0 +1,12 @@
+{
+  "name": "@puyogg/puyoquest-api",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-infra": "tsc"
+  },
+  "type": "module",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
