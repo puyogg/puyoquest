@@ -4,3 +4,6 @@ target/
 *.pdb
 .DS_Store
 .docker
+node_modules
+infra-dist
+dist
