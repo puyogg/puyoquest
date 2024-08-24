@@ -1,4 +1,4 @@
 [workspace]
 
-members = ["api", "bot", "sdk", "wiki"]
+members = ["services/api", "services/bot", "packages/sdk", "packages/wiki"]
 resolver = "2"
