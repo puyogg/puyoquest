@@ -1,0 +1,21 @@
+{
+  "name": "puyoquest",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.6",
+    "@pulumi/aws": "^6.42.1",
+    "@pulumi/awsx": "^2.12.3",
+    "@pulumi/pulumi": "^3.121.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "long@5.2.3": "patches/long@5.2.3.patch"
+    }
+  }
+}
