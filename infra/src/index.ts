@@ -1,4 +1,3 @@
 import "./iam/index.js";
 import "./vpc.js";
-
-import "@puyogg/puyoquest-api";
+import "./services/index.js";
