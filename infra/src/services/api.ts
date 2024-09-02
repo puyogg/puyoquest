@@ -1,6 +1,5 @@
 import { Ec2InstanceSsh } from "../ec2/index.js";
 import { ppqVpc } from "../vpc.js";
-import { s2Key1 } from "../ec2/index.js";
 
 const userData = `#!/bin/bash
 sudo yum update -y
@@ -17,7 +16,7 @@ git clone https://github.com/puyogg/puyoquest /home/ec2-user/puyoquest
 const apiInstance = new Ec2InstanceSsh("api-instance", {
   vpcId: ppqVpc.vpc.id,
   subnetId: ppqVpc.publicSubnet.id,
-  keyPair: s2Key1,
   instanceType: "t4g.nano",
   userData,
+  nameTag: "ppq-api",
 });

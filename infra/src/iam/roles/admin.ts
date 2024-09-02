@@ -19,12 +19,13 @@ export const adminRole = new aws.iam.Role("admin", {
   },
 });
 
-const policyAttachments = ["arn:aws:iam::aws:policy/AdministratorAccess"].map(
-  (arn) => {
-    const name = `AdminPolicy_${arn.split("/")[1]}`;
-    return new aws.iam.RolePolicyAttachment(name, {
-      role: adminRole,
-      policyArn: arn,
-    });
-  }
-);
+const policyAttachments = [
+  "arn:aws:iam::aws:policy/AdministratorAccess",
+  aws.iam.ManagedPolicy.EC2InstanceConnect,
+].map((arn) => {
+  const name = `AdminPolicy_${arn.split("/")[1]}`;
+  return new aws.iam.RolePolicyAttachment(name, {
+    role: adminRole,
+    policyArn: arn,
+  });
+});
