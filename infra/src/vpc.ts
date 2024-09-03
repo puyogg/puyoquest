@@ -1,5 +1,6 @@
 import * as aws from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
+import { InstanceConnect } from "./ec2/instance-connect.js";
 
 function calcualteIpv6Cidr(cidrBlock: string, idx: number): string {
   const firstFourSlices = cidrBlock.split(":").slice(0, 4);
@@ -98,3 +99,12 @@ class VpcIpv6 extends pulumi.ComponentResource {
 }
 
 export const ppqVpc = new VpcIpv6("ppq-vpc", {});
+
+export const publicInstanceConnect = new InstanceConnect(
+  "public-instance-connect",
+  {
+    prefix: "public-ppq-vpc",
+    vpcId: ppqVpc.vpc.id,
+    subnetId: ppqVpc.publicSubnet.id,
+  }
+);
