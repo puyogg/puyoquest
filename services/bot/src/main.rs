@@ -1,8 +1,7 @@
-use std::{env, vec};
-// use std::sync::atomic::{AtomicU32, Ordering};
 use commands::{char_by_id::char_by_id, Data, Error};
 use poise::{serenity_prelude as serenity, Framework};
 
+mod util;
 mod commands;
 mod env_config;
 
