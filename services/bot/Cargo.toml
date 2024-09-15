@@ -4,11 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
+dotenvy = "0.15.7"
+fancy-regex = "0.13.0"
+lazy_static = "1.4.0"
 poise = "0.6.1"
 poise_macros = "0.6.1"
-dotenv = "0.15.0"
 sdk = { path = "../../packages/sdk" }
+tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
 
 # [dependencies.serenity]
 # default-features = false
