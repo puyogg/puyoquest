@@ -1,3 +1,7 @@
+pub mod alias;
+pub use self::alias::Alias;
+pub mod alias_create;
+pub use self::alias_create::AliasCreate;
 pub mod card;
 pub use self::card::Card;
 pub mod card_create;

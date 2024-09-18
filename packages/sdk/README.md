@@ -26,8 +26,13 @@ All URIs are relative to *http://localhost:3000*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*AliasesApi* | [**aliases_get**](docs/AliasesApi.md#aliases_get) | **GET** /aliases | List aliases for a char_id
+*AliasesApi* | [**aliases_name_get**](docs/AliasesApi.md#aliases_name_get) | **GET** /aliases/{name} | Find an alias by name
+*AliasesApi* | [**aliases_name_put**](docs/AliasesApi.md#aliases_name_put) | **PUT** /aliases/{name} | 
 *CardsApi* | [**cards_id_get**](docs/CardsApi.md#cards_id_get) | **GET** /cards/{id} | Find by card_id
 *CardsApi* | [**cards_post**](docs/CardsApi.md#cards_post) | **POST** /cards | Upsert card data (admins only)
+*CharactersApi* | [**characters_get**](docs/CharactersApi.md#characters_get) | **GET** /characters | Find by alias or category
+*CharactersApi* | [**characters_id_aliases_get**](docs/CharactersApi.md#characters_id_aliases_get) | **GET** /characters/{id}/aliases | 
 *CharactersApi* | [**characters_id_get**](docs/CharactersApi.md#characters_id_get) | **GET** /characters/{id} | TODO: Option to refresh index
 *CharactersApi* | [**characters_id_put**](docs/CharactersApi.md#characters_id_put) | **PUT** /characters/{id} | Create a character or update one if it already exists
 *HealthcheckApi* | [**healthcheck_get**](docs/HealthcheckApi.md#healthcheck_get) | **GET** /healthcheck | 
@@ -35,6 +40,8 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [Alias](docs/Alias.md)
+ - [AliasCreate](docs/AliasCreate.md)
  - [Card](docs/Card.md)
  - [CardCreate](docs/CardCreate.md)
  - [CardType](docs/CardType.md)
