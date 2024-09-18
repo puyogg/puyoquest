@@ -21,6 +21,16 @@
       "database": "ppq_api_db",
       "username": "postgres",
       "password": "password"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 55432,
+      "driver": "PostgreSQL",
+      "name": "legacy-db",
+      "database": "discordbot-db",
+      "username": "postgres",
+      "password": "dev_postgres_password"
     }
   ]
 }

@@ -1,4 +1,5 @@
 pub mod char_by_id;
+pub mod card;
 
 #[allow(unused)]
 pub type Error = Box<dyn std::error::Error + Send + Sync>;

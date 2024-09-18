@@ -39,7 +39,7 @@ async fn updates_existing_character() -> Result<(), Box<dyn std::error::Error>> 
     response1.assert_status(StatusCode::OK);
 
     let updated_character = Character {
-        name: "SONIC THE HEDGEHOG!!!!!!!!!".to_string(),
+        name: Some("SONIC THE HEDGEHOG!!!!!!!!!".to_string()),
         updated_at: Utc.with_ymd_and_hms(2024, 6, 6, 6, 6, 6).unwrap(),
         ..seed::characters::ARLE.clone()
     };
@@ -72,7 +72,7 @@ async fn increases_updated_at_timestamp() -> Result<(), Box<dyn std::error::Erro
     response1.assert_status(StatusCode::OK);
 
     let update_character_params = CharacterCreate {
-        name: "SONIC THE HEDGEHOG!!!!!!!!!".to_string(),
+        name: Some("SONIC THE HEDGEHOG!!!!!!!!!".to_string()),
         updated_at: None,
         ..CharacterCreate::from(original_character.clone())
     };

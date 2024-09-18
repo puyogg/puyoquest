@@ -2,9 +2,9 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS character (
   char_id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  jp_name TEXT NOT NULL,
-  link_name TEXT NOT NULL,
+  name TEXT,
+  jp_name TEXT,
+  link_name TEXT,
   main_color TEXT,
   side_color TEXT,
   type1 TEXT,

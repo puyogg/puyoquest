@@ -41,6 +41,14 @@ services:
     volumes:
       - bot-db-volume:/var/lib/postgresql/data
 
+  legacy-db:
+    image: postgres:14
+    ports:
+      - 55432:5432
+    environment:
+      POSTGRES_PASSWORD: dev_postgres_password
+      POSTGRES_DB: discordbot-db
+
 volumes:
   api-db-volume: #
   bot-db-volume: #

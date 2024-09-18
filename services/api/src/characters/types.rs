@@ -5,9 +5,9 @@ use sqlx::FromRow;
 
 #[derive(Debug, Clone, Object, FromRow, Serialize)]
 pub struct CharacterCreate {
-    pub name: String,
-    pub jp_name: String,
-    pub link_name: String,
+    pub name: Option<String>,
+    pub jp_name: Option<String>,
+    pub link_name: Option<String>,
     pub main_color: Option<String>,
     pub side_color: Option<String>,
     pub type1: Option<String>,
@@ -19,9 +19,9 @@ pub struct CharacterCreate {
 #[derive(Debug, Clone, Object, FromRow, Serialize, Deserialize)]
 pub struct Character {
     pub char_id: String,
-    pub name: String,
-    pub jp_name: String,
-    pub link_name: String,
+    pub name: Option<String>,
+    pub jp_name: Option<String>,
+    pub link_name: Option<String>,
     pub main_color: Option<String>,
     pub side_color: Option<String>,
     pub type1: Option<String>,

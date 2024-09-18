@@ -1,4 +1,4 @@
-use commands::{char_by_id::char_by_id, Data, Error};
+use commands::{Data, Error};
 use poise::{serenity_prelude as serenity, Framework};
 
 mod util;
@@ -13,9 +13,14 @@ async fn main() {
     let env = env_config::load_env_file().unwrap();
     let guild_id = env.primary_server_id.clone();
 
+    let commands = std::vec![
+        commands::char_by_id::char_by_id(),
+        commands::card::card(),
+    ];
+
     let framework: Framework<Data, Error> = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: std::vec![char_by_id()],
+            commands,
             ..Default::default()
         })
         .setup(move |ctx, ready, framework: &poise::Framework<Data, _>| {

@@ -1,6 +1,7 @@
 # api
 
 ## Data Model
+
 ```mermaid
 erDiagram
   character ||--o{ card : "has many"
@@ -58,7 +59,7 @@ Install the [sqlx-cli](https://github.com/launchbadge/sqlx/tree/main/sqlx-cli). 
 
 ```sh
 docker compose up -d api-db
-cd api
+cd services/api
 export DATABASE_URL=postgres://postgres:password@localhost:35432/ppq_api_db
 sqlx migrate run
 ```
@@ -81,4 +82,25 @@ Run integration tests:
 
 ```sh
 cargo watch -x "test -p api --test '*'"
+```
+
+### Legacy DB Migration
+
+```sh
+# Remote server
+NOW=$(date +%s)
+docker compose exec discordbot-db pg_dump -U postgres discordbot-db > backup_${NOW}.sql
+
+# Locally
+docker compose up -d legacy-db
+docker compose exec -T legacy-db psql -U postgres -d discordbot-db < backup_1234567890.sql
+docker compose exec -T legacy-db psql -U postgres -d discordbot-db < ./services/api/legacy-migration/legacy-db-migration.sql
+docker compose exec legacy-db pg_dump -U postgres discordbot-db > migrated.sql
+docker compose exec -T api-db psql -U postgres -d ppq_api_db < migrated.sql
+```
+
+If you mess up:
+
+```sh
+docker compose down -v
 ```
