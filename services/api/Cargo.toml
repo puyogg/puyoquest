@@ -4,13 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-async-trait = "0.1.80"
+async-trait = "0.1.83"
 chrono = { version = "0.4", features = ["serde"] }
 fancy-regex = "0.13.0"
 futures = "0.3.30"
 lazy_static = "1.4.0"
 poem = { version = "3.0.0", features = ["server", "test"] }
 poem-openapi = { version = "5.0.0", features = ["swagger-ui", "chrono"] }
+redis = { version = "0.27.0", features = ["aio", "tokio-comp", "json"] }
 reqwest = { version = "0.12.4", features = ["json"] }
 serde = "1.0.203"
 serde_json = { version = "1.0.117", features = ["raw_value"] }
