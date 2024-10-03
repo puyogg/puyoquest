@@ -3,6 +3,7 @@
   "[rust]": {
     "files.autoSave": "afterDelay",
     "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.formatOnSave": true,
     "editor.tabSize": 4
   },
   "[typescript]": {

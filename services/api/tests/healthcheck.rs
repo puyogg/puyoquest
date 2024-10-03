@@ -1,14 +1,11 @@
-use api::db::create_pool;
-use api::init_api;
-use poem::{http::StatusCode, test::TestClient};
-use wiki::wiki_client::WikiClient;
+mod common;
+
+use poem::http::StatusCode;
+use crate::common::create_test_client;
 
 #[tokio::test]
 async fn healthcheck_test() -> Result<(), Box<dyn std::error::Error>> {
-    let pool = create_pool().await?;
-    let wiki_client = WikiClient::new("N/A", "N/A");
-    let api = init_api(pool, wiki_client);
-    let client = TestClient::new(api);
+    let (client, _) = create_test_client("N/A", "N/A").await?;
 
     let response = client.get("/healthcheck").send().await;
     response.assert_status(StatusCode::OK);

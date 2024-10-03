@@ -8,6 +8,7 @@ use wiki::wiki_client::WikiClient;
 
 pub mod aliases;
 pub mod api_tag;
+pub mod cache;
 pub mod cards;
 pub mod characters;
 pub mod db;
@@ -15,13 +16,17 @@ pub mod healthcheck;
 pub mod util;
 
 pub type Api = poem::middleware::AddDataEndpoint<
-    poem::middleware::AddDataEndpoint<CorsEndpoint<Route>, Pool<Postgres>>,
-    WikiClient,
+    poem::middleware::AddDataEndpoint<
+        poem::middleware::AddDataEndpoint<CorsEndpoint<Route>, Pool<Postgres>>,
+        WikiClient,
+    >,
+    redis::aio::MultiplexedConnection,
 >;
 
 pub fn init_api(
     pool: Pool<Postgres>,
     wiki_client: WikiClient,
+    redis_conn: redis::aio::MultiplexedConnection,
 ) -> Api {
     let api = OpenApiService::new(
         (
@@ -44,4 +49,5 @@ pub fn init_api(
         .with(Cors::new())
         .data(pool)
         .data(wiki_client)
+        .data(redis_conn)
 }

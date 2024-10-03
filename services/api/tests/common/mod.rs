@@ -1,6 +1,7 @@
 use api::{
     db::{create_pool_from_opts, PoolOpts},
     init_api,
+    cache::create_redis_connection,
 };
 
 use poem::test::TestClient;
@@ -71,7 +72,8 @@ pub async fn create_test_client(
     let test_db_name = request_test_db().await?;
     let pool = create_test_pool(&test_db_name).await?;
     let wiki_client = WikiClient::new(pn_api_url, pn_base_url);
-    let api = init_api(pool, wiki_client);
+    let redis_conn = create_redis_connection("0.0.0.0", "36379").await;
+    let api = init_api(pool, wiki_client, redis_conn);
     let client = TestClient::new(api);
 
     Ok((client, test_db_name))
