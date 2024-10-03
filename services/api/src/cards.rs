@@ -1,6 +1,10 @@
 use crate::api_tag::ApiTag;
 use poem::web::Data;
-use poem_openapi::{param::Path, payload::Json, OpenApi};
+use poem_openapi::{
+    param::{Path, Query},
+    payload::Json,
+    OpenApi,
+};
 use sqlx::PgPool;
 
 pub mod template_data;
@@ -14,6 +18,9 @@ use get_by_id::{get_by_id, GetByIdResponse};
 pub mod upsert;
 use upsert::{upsert, UpsertResponse};
 
+pub mod find_by_name_rarity;
+use find_by_name_rarity::{find_by_name_and_rarity, FindByNameAndRarityResponse};
+
 pub struct CardsRouter;
 
 #[OpenApi(prefix_path = "/cards", tag = "ApiTag::Cards")]
@@ -24,12 +31,35 @@ impl CardsRouter {
         get_by_id(pool, id).await
     }
 
-    // /// Find by name and rarity
-    // /// OR find by category
-    // #[oai(path = "/", method = "get")]
-    // async fn find(&self) -> Result<()> {
-    //     todo!();
-    // }
+    /// Find by name and rarity
+    /// OR find by category
+    #[oai(path = "/", method = "get")]
+    async fn find(
+        &self,
+        pool: Data<&PgPool>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+        redis_conn: Data<&redis::aio::MultiplexedConnection>,
+        name: Query<Option<String>>,
+        rarity: Query<Option<String>>,
+    ) -> poem::Result<FindByNameAndRarityResponse> {
+        let name = name.0;
+        let rarity = rarity.0;
+
+        if let (Some(n), Some(r)) = (&name, &rarity) {
+            return find_by_name_and_rarity(pool.0, wiki_client.0, redis_conn.0, n, r).await
+        }
+
+        let mut missing_params: Vec<String> = Vec::new();
+        if name.is_none() {
+            missing_params.push("name".to_string());
+        }
+        if rarity.is_none() {
+            missing_params.push("rarity".to_string());
+        }
+        Ok(FindByNameAndRarityResponse::MissingNameOrRarity(Json(
+            find_by_name_rarity::BadRequestReason::missing_params(missing_params)
+        )))
+    }
 
     /// Upsert card data (admins only)
     #[oai(path = "/", method = "post")]

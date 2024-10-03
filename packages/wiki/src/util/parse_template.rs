@@ -110,7 +110,7 @@ impl From<serde_json::Error> for ParseTemplateError {
 /// Parses the top-level key-value pairs from a PPQ MediaWiki template.
 pub fn parse_template(
     raw_template: &str,
-) -> Result<serde_json::Map<String, Value>, ParseTemplateError> {
+) -> Result<serde_json::Value, ParseTemplateError> {
     let template_no_comments = RE_MEDIAWIKI_COMMENT.replace_all(raw_template, "");
 
     let bracket_pairs = find_bracket_pairs(raw_template)?;
@@ -180,7 +180,7 @@ pub fn parse_template(
         );
     }
 
-    Ok(key_value_map)
+    Ok(serde_json::Value::Object(key_value_map))
 }
 
 #[cfg(test)]
@@ -253,7 +253,7 @@ mod tests {
 |tokkun=Tmainatkas7ls7
 }}"#;
         let result = parse_template(template).unwrap();
-        let result_json_str: String = Value::Object(result).to_string();
+        let result_json_str: String = result.to_string();
 
         let expected_json = json!({
             "acqg": "Magic Stone Gacha / Silver Ticket Gacha / Gold Ticket Gacha / Premium Ticket Gacha / [[PPQ:Once-per-day Free Gacha|Once-per-day Free Gacha]]",
@@ -304,7 +304,7 @@ mod tests {
 |tokkun=Tmainatkas7ls7
 }}"#;
         let result = parse_template(template).unwrap();
-        let result_json_str: String = Value::Object(result).to_string();
+        let result_json_str: String = result.to_string();
 
         let expected_json = json!({
             "acqg": "Magic Stone Gacha / Silver Ticket Gacha / Gold Ticket Gacha / Premium Ticket Gacha / [[PPQ:Once-per-day Free Gacha|Once-per-day Free Gacha]]",

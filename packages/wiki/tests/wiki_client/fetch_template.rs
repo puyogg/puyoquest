@@ -58,5 +58,5 @@ async fn fetches_template() {
         unreachable!();
     };
 
-    assert_eq!(result, expected_value);
+    assert_eq!(result, Value::from(expected_value));
 }

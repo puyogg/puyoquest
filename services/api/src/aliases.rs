@@ -9,7 +9,7 @@ use sqlx::PgPool;
 use types::{Alias, AliasCreate};
 
 pub mod find_by_alias;
-pub use find_by_alias::{find_by_alias, FindByAliasResponse};
+pub use find_by_alias::{find_by_alias, query_find_by_alias, FindByAliasResponse};
 
 pub mod list_by_char_id;
 pub use list_by_char_id::{list_by_char_id, ListByCharIdResponse};
