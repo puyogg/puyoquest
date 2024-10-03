@@ -1,5 +1,7 @@
-use std::env;
+use std::{cell::OnceCell, env};
+use std::sync::LazyLock;
 
+#[derive(Debug)]
 pub struct Env {
     pub bot_token: String,
     pub primary_server_id: u64,
@@ -7,6 +9,7 @@ pub struct Env {
     pub db_url: String,
     pub db_host: String,
     pub db_name: String,
+    pub ppq_api_host: String,
 }
 
 fn env_string(key: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -31,6 +34,7 @@ fn load_env() -> Env {
         db_url: env_string("DB_URL").unwrap(),
         db_host: env_string("DB_HOST").unwrap(),
         db_name: env_string("DB_NAME").unwrap(),
+        ppq_api_host: env_string("PPQ_API_HOST").unwrap(),
     }
 }
 
@@ -39,3 +43,7 @@ pub fn load_env_file() -> Result<Env, Box<dyn std::error::Error>> {
 
     Ok(load_env())
 }
+
+pub static ENV: LazyLock<Env> = LazyLock::new(|| {
+    load_env_file().unwrap()
+});

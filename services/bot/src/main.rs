@@ -10,7 +10,7 @@ async fn main() {
     let intents =
         serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT;
 
-    let env = env_config::load_env_file().unwrap();
+    let env = &*env_config::ENV;
     let guild_id = env.primary_server_id.clone();
 
     let commands = std::vec![
@@ -39,7 +39,7 @@ async fn main() {
         })
         .build();
 
-    let client = serenity::ClientBuilder::new(env.bot_token, intents)
+    let client = serenity::ClientBuilder::new(&env.bot_token, intents)
         .framework(framework)
         .await;
 
