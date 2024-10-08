@@ -10,7 +10,7 @@ use crate::common::seed;
 
 #[tokio::test]
 async fn finds_character_by_alias() -> IntTestResult {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert(
@@ -55,7 +55,7 @@ async fn finds_character_by_alias() -> IntTestResult {
 
 #[tokio::test]
 async fn returns_empty_vec_if_no_match() -> IntTestResult {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert(
@@ -99,7 +99,7 @@ async fn returns_empty_vec_if_no_match() -> IntTestResult {
 
 #[tokio::test]
 async fn bad_request_if_missing_alias_name() -> IntTestResult {
-    let (client, _) = create_test_client("N/A", "N/A").await?;
+    let (client, ..) = create_test_client("N/A", "N/A").await?;
 
     let response = client
         .get("/characters")

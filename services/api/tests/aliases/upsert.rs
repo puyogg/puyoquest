@@ -9,7 +9,7 @@ use crate::common::{create_test_client, create_test_pool, seed};
 
 #[tokio::test]
 async fn inserts_new_alias() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
 
     let pool = create_test_pool(&test_db_name).await?;
 
@@ -38,7 +38,7 @@ async fn inserts_new_alias() -> Result<(), Box<dyn std::error::Error>> {
 
 #[tokio::test]
 async fn updates_alias() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert::upsert(&pool, &ARLE.char_id, &CharacterCreate::from(ARLE.clone()))
@@ -73,7 +73,7 @@ async fn updates_alias() -> Result<(), Box<dyn std::error::Error>> {
 
 #[tokio::test]
 async fn inserts_alias_with_middle_space() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert::upsert(
@@ -104,7 +104,7 @@ async fn inserts_alias_with_middle_space() -> Result<(), Box<dyn std::error::Err
 
 #[tokio::test]
 async fn inserts_alias_with_japanese_name() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert::upsert(
@@ -141,7 +141,7 @@ async fn inserts_alias_with_japanese_name() -> Result<(), Box<dyn std::error::Er
 
 #[tokio::test]
 async fn normalizes_alias_name_on_insert() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert::upsert(

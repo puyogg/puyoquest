@@ -7,7 +7,7 @@ use crate::common::{create_test_client, seed};
 
 #[tokio::test]
 async fn inserts_new_character() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, _) = create_test_client("N/A", "N/A").await?;
+    let (client, ..) = create_test_client("N/A", "N/A").await?;
 
     let character_create = CharacterCreate::from(seed::characters::ARLE.clone());
     let response = client
@@ -27,7 +27,7 @@ async fn inserts_new_character() -> Result<(), Box<dyn std::error::Error>> {
 
 #[tokio::test]
 async fn updates_existing_character() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, _) = create_test_client("N/A", "N/A").await?;
+    let (client, ..) = create_test_client("N/A", "N/A").await?;
 
     let original_character = CharacterCreate::from(seed::characters::ARLE.clone());
 
@@ -57,7 +57,7 @@ async fn updates_existing_character() -> Result<(), Box<dyn std::error::Error>> 
 
 #[tokio::test]
 async fn increases_updated_at_timestamp() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, _) = create_test_client("N/A", "N/A").await?;
+    let (client, ..) = create_test_client("N/A", "N/A").await?;
 
     let original_character = Character {
         updated_at: Utc.with_ymd_and_hms(1991, 10, 25, 2, 24, 24).unwrap(),

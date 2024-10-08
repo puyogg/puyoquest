@@ -6,7 +6,7 @@ use crate::common::{create_test_client, create_test_pool, seed};
 
 #[tokio::test]
 async fn gets_by_id2() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     let character = CharacterCreate::from(seed::characters::ARLE.clone());

@@ -10,7 +10,7 @@ use crate::common::{create_test_client, create_test_pool, seed};
 
 #[tokio::test]
 async fn lists_aliases_by_char_id() -> Result<(), Box<dyn std::error::Error>> {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     let arle_create = CharacterCreate::from(seed::characters::ARLE.clone());

@@ -17,7 +17,7 @@ use crate::common::{
 
 #[tokio::test]
 async fn finds_single_alias() -> IntTestResult {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert::upsert(
@@ -51,7 +51,7 @@ async fn finds_single_alias() -> IntTestResult {
 
 #[tokio::test]
 async fn finds_alias_ignoring_special_chars() -> IntTestResult {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert::upsert(
@@ -85,7 +85,7 @@ async fn finds_alias_ignoring_special_chars() -> IntTestResult {
 
 #[tokio::test]
 async fn finds_alias_ignoring_accents() -> IntTestResult {
-    let (client, test_db_name) = create_test_client("N/A", "N/A").await?;
+    let (client, test_db_name, ..) = create_test_client("N/A", "N/A").await?;
     let pool = create_test_pool(&test_db_name).await?;
 
     api::characters::upsert::upsert(
@@ -119,7 +119,7 @@ async fn finds_alias_ignoring_accents() -> IntTestResult {
 
 #[tokio::test]
 async fn not_found() -> IntTestResult {
-    let (client, _) = create_test_client("N/A", "N/A").await?;
+    let (client, ..) = create_test_client("N/A", "N/A").await?;
 
     let response = client
         .get(format!("/aliases/{}", "DanteFromTheDevilMayCrySeries"))
