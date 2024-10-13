@@ -1,16 +1,19 @@
+use std::sync::Arc;
+
 use crate::{
     aliases::query_find_by_alias,
+    cache::RedisClient,
     util::{normalize_name::normalize_name, parse_rarity::parse_rarity},
 };
 use poem::{
-    error::{FailedDependency, InternalServerError, ResponseError},
+    error::{FailedDependency, InternalServerError},
     http::StatusCode,
     Result,
 };
 use poem_openapi::{payload::Json, ApiResponse, Enum, Object};
-use redis::{JsonAsyncCommands, RedisError};
+use redis::{AsyncCommands, RedisError};
 use serde::{Deserialize, Serialize};
-use serde_json::{Map, Value};
+use serde_json::Value;
 use sqlx::PgPool;
 use wiki::wiki_client::{FetchTemplate, WikiClient};
 
@@ -109,11 +112,11 @@ pub async fn query_find_by_char_id_and_rarity(
 pub async fn find_by_name_and_rarity(
     pool: &PgPool,
     wiki_client: &WikiClient,
-    redis_conn: &redis::aio::MultiplexedConnection,
+    redis_client: &Arc<RedisClient>,
     name_query: &str,
     rarity_query: &str,
 ) -> Result<FindByNameAndRarityResponse> {
-    let mut redis_conn = redis_conn.clone();
+    let mut redis_conn = redis_client.conn.clone();
 
     let alias_name = normalize_name(name_query);
 
@@ -161,26 +164,39 @@ pub async fn find_by_name_and_rarity(
     };
 
     // get wiki_template from redis cache
-    let cached_wiki_template: Option<Value> = redis_conn
-        .json_get(format!("template:{}", &card.card_id), "$")
+    let cached_wiki_template = redis_conn
+        .get::<String, Option<String>>(
+            redis_client.prefixed(format!("template:{}", &card.card_id).as_str()),
+        )
         .await
-        .ok()
-        .and_then(|w: String| serde_json::from_str::<Vec<Value>>(&w).ok())
-        .and_then(|w| w.get(0).cloned());
+        .inspect_err(|e| println!("{e}"))
+        .map_err(InternalServerError)?
+        .and_then(|w| {
+            let list = serde_json::from_str::<Value>(&w);
+
+            if let Err(e) = &list {
+                println!("Error parsing cached wiki_template for: {}", &card.card_id);
+                println!("{}", e);
+            }
+
+            list.ok()
+        });
 
     let wiki_template = match cached_wiki_template {
-        Some(c) => c,
+        Some(c) => c.clone(),
         None => {
             let fetched_template = wiki_client
                 .fetch_template(&card.card_id)
                 .await
                 .map_err(|e| FailedDependency(e))?;
 
-            let _: std::result::Result<String, RedisError> = redis_conn
-                .json_set(
-                    format!("template:{}", &card.card_id),
-                    "$",
-                    &fetched_template.to_string(),
+            let key = redis_client.prefixed(format!("template:{}", &card.card_id).as_str());
+
+            let _: std::result::Result<String, RedisError> =
+                redis_conn.set(&key, &fetched_template.to_string()).await;
+            let _ = redis_conn
+                .expire::<&str, i64>(
+                    &key, 604800, // 7 days
                 )
                 .await;
 

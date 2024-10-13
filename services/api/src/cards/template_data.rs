@@ -6,7 +6,7 @@ pub struct CardTemplateData {
     name: String,
     rarity: String,
     code: String,
-    link: String,
+    link: Option<String>,
     jpname: Option<String>,
     color: Option<String>,
     color2: Option<String>,

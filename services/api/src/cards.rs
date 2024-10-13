@@ -1,4 +1,6 @@
-use crate::api_tag::ApiTag;
+use std::sync::Arc;
+
+use crate::{api_tag::ApiTag, cache::RedisClient};
 use poem::web::Data;
 use poem_openapi::{
     param::{Path, Query},
@@ -38,15 +40,16 @@ impl CardsRouter {
         &self,
         pool: Data<&PgPool>,
         wiki_client: Data<&wiki::wiki_client::WikiClient>,
-        redis_conn: Data<&redis::aio::MultiplexedConnection>,
+        redis_client: Data<&Arc<RedisClient>>,
         name: Query<Option<String>>,
         rarity: Query<Option<String>>,
     ) -> poem::Result<FindByNameAndRarityResponse> {
         let name = name.0;
         let rarity = rarity.0;
+        let redis_client = redis_client.0.clone();
 
         if let (Some(n), Some(r)) = (&name, &rarity) {
-            return find_by_name_and_rarity(pool.0, wiki_client.0, redis_conn.0, n, r).await
+            return find_by_name_and_rarity(pool.0, wiki_client.0, &redis_client, n, r).await
         }
 
         let mut missing_params: Vec<String> = Vec::new();
