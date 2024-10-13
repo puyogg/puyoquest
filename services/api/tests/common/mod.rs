@@ -1,12 +1,12 @@
 use api::{
+    cache::{create_redis_connection, RedisClient},
     db::{create_pool_from_opts, PoolOpts},
     init_api,
-    cache::create_redis_connection,
 };
 
 use poem::test::TestClient;
-use redis::aio::MultiplexedConnection;
 use uuid::Uuid;
+use rand::distributions::{Alphanumeric, DistString};
 use wiki::wiki_client::WikiClient;
 pub mod seed;
 
@@ -69,13 +69,24 @@ pub type TestDbName = String;
 pub async fn create_test_client(
     pn_api_url: &str,
     pn_base_url: &str,
-) -> Result<(TestClient<api::Api>, TestDbName, MultiplexedConnection), Box<dyn std::error::Error>> {
+) -> Result<
+    (
+        TestClient<api::Api>,
+        TestDbName,
+        std::sync::Arc<RedisClient>,
+    ),
+    Box<dyn std::error::Error>,
+> {
+    let redis_key_prefix = format!("{}_", Alphanumeric.sample_string(&mut rand::thread_rng(), 16));
+    
     let test_db_name = request_test_db().await?;
     let pool = create_test_pool(&test_db_name).await?;
     let wiki_client = WikiClient::new(pn_api_url, pn_base_url);
-    let redis_conn = create_redis_connection("0.0.0.0", "36379").await;
-    let api = init_api(pool, wiki_client, redis_conn.clone());
+    let redis_client = std::sync::Arc::new(
+        create_redis_connection("0.0.0.0", "36379", redis_key_prefix).await,
+    );
+    let api = init_api(pool, wiki_client, redis_client.clone());
     let client = TestClient::new(api);
 
-    Ok((client, test_db_name, redis_conn))
+    Ok((client, test_db_name, redis_client))
 }

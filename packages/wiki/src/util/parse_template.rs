@@ -1,5 +1,5 @@
 use fancy_regex::{Captures, Match, Regex};
-use serde_json::{Map, Value};
+use serde_json::Map;
 
 lazy_static::lazy_static! {
     /// Matches HTML-style comments in mediawiki templates
@@ -186,7 +186,7 @@ pub fn parse_template(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde_json::{json, Value};
+    use serde_json::json;
 
     #[test]
     fn finds_bracket_pairs() {

@@ -1,8 +1,8 @@
 use poem::{listener::TcpListener, Result, Server};
 
+use api::cache::{create_redis_connection, DEFAULT_REDIS_KEY_PREFIX};
 use api::db::create_pool;
 use api::init_api;
-use api::cache::create_redis_connection;
 use wiki::wiki_client::WikiClient;
 
 #[tokio::main]
@@ -13,7 +13,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "https://puyonexus.com/wiki",
     );
 
-    let redis_conn = create_redis_connection("0.0.0.0", "36379").await;
+    let redis_conn = std::sync::Arc::new(
+        create_redis_connection("0.0.0.0", "36379", DEFAULT_REDIS_KEY_PREFIX.to_string()).await,
+    );
 
     let api = init_api(pool, wiki_client, redis_conn);
 

@@ -106,6 +106,7 @@ dependencies = [
  "lazy_static",
  "poem",
  "poem-openapi",
+ "rand",
  "redis",
  "reqwest 0.12.4",
  "serde",

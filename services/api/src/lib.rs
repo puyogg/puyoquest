@@ -1,3 +1,6 @@
+use std::sync::Arc;
+
+use cache::RedisClient;
 use poem::{
     middleware::{Cors, CorsEndpoint},
     EndpointExt, Route,
@@ -20,13 +23,13 @@ pub type Api = poem::middleware::AddDataEndpoint<
         poem::middleware::AddDataEndpoint<CorsEndpoint<Route>, Pool<Postgres>>,
         WikiClient,
     >,
-    redis::aio::MultiplexedConnection,
+    Arc<RedisClient>,
 >;
 
 pub fn init_api(
     pool: Pool<Postgres>,
     wiki_client: WikiClient,
-    redis_conn: redis::aio::MultiplexedConnection,
+    redis_client: Arc<RedisClient>,
 ) -> Api {
     let api = OpenApiService::new(
         (
@@ -49,5 +52,5 @@ pub fn init_api(
         .with(Cors::new())
         .data(pool)
         .data(wiki_client)
-        .data(redis_conn)
+        .data(redis_client)
 }
