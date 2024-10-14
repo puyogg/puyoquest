@@ -2,7 +2,7 @@ use poem::error::InternalServerError;
 use poem_openapi::{payload::Json, ApiResponse};
 use sqlx::PgPool;
 
-use super::{Card, CardCreate};
+use super::{types::CardDb, Card, CardCreate};
 
 #[derive(ApiResponse)]
 pub enum UpsertResponse {
@@ -11,7 +11,9 @@ pub enum UpsertResponse {
 }
 
 pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResponse> {
-    let inserted_card: Result<Card, sqlx::Error> = sqlx::query_as(
+    let card = CardDb::from(card.clone());
+    
+    let inserted_card: Result<CardDb, sqlx::Error> = sqlx::query_as(
         r#"
             INSERT INTO card (
                 card_id,
@@ -68,6 +70,8 @@ pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResp
     .bind(&card.updated_at)
     .fetch_one(pool)
     .await;
+
+    let inserted_card = inserted_card.map(|c| Card::from(c));
 
     match inserted_card {
         Ok(c) => {

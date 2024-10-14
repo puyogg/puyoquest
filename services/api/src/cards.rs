@@ -12,7 +12,7 @@ use sqlx::PgPool;
 pub mod template_data;
 
 pub mod types;
-use types::{Card, CardCreate};
+use types::{Card, CardCreate, CardDb};
 
 pub mod get_by_id;
 use get_by_id::{get_by_id, GetByIdResponse};

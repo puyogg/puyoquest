@@ -1,4 +1,5 @@
 use api::aliases::types::AliasCreate;
+use api::cards::template_data::CardTemplateData;
 use api::{cards::types::CardCreate, characters::types::CharacterCreate};
 use poem::http::StatusCode;
 use poem_openapi::types::ToJSON;
@@ -48,16 +49,7 @@ async fn fetches_template_from_wiki_creates_cache() -> Result<(), Box<dyn std::e
 
     test_seed(&pool).await?;
 
-    let mut expected_json = seed::cards::ARLE_07.to_json().unwrap();
-    let expected_json = expected_json.as_object_mut().unwrap();
-    expected_json.insert(
-        "wiki_template".to_string(),
-        json!({
-            "code": "201207",
-            "rarity": "7",
-            "name": "Arle"
-        }),
-    );
+    let expected_json = seed::cards::ARLE_07.to_json().unwrap();
 
     // Redis cache should be empty before making response
     let mut redis_conn = redis_client.conn.clone();
@@ -77,16 +69,16 @@ async fn fetches_template_from_wiki_creates_cache() -> Result<(), Box<dyn std::e
     response.assert_status(StatusCode::OK);
     response.assert_json(&expected_json).await;
 
-    let cached_json = redis_conn
+    let expected_wiki_template = serde_json::from_value::<CardTemplateData>(expected_json.get("wiki_template").unwrap().clone()).unwrap();
+    let cached_wiki_template = redis_conn
         .get::<String, Option<String>>(
             redis_client.prefixed(format!("template:{}", &seed::cards::ARLE_07.card_id).as_str()),
         )
         .await?
         .map(|j: String| serde_json::from_str::<Value>(&j).unwrap())
         .unwrap();
-
-    let expected_wiki_template_json = expected_json.get("wiki_template").unwrap().clone();
-    assert_eq!(expected_wiki_template_json, cached_json);
+    let cached_wiki_template = serde_json::from_value::<CardTemplateData>(cached_wiki_template).unwrap();
+    assert_eq!(expected_wiki_template, cached_wiki_template);
 
     Ok(())
 }
@@ -113,21 +105,16 @@ async fn fetches_template_from_cache() -> Result<(), Box<dyn std::error::Error>>
 
     test_seed(&pool).await?;
 
-    let expected_wiki_template = json!({
-        "code": "201207",
-        "rarity": "7",
-        "name": "Arle"
-    });
+    let expected_json = seed::cards::ARLE_07.to_json().unwrap();
+    let cached_wiki_template = expected_json.get("wiki_template").unwrap().clone();
+
     let mut redis_conn = redis_client.conn.clone();
     let _: std::result::Result<String, redis::RedisError> = redis_conn
         .set(
             redis_client.prefixed(format!("template:{}", &seed::cards::ARLE_07.card_id).as_str()),
-            expected_wiki_template.to_json_string(),
+            cached_wiki_template.to_json_string(),
         )
         .await;
-    let mut expected_json = seed::cards::ARLE_07.to_json().unwrap();
-    let expected_json = expected_json.as_object_mut().unwrap();
-    expected_json.insert("wiki_template".to_string(), expected_wiki_template);
 
     let response = client
         .get("/cards")

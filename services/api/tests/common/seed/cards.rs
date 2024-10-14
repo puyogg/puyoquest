@@ -1,4 +1,7 @@
-use api::cards::types::{Card, CardType};
+use api::cards::{
+    template_data::CardTemplateData,
+    types::{Card, CardType},
+};
 use chrono::{TimeZone, Utc};
 use lazy_static::lazy_static;
 use serde_json::json;
@@ -19,7 +22,14 @@ lazy_static! {
         card_type: CardType::Character,
         main_color: "Blue".to_string(),
         side_color: None,
-        wiki_template: Some(json!(r#"{ "as": "Active Skill", "ls": "Leader Skill" }"#)),
+        wiki_template: Some(
+            serde_json::from_value::<CardTemplateData>(json!({
+                "code": "201207",
+                "rarity": "7",
+                "name": "Arle"
+            }))
+            .unwrap()
+        ),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap()
     };
 }

@@ -19,6 +19,8 @@ use wiki::wiki_client::{FetchTemplate, WikiClient};
 
 use crate::cards::types::Card;
 
+use super::{template_data::CardTemplateData, types::CardDb};
+
 #[derive(Enum, Clone, Debug, Serialize, Deserialize)]
 #[oai(rename_all = "lowercase")]
 #[serde(rename_all = "lowercase")]
@@ -73,7 +75,7 @@ pub async fn query_find_by_char_id_and_rarity(
     rarity: &str,
     rarity_modifier: &Option<String>,
 ) -> Result<Option<Card>> {
-    let card: Option<Card> = match rarity_modifier {
+    let card: Option<CardDb> = match rarity_modifier {
         Some(modifier) => sqlx::query_as(
             r#"
                     SELECT *
@@ -105,6 +107,8 @@ pub async fn query_find_by_char_id_and_rarity(
         .await
         .map_err(InternalServerError),
     }?;
+
+    let card = card.map(|c| Card::from(c));
 
     Ok(card)
 }
@@ -203,6 +207,8 @@ pub async fn find_by_name_and_rarity(
             fetched_template
         }
     };
+    let wiki_template =
+        serde_json::from_value::<CardTemplateData>(wiki_template).map_err(InternalServerError)?;
 
     let card_with_template = Card {
         wiki_template: Some(wiki_template),

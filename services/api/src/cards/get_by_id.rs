@@ -6,7 +6,7 @@ use poem_openapi::{
 };
 use sqlx::PgPool;
 
-use super::Card;
+use super::{Card, CardDb};
 
 #[derive(ApiResponse)]
 pub enum GetByIdResponse {
@@ -18,7 +18,7 @@ pub enum GetByIdResponse {
 }
 
 pub async fn get_by_id(pool: Data<&PgPool>, id: Path<String>) -> Result<GetByIdResponse> {
-    let card: Option<Card> = sqlx::query_as(
+    let card_db: Option<CardDb> = sqlx::query_as(
         r#"
             SELECT *
             FROM card
@@ -31,6 +31,7 @@ pub async fn get_by_id(pool: Data<&PgPool>, id: Path<String>) -> Result<GetByIdR
     .await
     .map_err(InternalServerError)?;
 
+    let card = card_db.map(|c| Card::from(c));
     match card {
         Some(c) => Ok(GetByIdResponse::Card(Json(c))),
         None => Ok(GetByIdResponse::NotFound(PlainText(format!(
