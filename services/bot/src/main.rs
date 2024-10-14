@@ -12,6 +12,7 @@ async fn main() {
 
     let env = &*env_config::ENV;
     let guild_id = env.primary_server_id.clone();
+    let api_config = (&*env_config::API_CONFIG).clone();
 
     let commands = std::vec![
         commands::char_by_id::char_by_id(),
@@ -34,6 +35,7 @@ async fn main() {
                 .await?;
                 Ok(Data {
                     hello: "world!".to_string(),
+                    api_config,
                 })
             })
         })

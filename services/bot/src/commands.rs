@@ -1,3 +1,5 @@
+use sdk::apis::configuration::Configuration;
+
 pub mod char_by_id;
 pub mod card;
 
@@ -10,4 +12,5 @@ pub type Context<'a> = poise::Context<'a, Data, Error>;
 #[derive(Debug)]
 pub struct Data {
     pub hello: String,
+    pub api_config: Configuration,
 }

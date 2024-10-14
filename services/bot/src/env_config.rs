@@ -1,5 +1,6 @@
-use std::{cell::OnceCell, env};
+use std::env;
 use std::sync::LazyLock;
+use sdk::apis::configuration::Configuration;
 
 #[derive(Debug)]
 pub struct Env {
@@ -46,4 +47,18 @@ pub fn load_env_file() -> Result<Env, Box<dyn std::error::Error>> {
 
 pub static ENV: LazyLock<Env> = LazyLock::new(|| {
     load_env_file().unwrap()
+});
+
+pub static API_CONFIG: LazyLock<Configuration> = LazyLock::new(|| {
+    let env = &*ENV;
+
+    Configuration {
+        base_path: env.ppq_api_host.clone(),
+        user_agent: None,
+        client: reqwest::Client::new(),
+        basic_auth: None,
+        oauth_access_token: None,
+        bearer_access_token: None,
+        api_key: None,
+    }
 });

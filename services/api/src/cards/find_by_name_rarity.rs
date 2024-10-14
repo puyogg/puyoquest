@@ -63,10 +63,7 @@ pub enum FindByNameAndRarityResponse {
     MissingNameOrRarity(Json<BadRequestReason>),
 
     #[oai(status = 404)]
-    AliasNotFound(Json<NotFoundReason>),
-
-    #[oai(status = 404)]
-    RarityNotFound(Json<NotFoundReason>),
+    NotFound(Json<NotFoundReason>),
 }
 
 pub async fn query_find_by_char_id_and_rarity(
@@ -129,7 +126,7 @@ pub async fn find_by_name_and_rarity(
     let alias = match alias_lookup {
         Some(a) => a,
         None => {
-            return Ok(FindByNameAndRarityResponse::AliasNotFound(Json(
+            return Ok(FindByNameAndRarityResponse::NotFound(Json(
                 NotFoundReason {
                     not_found: NotFoundReasonEnum::Alias,
                 },
@@ -140,7 +137,7 @@ pub async fn find_by_name_and_rarity(
     let rarity_and_modifier = match parse_rarity(rarity_query) {
         Ok(r) => r,
         Err(_) => {
-            return Ok(FindByNameAndRarityResponse::RarityNotFound(Json(
+            return Ok(FindByNameAndRarityResponse::NotFound(Json(
                 NotFoundReason {
                     not_found: NotFoundReasonEnum::Rarity,
                 },
@@ -159,7 +156,7 @@ pub async fn find_by_name_and_rarity(
     let card = match card {
         Some(c) => c,
         None => {
-            return Ok(FindByNameAndRarityResponse::RarityNotFound(Json(
+            return Ok(FindByNameAndRarityResponse::NotFound(Json(
                 NotFoundReason {
                     not_found: NotFoundReasonEnum::Rarity,
                 },

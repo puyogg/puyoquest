@@ -1,4 +1,4 @@
-use fancy_regex::{Captures, Match, Regex};
+use fancy_regex::{Captures, Regex};
 use serde_json::Map;
 
 lazy_static::lazy_static! {
@@ -107,76 +107,69 @@ impl From<serde_json::Error> for ParseTemplateError {
     }
 }
 
-/// Parses the top-level key-value pairs from a PPQ MediaWiki template.
-pub fn parse_template(
-    raw_template: &str,
-) -> Result<serde_json::Value, ParseTemplateError> {
-    let template_no_comments = RE_MEDIAWIKI_COMMENT.replace_all(raw_template, "");
-
+pub fn parse_template(raw_template: &str) -> Result<serde_json::Value, ParseTemplateError> {
     let bracket_pairs = find_bracket_pairs(raw_template)?;
+    let template = RE_MEDIAWIKI_COMMENT.replace_all(raw_template, "");
 
-    // Ignore pairs that are 2 levels or more deep.
-    // I think those are nested templates that require even more parsing,
-    // but card data isn't in there afaik.
-    let pairs_to_ignore = bracket_pairs
+    let deep_pairs = bracket_pairs
         .iter()
         .filter(|pair| pair.depth >= 2)
         .collect::<Vec<&BracketPair>>();
 
-    let match_result = RE_TEMPLATE_KEY
-        .captures_iter(&template_no_comments)
-        .filter_map(|match_result| match_result.ok())
+    let capture_group_sets = RE_TEMPLATE_KEY
+        .captures_iter(&template)
+        .filter_map(|capture| capture.ok())
         .collect::<Vec<Captures>>();
 
-    let template_keys = match_result
+    let capture_group_sets = capture_group_sets
         .iter()
-        .filter_map(|match_result| match_result.get(0))
-        .collect::<Vec<Match>>();
-
-    let valid_keys = template_keys
-        .iter()
-        .filter(|key| {
+        .filter_map(|capture_groups| {
+            let key = capture_groups.get(2)?;
             let start = key.start();
-            let key_is_in_ignored_pair = pairs_to_ignore
+
+            let key_in_deep_pairs = deep_pairs
                 .iter()
-                .find(|pair| pair.start < start && start < pair.end)
-                .is_some();
-            return !key_is_in_ignored_pair;
+                .find(|pair| pair.start < start && start < pair.end).is_some();
+
+            match key_in_deep_pairs {
+                true => None,
+                false => Some(capture_groups),
+            }
         })
-        .collect::<Vec<&Match>>();
-    // .map(|key| String::from(key.as_str()))
-    // .collect::<Vec<String>>();
+        .collect::<Vec<&Captures>>();
 
-    let values = valid_keys
-        .iter()
-        .enumerate()
-        .map(|(pos, key)| {
-            // We're trying to find the start and end of the key/value in the wiki template.
-            // Most keys in the wiki template will look like: |card5=201207\n|card6=..., so we just take the current key to the end of the next.
-            // But the final key in the template could have |tokkun=...\n}}, so we need to ignore the 2 }} characters.
-            let target_pos = if pos == valid_keys.len() - 1 {
-                template_no_comments.len() - 2
-            } else {
-                valid_keys[pos + 1].start()
-            };
-
-            let start_index = key.start();
-            let value = template_no_comments[(start_index + key.as_str().len())..target_pos].trim();
-            value.to_string()
-        })
-        .collect::<Vec<String>>();
-
-    let mut key_value_map = Map::new();
-    for (pos, key) in match_result.iter().enumerate() {
-        let clean_key = key
+    let mut key_value_map: Map<String, serde_json::Value> = Map::new();
+    for (pos, capture_groups) in capture_group_sets.iter().enumerate() {
+        let key = capture_groups
             .get(2)
-            .ok_or(ParseTemplateError::RegexError(raw_template.to_string()))?
-            .as_str();
-        let value = &values[pos];
+            .ok_or(ParseTemplateError::RegexError(raw_template.to_string()))?;
 
+        let value_start = capture_groups
+            .get(3)
+            .ok_or(ParseTemplateError::RegexError(raw_template.to_string()))?
+            .end();
+
+        let next_group = if pos < capture_group_sets.len() - 1 {
+            capture_group_sets.get(pos + 1)
+        } else {
+            None
+        };
+
+        let value_end_bound = match next_group {
+            Some(next_group) => {
+                next_group
+                    .get(0)
+                    .ok_or(ParseTemplateError::RegexError(raw_template.to_string()))?
+                    .start()
+            },
+            None => template.len() - 2 // Ignore closing }}
+        };
+
+        let value = template[value_start..value_end_bound].trim();
+        let key = key.as_str();
         key_value_map.insert(
-            String::from(clean_key),
-            serde_json::Value::String(value.clone()),
+            String::from(key),
+            serde_json::Value::String(value.to_string()),
         );
     }
 

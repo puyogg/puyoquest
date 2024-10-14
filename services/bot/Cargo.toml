@@ -12,7 +12,7 @@ poise_macros = "0.6.1"
 reqwest = { version = "0.12.4", features = ["json"] }
 sdk = { path = "../../packages/sdk" }
 serde = { version = "1.0.203", features = ["derive"] }
-serde_json = { version = "1.0.117", features = ["raw_value"] }
+serde_json = { version = "1.0.117", features = ["std", "raw_value"] }
 tokio = { version = "1.21.2", features = ["macros", "rt-multi-thread"] }
 
 # [dependencies.serenity]
