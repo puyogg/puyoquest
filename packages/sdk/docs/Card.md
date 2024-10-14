@@ -17,7 +17,7 @@ Name | Type | Description | Notes
 **card_type** | [**models::CardType**](CardType.md) |  | 
 **main_color** | **String** |  | 
 **side_color** | Option<**String**> |  | [optional]
-**wiki_template** | Option<[**serde_json::Value**](.md)> |  | [optional]
+**wiki_template** | Option<[**models::CardTemplateData**](CardTemplateData.md)> |  | [optional]
 **updated_at** | **String** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

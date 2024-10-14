@@ -15,12 +15,12 @@ use serde::{Deserialize, Serialize};
 pub struct Character {
     #[serde(rename = "char_id")]
     pub char_id: String,
-    #[serde(rename = "name")]
-    pub name: String,
-    #[serde(rename = "jp_name")]
-    pub jp_name: String,
-    #[serde(rename = "link_name")]
-    pub link_name: String,
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "jp_name", skip_serializing_if = "Option::is_none")]
+    pub jp_name: Option<String>,
+    #[serde(rename = "link_name", skip_serializing_if = "Option::is_none")]
+    pub link_name: Option<String>,
     #[serde(rename = "main_color", skip_serializing_if = "Option::is_none")]
     pub main_color: Option<String>,
     #[serde(rename = "side_color", skip_serializing_if = "Option::is_none")]
@@ -36,12 +36,12 @@ pub struct Character {
 }
 
 impl Character {
-    pub fn new(char_id: String, name: String, jp_name: String, link_name: String, updated_at: String) -> Character {
+    pub fn new(char_id: String, updated_at: String) -> Character {
         Character {
             char_id,
-            name,
-            jp_name,
-            link_name,
+            name: None,
+            jp_name: None,
+            link_name: None,
             main_color: None,
             side_color: None,
             type1: None,

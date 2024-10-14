@@ -13,12 +13,12 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CharacterCreate {
-    #[serde(rename = "name")]
-    pub name: String,
-    #[serde(rename = "jp_name")]
-    pub jp_name: String,
-    #[serde(rename = "link_name")]
-    pub link_name: String,
+    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "jp_name", skip_serializing_if = "Option::is_none")]
+    pub jp_name: Option<String>,
+    #[serde(rename = "link_name", skip_serializing_if = "Option::is_none")]
+    pub link_name: Option<String>,
     #[serde(rename = "main_color", skip_serializing_if = "Option::is_none")]
     pub main_color: Option<String>,
     #[serde(rename = "side_color", skip_serializing_if = "Option::is_none")]
@@ -34,11 +34,11 @@ pub struct CharacterCreate {
 }
 
 impl CharacterCreate {
-    pub fn new(name: String, jp_name: String, link_name: String) -> CharacterCreate {
+    pub fn new() -> CharacterCreate {
         CharacterCreate {
-            name,
-            jp_name,
-            link_name,
+            name: None,
+            jp_name: None,
+            link_name: None,
             main_color: None,
             side_color: None,
             type1: None,

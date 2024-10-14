@@ -5,9 +5,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **char_id** | **String** |  | 
-**name** | **String** |  | 
-**jp_name** | **String** |  | 
-**link_name** | **String** |  | 
+**name** | Option<**String**> |  | [optional]
+**jp_name** | Option<**String**> |  | [optional]
+**link_name** | Option<**String**> |  | [optional]
 **main_color** | Option<**String**> |  | [optional]
 **side_color** | Option<**String**> |  | [optional]
 **type1** | Option<**String**> |  | [optional]
