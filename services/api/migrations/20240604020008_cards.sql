@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS card (
   main_color TEXT NOT NULL,
   side_color TEXT,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  wiki_template JSONB,
   CONSTRAINT fk_characters FOREIGN KEY (char_id) REFERENCES character(char_id) ON DELETE CASCADE
 );
 

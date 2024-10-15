@@ -32,7 +32,6 @@ pub struct CardCreate {
     pub card_type: CardType,
     pub main_color: String,
     pub side_color: Option<String>,
-    pub wiki_template: Option<CardTemplateData>,
     pub updated_at: Option<DateTime<Utc>>,
 }
 
@@ -54,11 +53,10 @@ pub struct CardDb {
     pub card_type: CardType,
     pub main_color: String,
     pub side_color: Option<String>,
-    pub wiki_template: Option<sqlx::types::Json<CardTemplateData>>,
     pub updated_at: Option<DateTime<Utc>>,
 }
 
-#[derive(Debug, Clone, Object, FromRow, Serialize, Deserialize)]
+#[derive(Debug, Clone, Object, Serialize, Deserialize)]
 pub struct Card {
     pub card_id: String,
     /// Foreign key to the character table
@@ -76,7 +74,11 @@ pub struct Card {
     pub card_type: CardType,
     pub main_color: String,
     pub side_color: Option<String>,
+
+    // These fields come from the cache. They're not saved in the db
     pub wiki_template: Option<CardTemplateData>,
+    // pub icon_url: Option<String>,
+
     pub updated_at: DateTime<Utc>,
 }
 
@@ -96,7 +98,6 @@ impl From<CardCreate> for CardDb {
             card_type: c.card_type,
             main_color: c.main_color,
             side_color: c.side_color,
-            wiki_template: c.wiki_template.map(|w| sqlx::types::Json(w)),
             updated_at: c.updated_at,
         }
     }
@@ -118,7 +119,6 @@ impl From<Card> for CardCreate {
             card_type: c.card_type,
             main_color: c.main_color,
             side_color: c.side_color,
-            wiki_template: c.wiki_template,
             updated_at: Some(c.updated_at),
         }
     }
@@ -140,7 +140,7 @@ impl From<CardDb> for Card {
             card_type: c.card_type,
             main_color: c.main_color,
             side_color: c.side_color,
-            wiki_template: c.wiki_template.map(|w| w.0),
+            wiki_template: None,
             updated_at: c.updated_at.unwrap_or_default(),
         }
     }

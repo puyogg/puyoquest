@@ -3,14 +3,17 @@ use std::sync::Arc;
 use crate::{
     aliases::query_find_by_alias,
     cache::RedisClient,
-    util::{normalize_name::normalize_name, parse_rarity::parse_rarity},
+    util::{
+        normalize_name::normalize_name, parse_rarity::parse_rarity,
+        resolve_card_template::resolve_card_template,
+    },
 };
 use poem::{
     error::{FailedDependency, InternalServerError},
     http::StatusCode,
     Result,
 };
-use poem_openapi::{payload::Json, ApiResponse, Enum, Object};
+use poem_openapi::{payload::Json, types::ToJSON, ApiResponse, Enum, Object};
 use redis::{AsyncCommands, RedisError};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -190,11 +193,19 @@ pub async fn find_by_name_and_rarity(
                 .fetch_template(&card.card_id)
                 .await
                 .map_err(|e| FailedDependency(e))?;
+            let fetched_template = serde_json::from_value::<CardTemplateData>(fetched_template)
+                .map_err(InternalServerError)?;
+            let fetched_template = resolve_card_template(wiki_client, fetched_template)
+                .await
+                .map_err(FailedDependency)?;
+            let fetched_template =
+                serde_json::value::to_value(fetched_template).map_err(InternalServerError)?;
 
             let key = redis_client.prefixed(format!("template:{}", &card.card_id).as_str());
 
-            let _: std::result::Result<String, RedisError> =
-                redis_conn.set(&key, &fetched_template.to_string()).await;
+            let _: std::result::Result<String, RedisError> = redis_conn
+                .set(&key, &fetched_template.to_json_string())
+                .await;
             let _ = redis_conn
                 .expire::<&str, i64>(
                     &key, 604800, // 7 days

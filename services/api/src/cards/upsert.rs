@@ -29,10 +29,9 @@ pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResp
                 card_type,
                 main_color,
                 side_color,
-                wiki_template,
                 updated_at
             )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
             ON CONFLICT (card_id)
             DO UPDATE SET
                 card_id = EXCLUDED.card_id,
@@ -48,7 +47,6 @@ pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResp
                 card_type = EXCLUDED.card_type,
                 main_color = EXCLUDED.main_color,
                 side_color = EXCLUDED.side_color,
-                wiki_template = EXCLUDED.wiki_template,
                 updated_at = EXCLUDED.updated_at
             RETURNING *
         "#,
@@ -66,7 +64,6 @@ pub async fn upsert(pool: &PgPool, card: &CardCreate) -> poem::Result<UpsertResp
     .bind(&card.card_type)
     .bind(&card.main_color)
     .bind(&card.side_color)
-    .bind(&card.wiki_template)
     .bind(&card.updated_at)
     .fetch_one(pool)
     .await;

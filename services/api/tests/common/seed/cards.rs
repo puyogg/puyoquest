@@ -26,7 +26,8 @@ lazy_static! {
             serde_json::from_value::<CardTemplateData>(json!({
                 "code": "201207",
                 "rarity": "7",
-                "name": "Arle"
+                "name": "Arle",
+                "ase": "RESOLVED_SKILL_TEXT",
             }))
             .unwrap()
         ),
