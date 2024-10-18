@@ -2,6 +2,7 @@ use super::{Context, Error};
 use crate::{commands::Data, util::parse_card_query::parse_alias_and_rarity};
 use sdk::apis::cards_api;
 use serde::Serialize;
+use crate::embeds::card_embed;
 
 /// Look up a character or card from the PPQ Wiki
 #[poise::command(slash_command)]
@@ -30,6 +31,11 @@ pub async fn card(
                             &c
                         ))
                         .await?;
+
+                        ctx.send(poise::CreateReply::default()
+                            .content("OK?")
+                            .embed(card_embed())
+                        ).await?;
                         return Ok(());
                     }
                     Err(e) => {

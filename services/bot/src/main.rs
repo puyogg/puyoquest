@@ -4,6 +4,7 @@ use poise::{serenity_prelude as serenity, Framework};
 mod util;
 mod commands;
 mod env_config;
+mod embeds;
 
 #[tokio::main]
 async fn main() {
