@@ -22,13 +22,15 @@ pub struct ResolveWikiTextResponse {
 #[derive(Debug)]
 pub enum ResolveWikiTextError {
     Reqwest(reqwest::Error),
+    ParsingError(String),
 }
 
 impl std::error::Error for ResolveWikiTextError {}
 impl std::fmt::Display for ResolveWikiTextError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ResolveWikiTextError::Reqwest(error) => error.fmt(f),
+            Self::Reqwest(error) => error.fmt(f),
+            Self::ParsingError(error) =>  error.fmt(f),
         }
     }
 }

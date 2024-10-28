@@ -11,7 +11,17 @@ async fn resolve_wiki_text(
             let t = t.as_str();
             let res = wiki_client.resolve_wiki_text(t).await?;
 
-            Ok(Some(res.parse.text))
+            let html = html2text::from_read(res.parse.text.as_bytes(), 999)
+                .map_err(|_| {
+                    ResolveWikiTextError::ParsingError(format!(
+                        "Error parsing wiki text html:{}",
+                        t
+                    ))
+                })?
+                .trim()
+                .to_string();
+
+            Ok(Some(html))
         }
     }
 }
