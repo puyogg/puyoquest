@@ -6,6 +6,7 @@ API and Discord bot for the Puyo Quest wiki.
 
 You will need these tools installed:
 
+- [git lfs](https://git-lfs.com/)
 - [Rust](https://www.rust-lang.org/)
 - Node.js (recommend installing via [nvm](https://github.com/nvm-sh/nvm))
   - [pnpm](https://pnpm.io/)

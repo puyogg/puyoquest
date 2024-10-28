@@ -20,29 +20,12 @@ pub async fn card(
 
         match card {
             Ok(c) => {
-                let c_text = serde_json::to_string(&c);
-                match c_text {
-                    Ok(c) => {
-                        let json = serde_json::value::to_raw_value(&c)?;
-                        let pretty = serde_json::to_string_pretty(&json)?;
+                let embed = card_embed(&c);
+                ctx.send(poise::CreateReply::default()
+                    .embed(embed)
+                ).await?;
 
-                        ctx.say(format!(
-                            "```\n{}\n```",
-                            &c
-                        ))
-                        .await?;
-
-                        ctx.send(poise::CreateReply::default()
-                            .content("OK?")
-                            .embed(card_embed())
-                        ).await?;
-                        return Ok(());
-                    }
-                    Err(e) => {
-                        ctx.say(format!("Failed to serialize Card: {}", e)).await?;
-                        return Ok(());
-                    }
-                };
+                return Ok(());
             }
             Err(e) => {
                 ctx.say("Failed to find card; falling back to character query")
