@@ -42,14 +42,14 @@ pub struct Card {
     pub main_color: String,
     #[serde(rename = "side_color", skip_serializing_if = "Option::is_none")]
     pub side_color: Option<String>,
-    #[serde(rename = "wiki_template", skip_serializing_if = "Option::is_none")]
-    pub wiki_template: Option<Box<models::CardTemplateData>>,
+    #[serde(rename = "wiki_template")]
+    pub wiki_template: Box<models::CardTemplateData>,
     #[serde(rename = "updated_at")]
     pub updated_at: String,
 }
 
 impl Card {
-    pub fn new(card_id: String, char_id: String, rarity: String, name: String, name_normalized: String, link_name: String, link_name_normalized: String, card_type: models::CardType, main_color: String, updated_at: String) -> Card {
+    pub fn new(card_id: String, char_id: String, rarity: String, name: String, name_normalized: String, link_name: String, link_name_normalized: String, card_type: models::CardType, main_color: String, wiki_template: models::CardTemplateData, updated_at: String) -> Card {
         Card {
             card_id,
             char_id,
@@ -64,7 +64,7 @@ impl Card {
             card_type,
             main_color,
             side_color: None,
-            wiki_template: None,
+            wiki_template: Box::new(wiki_template),
             updated_at,
         }
     }

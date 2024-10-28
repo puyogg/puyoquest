@@ -76,7 +76,7 @@ pub struct Card {
     pub side_color: Option<String>,
 
     // These fields come from the cache. They're not saved in the db
-    pub wiki_template: Option<CardTemplateData>,
+    pub wiki_template: CardTemplateData,
     // pub icon_url: Option<String>,
 
     pub updated_at: DateTime<Utc>,
@@ -140,7 +140,7 @@ impl From<CardDb> for Card {
             card_type: c.card_type,
             main_color: c.main_color,
             side_color: c.side_color,
-            wiki_template: None,
+            wiki_template: CardTemplateData::default(),
             updated_at: c.updated_at.unwrap_or_default(),
         }
     }

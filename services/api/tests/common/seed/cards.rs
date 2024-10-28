@@ -22,15 +22,13 @@ lazy_static! {
         card_type: CardType::Character,
         main_color: "Blue".to_string(),
         side_color: None,
-        wiki_template: Some(
-            serde_json::from_value::<CardTemplateData>(json!({
-                "code": "201207",
-                "rarity": "7",
-                "name": "Arle",
-                "ase": "RESOLVED_SKILL_TEXT",
-            }))
-            .unwrap()
-        ),
+        wiki_template: serde_json::from_value::<CardTemplateData>(json!({
+            "code": "201207",
+            "rarity": "7",
+            "name": "Arle",
+            "ase": "RESOLVED_SKILL_TEXT",
+        }))
+        .unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap()
     };
 }

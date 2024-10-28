@@ -42,8 +42,6 @@ pub struct CardCreate {
     pub main_color: String,
     #[serde(rename = "side_color", skip_serializing_if = "Option::is_none")]
     pub side_color: Option<String>,
-    #[serde(rename = "wiki_template", skip_serializing_if = "Option::is_none")]
-    pub wiki_template: Option<Box<models::CardTemplateData>>,
     #[serde(rename = "updated_at", skip_serializing_if = "Option::is_none")]
     pub updated_at: Option<String>,
 }
@@ -64,7 +62,6 @@ impl CardCreate {
             card_type,
             main_color,
             side_color: None,
-            wiki_template: None,
             updated_at: None,
         }
     }

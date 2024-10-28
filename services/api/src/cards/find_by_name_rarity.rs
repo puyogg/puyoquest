@@ -74,7 +74,7 @@ pub async fn query_find_by_char_id_and_rarity(
     char_id: &str,
     rarity: &str,
     rarity_modifier: &Option<String>,
-) -> Result<Option<Card>> {
+) -> Result<Option<CardDb>> {
     let card: Option<CardDb> = match rarity_modifier {
         Some(modifier) => sqlx::query_as(
             r#"
@@ -107,8 +107,6 @@ pub async fn query_find_by_char_id_and_rarity(
         .await
         .map_err(InternalServerError),
     }?;
-
-    let card = card.map(|c| Card::from(c));
 
     Ok(card)
 }
@@ -187,7 +185,10 @@ pub async fn find_by_name_and_rarity(
         });
 
     let wiki_template = match cached_wiki_template {
-        Some(c) => c.clone(),
+        Some(c) => {
+            // println!("Found cached wiki template");
+            c.clone()
+        },
         None => {
             let fetched_template = wiki_client
                 .fetch_template(&card.card_id)
@@ -219,8 +220,8 @@ pub async fn find_by_name_and_rarity(
         serde_json::from_value::<CardTemplateData>(wiki_template).map_err(InternalServerError)?;
 
     let card_with_template = Card {
-        wiki_template: Some(wiki_template),
-        ..card
+        wiki_template,
+        ..Card::from(card)
     };
 
     Ok(FindByNameAndRarityResponse::Card(Json(card_with_template)))
