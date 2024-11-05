@@ -17,6 +17,7 @@ pub mod characters;
 pub mod db;
 pub mod healthcheck;
 pub mod util;
+pub mod aws;
 
 pub type Api = poem::middleware::AddDataEndpoint<
     poem::middleware::AddDataEndpoint<
