@@ -16,13 +16,13 @@ use poem::{
 use poem_openapi::{payload::Json, types::ToJSON, ApiResponse, Enum, Object};
 use redis::{AsyncCommands, RedisError};
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use sqlx::PgPool;
-use wiki::wiki_client::{FetchTemplate, WikiClient};
+use wiki::wiki_client::WikiClient;
 
 use crate::cards::types::Card;
+use crate::cache;
 
-use super::{template_data::CardTemplateData, types::CardDb};
+use super::types::CardDb;
 
 #[derive(Enum, Clone, Debug, Serialize, Deserialize)]
 #[oai(rename_all = "lowercase")]
@@ -118,8 +118,6 @@ pub async fn find_by_name_and_rarity(
     name_query: &str,
     rarity_query: &str,
 ) -> Result<FindByNameAndRarityResponse> {
-    let mut redis_conn = redis_client.conn.clone();
-
     let alias_name = normalize_name(name_query);
 
     let alias_lookup = query_find_by_alias(pool, &alias_name).await?;
@@ -165,59 +163,12 @@ pub async fn find_by_name_and_rarity(
         }
     };
 
-    // get wiki_template from redis cache
-    let cached_wiki_template = redis_conn
-        .get::<String, Option<String>>(
-            redis_client.prefixed(format!("template:{}", &card.card_id).as_str()),
-        )
-        .await
-        .inspect_err(|e| println!("{e}"))
-        .map_err(InternalServerError)?
-        .and_then(|w| {
-            let list = serde_json::from_str::<Value>(&w);
-
-            if let Err(e) = &list {
-                println!("Error parsing cached wiki_template for: {}", &card.card_id);
-                println!("{}", e);
-            }
-
-            list.ok()
-        });
-
-    let wiki_template = match cached_wiki_template {
-        Some(c) => {
-            // println!("Found cached wiki template");
-            c.clone()
-        },
-        None => {
-            let fetched_template = wiki_client
-                .fetch_template(&card.card_id)
-                .await
-                .map_err(|e| FailedDependency(e))?;
-            let fetched_template = serde_json::from_value::<CardTemplateData>(fetched_template)
-                .map_err(InternalServerError)?;
-            let fetched_template = resolve_card_template(wiki_client, fetched_template)
-                .await
-                .map_err(FailedDependency)?;
-            let fetched_template =
-                serde_json::value::to_value(fetched_template).map_err(InternalServerError)?;
-
-            let key = redis_client.prefixed(format!("template:{}", &card.card_id).as_str());
-
-            let _: std::result::Result<String, RedisError> = redis_conn
-                .set(&key, &fetched_template.to_json_string())
-                .await;
-            let _ = redis_conn
-                .expire::<&str, i64>(
-                    &key, 604800, // 7 days
-                )
-                .await;
-
-            fetched_template
-        }
-    };
-    let wiki_template =
-        serde_json::from_value::<CardTemplateData>(wiki_template).map_err(InternalServerError)?;
+    let wiki_template = cache::card_template_data(
+        redis_client,
+        wiki_client,
+        &card.card_id,
+        &redis_client.prefixed(format!("template:{}", &card.card_id).as_str()),
+    ).await?;
 
     let card_with_template = Card {
         wiki_template,
