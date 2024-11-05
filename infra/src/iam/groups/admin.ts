@@ -3,6 +3,7 @@ import * as aws from "@pulumi/aws";
 import { AWS_ACCOUNT_ID } from "../../constants.js";
 import { adminRole } from "../roles/admin.js";
 import { pulumiLocalRole } from "../roles/pulumi-local.js";
+import { ec2Role } from "../../services/api.js";
 
 export const adminGroup = new aws.iam.Group("adminGroup", {
   name: "AdminGroup",
@@ -23,6 +24,12 @@ const groupPolicy = new aws.iam.GroupPolicy("adminGroupPolicy", {
         Action: ["sts:AssumeRole"],
         Effect: "Allow",
         Resource: pulumiLocalRole.arn,
+        Sid: "",
+      },
+      {
+        Action: ["sts:AssumeRole"],
+        Effect: "Allow",
+        Resource: ec2Role.arn,
         Sid: "",
       },
     ],

@@ -83,6 +83,7 @@ export const pulumiRequiredManagedPolicies = [
   "arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator",
   "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
   "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+  aws.iam.ManagedPolicy.CloudFrontFullAccess,
 ];
 
 const policyAttachments = pulumiRequiredManagedPolicies.map((arn) => {

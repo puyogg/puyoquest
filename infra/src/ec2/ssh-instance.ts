@@ -15,6 +15,7 @@ export class Ec2InstanceSsh extends pulumi.ComponentResource {
       isPublic?: boolean;
       ipv6Only?: boolean;
       userData?: string;
+      iamInstanceProfile: pulumi.Output<string>;
     },
     opts?: pulumi.ComponentResourceOptions
   ) {
@@ -28,6 +29,7 @@ export class Ec2InstanceSsh extends pulumi.ComponentResource {
       nameTag,
       isPublic,
       userData,
+      iamInstanceProfile,
     } = args;
 
     const ami = aws.ec2.getAmi({
@@ -50,6 +52,7 @@ export class Ec2InstanceSsh extends pulumi.ComponentResource {
       tags: {
         name: nameTag,
       },
+      iamInstanceProfile,
     });
 
     this.registerOutputs({
