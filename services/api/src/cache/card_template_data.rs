@@ -14,12 +14,12 @@ pub async fn card_template_data(
     redis_client: &Arc<RedisClient>, // change to redisclient
     wiki_client: &WikiClient,
     card_id: &str,
-    key: &str, // TODO replace with .prefixed
 ) -> Result<CardTemplateData, poem::Error> {
     let mut redis_conn = redis_client.conn.clone();
+    let key = redis_client.prefixed(&format!("template:{}", &card_id));
 
     let cached_wiki_template = redis_conn
-        .get::<&str, Option<String>>(key)
+        .get::<&str, Option<String>>(&key)
         .await
         .inspect_err(|e| println!("{e}"))
         .map_err(InternalServerError)?
