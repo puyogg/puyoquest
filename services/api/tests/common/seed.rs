@@ -7,6 +7,7 @@ pub mod aliases;
 pub mod cards;
 pub mod characters;
 
+#[allow(dead_code)]
 pub async fn seed_arle(pool: &PgPool) -> Result<(), Box<dyn std::error::Error>> {
     let character = CharacterCreate::from(characters::ARLE.clone());
     let card = CardCreate::from(cards::ARLE_07.clone());

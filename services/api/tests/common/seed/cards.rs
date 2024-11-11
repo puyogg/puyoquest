@@ -29,6 +29,9 @@ lazy_static! {
             "ase": "RESOLVED_SKILL_TEXT",
         }))
         .unwrap(),
-        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap()
+        series_name: Some("Original Puyo Puyo Series".to_string()),
+        is_lore: false,
+        cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
 }

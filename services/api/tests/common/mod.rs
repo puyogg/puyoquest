@@ -74,6 +74,7 @@ pub async fn create_test_client(
         TestClient<api::Api>,
         TestDbName,
         std::sync::Arc<RedisClient>,
+        WikiClient,
     ),
     Box<dyn std::error::Error>,
 > {
@@ -85,8 +86,8 @@ pub async fn create_test_client(
     let redis_client = std::sync::Arc::new(
         create_redis_connection("0.0.0.0", "36379", redis_key_prefix).await,
     );
-    let api = init_api(pool, wiki_client, redis_client.clone());
+    let api = init_api(pool, wiki_client.clone(), redis_client.clone());
     let client = TestClient::new(api);
 
-    Ok((client, test_db_name, redis_client))
+    Ok((client, test_db_name, redis_client, wiki_client))
 }

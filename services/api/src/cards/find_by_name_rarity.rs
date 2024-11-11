@@ -3,24 +3,16 @@ use std::sync::Arc;
 use crate::{
     aliases::query_find_by_alias,
     cache::RedisClient,
-    util::{
-        normalize_name::normalize_name, parse_rarity::parse_rarity,
-        resolve_card_template::resolve_card_template,
-    },
+    util::{normalize_name::normalize_name, parse_rarity::parse_rarity},
 };
-use poem::{
-    error::{FailedDependency, InternalServerError},
-    http::StatusCode,
-    Result,
-};
-use poem_openapi::{payload::Json, types::ToJSON, ApiResponse, Enum, Object};
-use redis::{AsyncCommands, RedisError};
+use poem::{error::InternalServerError, http::StatusCode, Result};
+use poem_openapi::{payload::Json, ApiResponse, Enum, Object};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use wiki::wiki_client::WikiClient;
 
-use crate::cards::types::Card;
 use crate::cache;
+use crate::cards::types::Card;
 
 use super::types::CardDb;
 
@@ -163,15 +155,21 @@ pub async fn find_by_name_and_rarity(
         }
     };
 
-    let wiki_template = cache::card_template_data(
-        redis_client,
-        wiki_client,
-        &card.card_id,
-        &redis_client.prefixed(format!("template:{}", &card.card_id).as_str()),
-    ).await?;
+    let (wiki_template, series_data) = futures::try_join!(
+        cache::card_template_data(redis_client, wiki_client, &card.card_id,),
+        cache::character_series_data(redis_client, wiki_client, &card.char_id, &card.link_name,),
+    )?;
 
     let card_with_template = Card {
         wiki_template,
+        series_name: match &series_data {
+            None => None,
+            Some(s) => Some(String::from(&s.0)),
+        },
+        is_lore: match &series_data {
+            None => false,
+            Some(s) => s.1,
+        },
         ..Card::from(card)
     };
 

@@ -5,7 +5,7 @@ use sqlx::FromRow;
 
 use super::template_data::CardTemplateData;
 
-#[derive(Enum, Clone, Debug, Serialize, Deserialize, sqlx::Type)]
+#[derive(Enum, Clone, Debug, Serialize, Deserialize, sqlx::Type, PartialEq, Eq)]
 #[sqlx(type_name = "card_type", rename_all = "lowercase")]
 #[oai(rename_all = "lowercase")]
 #[serde(rename_all = "lowercase")]
@@ -56,7 +56,7 @@ pub struct CardDb {
     pub updated_at: Option<DateTime<Utc>>,
 }
 
-#[derive(Debug, Clone, Object, Serialize, Deserialize)]
+#[derive(Debug, Clone, Object, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Card {
     pub card_id: String,
     /// Foreign key to the character table
@@ -77,7 +77,10 @@ pub struct Card {
 
     // These fields come from the cache. They're not saved in the db
     pub wiki_template: CardTemplateData,
+    pub series_name: Option<String>,
+    pub is_lore: bool,
     // pub icon_url: Option<String>,
+    pub cached_at: DateTime<Utc>,
 
     pub updated_at: DateTime<Utc>,
 }
@@ -142,6 +145,9 @@ impl From<CardDb> for Card {
             side_color: c.side_color,
             wiki_template: CardTemplateData::default(),
             updated_at: c.updated_at.unwrap_or_default(),
+            series_name: None,
+            is_lore: false,
+            cached_at: Utc::now(),
         }
     }
 }
