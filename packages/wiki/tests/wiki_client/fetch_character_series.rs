@@ -52,7 +52,7 @@ async fn gets_series_from_character() -> Result<(), Box<dyn std::error::Error>> 
         .await;
 
     Mock::given(method("GET"))
-        .and(path("/Template:4203"))
+        .and(path("/Template:S089"))
         .respond_with(ResponseTemplate::new(200).set_body_string(HEAVENLY_KNIGHT_SERIES_RAW))
         .mount(&mock_server)
         .await;

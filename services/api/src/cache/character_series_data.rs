@@ -8,9 +8,9 @@ use wiki::wiki_client::{FetchCharacterSeries, WikiClient};
 use crate::RedisClient;
 
 #[derive(Debug, Serialize, Deserialize)]
-struct SeriesStuff {
-    series_name: String,
-    is_lore: bool,
+pub struct SeriesNameLore {
+    pub series_name: String,
+    pub is_lore: bool,
 }
 
 enum CacheResponse {
@@ -38,8 +38,8 @@ pub async fn character_series_data(
                 return Some(CacheResponse::IntentionallyBlank);
             }
 
-            let series_result = serde_json::from_str::<SeriesStuff>(&s).map(
-                |SeriesStuff {
+            let series_result = serde_json::from_str::<SeriesNameLore>(&s).map(
+                |SeriesNameLore {
                      series_name,
                      is_lore,
                  }| { (series_name, is_lore) },
@@ -73,7 +73,7 @@ pub async fn character_series_data(
             let cache_string = match &fetched {
                 None => "".to_string(),
                 Some(f) => {
-                    let obj = SeriesStuff {
+                    let obj = SeriesNameLore {
                         series_name: f.0.clone(),
                         is_lore: f.1.clone(),
                     };
