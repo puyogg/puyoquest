@@ -1,7 +1,5 @@
 use api::{
-    cache::{create_redis_connection, RedisClient},
-    db::{create_pool_from_opts, PoolOpts},
-    init_api,
+    aws::s3::S3BackupClient, cache::{create_redis_connection, RedisClient}, config::ApiConfig, db::{create_pool_from_opts, PoolOpts}, init_api
 };
 
 use poem::test::TestClient;
@@ -86,7 +84,9 @@ pub async fn create_test_client(
     let redis_client = std::sync::Arc::new(
         create_redis_connection("0.0.0.0", "36379", redis_key_prefix).await,
     );
-    let api = init_api(pool, wiki_client.clone(), redis_client.clone());
+    let api_config = std::sync::Arc::new(ApiConfig::new().await?);
+    let s3_backup_client = std::sync::Arc::new(S3BackupClient::new().await);
+    let api = init_api(api_config, pool, wiki_client.clone(), redis_client.clone(), s3_backup_client);
     let client = TestClient::new(api);
 
     Ok((client, test_db_name, redis_client, wiki_client))

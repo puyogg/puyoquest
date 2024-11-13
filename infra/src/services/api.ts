@@ -46,6 +46,12 @@ const distribution = new aws.cloudfront.Distribution("api-pn-image-cache-cfd", {
   },
 });
 
+const distributionUrl = new aws.ssm.Parameter("api-cfd-base-url", {
+  name: "IMAGE_CACHE_BASE_URL",
+  type: aws.ssm.ParameterType.String,
+  value: distribution.domainName,
+});
+
 const bucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
   statements: [
     {

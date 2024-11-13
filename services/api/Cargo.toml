@@ -7,11 +7,13 @@ edition = "2021"
 async-trait = "0.1.83"
 aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
 aws-sdk-s3 = "1.59.0"
+aws-sdk-ssm = "1.54.0"
 chrono = { version = "0.4", features = ["serde"] }
 fancy-regex = "0.13.0"
 futures = "0.3.30"
 html2text = "0.13.0"
 lazy_static = "1.4.0"
+moka = { version = "0.12.8", features = ["future"] }
 poem = { version = "3.1.1", features = ["server", "test"] }
 poem-openapi = { version = "5.1.2", features = ["swagger-ui", "chrono"] }
 rand = "0.8.5"

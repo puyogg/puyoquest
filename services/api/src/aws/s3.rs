@@ -1,11 +1,22 @@
 use poem::error::InternalServerError;
-pub struct S3Client {
-    pub client: aws_sdk_s3::Client,
+pub struct S3BackupClient {
+    pub s3_client: aws_sdk_s3::Client,
     pub reqwest_client: reqwest::Client,
     pub image_cache_bucket_name: String,
 }
 
-impl S3Client {
+impl S3BackupClient {
+    pub async fn new() -> S3BackupClient {
+        let sdk_config = aws_config::from_env().load().await;
+        let s3_client = aws_sdk_s3::Client::new(&sdk_config);
+
+        S3BackupClient {
+            s3_client,
+            reqwest_client: reqwest::Client::new(),
+            image_cache_bucket_name: "api-pn-image-cache".to_string(),
+        }
+    }
+
     pub async fn backup_image_from_url(self, key: &str, url: &str) -> Result<(), poem::Error> {
         let pn_response = self
             .reqwest_client
@@ -28,7 +39,7 @@ impl S3Client {
             .map_err(InternalServerError)?;
 
         let s3_response = self
-            .client
+            .s3_client
             .put_object()
             .bucket(self.image_cache_bucket_name)
             .key(key)
