@@ -1,10 +1,14 @@
 use api::{
-    aws::s3::S3BackupClient, cache::{create_redis_connection, RedisClient}, config::ApiConfig, db::{create_pool_from_opts, PoolOpts}, init_api
+    aws::s3::S3BackupClient,
+    cache::{create_redis_connection, RedisClient},
+    config::ApiConfig,
+    db::{create_pool_from_opts, PoolOpts},
+    init_api,
 };
 
 use poem::test::TestClient;
-use uuid::Uuid;
 use rand::distributions::{Alphanumeric, DistString};
+use uuid::Uuid;
 use wiki::wiki_client::WikiClient;
 pub mod seed;
 
@@ -73,21 +77,36 @@ pub async fn create_test_client(
         TestDbName,
         std::sync::Arc<RedisClient>,
         WikiClient,
+        std::sync::Arc<S3BackupClient>,
     ),
     Box<dyn std::error::Error>,
 > {
-    let redis_key_prefix = format!("{}_", Alphanumeric.sample_string(&mut rand::thread_rng(), 16));
-    
+    let redis_key_prefix = format!(
+        "{}_",
+        Alphanumeric.sample_string(&mut rand::thread_rng(), 16)
+    );
+
     let test_db_name = request_test_db().await?;
     let pool = create_test_pool(&test_db_name).await?;
     let wiki_client = WikiClient::new(pn_api_url, pn_base_url);
-    let redis_client = std::sync::Arc::new(
-        create_redis_connection("0.0.0.0", "36379", redis_key_prefix).await,
-    );
+    let redis_client =
+        std::sync::Arc::new(create_redis_connection("0.0.0.0", "36379", redis_key_prefix).await);
     let api_config = std::sync::Arc::new(ApiConfig::new().await?);
     let s3_backup_client = std::sync::Arc::new(S3BackupClient::new().await);
-    let api = init_api(api_config, pool, wiki_client.clone(), redis_client.clone(), s3_backup_client);
+    let api = init_api(
+        api_config,
+        pool,
+        wiki_client.clone(),
+        redis_client.clone(),
+        s3_backup_client.clone(),
+    );
     let client = TestClient::new(api);
 
-    Ok((client, test_db_name, redis_client, wiki_client))
+    Ok((
+        client,
+        test_db_name,
+        redis_client,
+        wiki_client,
+        s3_backup_client,
+    ))
 }

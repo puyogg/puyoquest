@@ -34,4 +34,30 @@ lazy_static! {
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
+
+    pub static ref ALLY_AND_RAFISOL_07: Card = Card {
+        card_id: "545507".to_string(),
+        char_id: "5455".to_string(),
+        rarity: "7".to_string(),
+        rarity_modifier: None,
+        name: "Ally & Rafisol".to_string(),
+        name_normalized: "ally & rafisol".nfkd().to_string(),
+        jp_name: Some("アリィ＆ラフィソル".to_string()),
+        jp_name_normalized: Some("アリィ＆ラフィソル".nfkd().to_string()),
+        link_name: "Ally & Rafisol".to_string(),
+        link_name_normalized: "ally & rafisol".to_string(),
+        card_type: CardType::Character,
+        main_color: "Purple".to_string(),
+        side_color: Some("Green".to_string()),
+        wiki_template: serde_json::from_value::<CardTemplateData>(json!({
+            "code": "545507",
+            "rarity": "7",
+            "name": "Ally & Rafisol",
+            "ase": "RESOLVED_SKILL_TEXT",
+        })).unwrap(),
+        series_name: None,
+        is_lore: false,
+        cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
 }

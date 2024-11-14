@@ -17,7 +17,7 @@ impl S3BackupClient {
         }
     }
 
-    pub async fn backup_image_from_url(self, key: &str, url: &str) -> Result<(), poem::Error> {
+    pub async fn backup_image_from_url(&self, key: &str, url: &str) -> Result<(), poem::Error> {
         let pn_response = self
             .reqwest_client
             .get(url)
@@ -41,7 +41,7 @@ impl S3BackupClient {
         let s3_response = self
             .s3_client
             .put_object()
-            .bucket(self.image_cache_bucket_name)
+            .bucket(&self.image_cache_bucket_name)
             .key(key)
             .body(image)
             .content_type(content_type)
@@ -49,8 +49,8 @@ impl S3BackupClient {
             .await
             .map_err(InternalServerError)?;
 
-        let checksum = s3_response.checksum_sha256.unwrap_or("".to_string());
-        print!("checksum {}", checksum);
+        // let checksum = s3_response.checksum_sha256.unwrap_or("".to_string());
+        // print!("checksum {}", checksum);
 
         Ok(())
     }

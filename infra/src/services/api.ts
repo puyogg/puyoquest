@@ -49,7 +49,7 @@ const distribution = new aws.cloudfront.Distribution("api-pn-image-cache-cfd", {
 const distributionUrl = new aws.ssm.Parameter("api-cfd-base-url", {
   name: "IMAGE_CACHE_BASE_URL",
   type: aws.ssm.ParameterType.String,
-  value: distribution.domainName,
+  value: pulumi.interpolate`https://${distribution.domainName}`,
 });
 
 const bucketPolicyDocument = aws.iam.getPolicyDocumentOutput({
@@ -107,6 +107,11 @@ const ec2RolePolicyDocument = aws.iam.getPolicyDocumentOutput({
       effect: "Allow",
       actions: ["s3:GetObject", "s3:PutObject"],
       resources: [pulumi.interpolate`${imageCacheBucket.arn}/*`],
+    },
+    {
+      effect: "Allow",
+      actions: ["ssm:GetParameter"],
+      resources: [distributionUrl.arn],
     },
   ],
 });
