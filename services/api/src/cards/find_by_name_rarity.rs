@@ -1,9 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    aliases::query_find_by_alias,
-    cache::RedisClient,
-    util::{normalize_name::normalize_name, parse_rarity::parse_rarity},
+    aliases::query_find_by_alias, aws::s3::S3BackupClient, cache::RedisClient, config::ApiConfig, util::{normalize_name::normalize_name, parse_rarity::parse_rarity}
 };
 use poem::{error::InternalServerError, http::StatusCode, Result};
 use poem_openapi::{payload::Json, ApiResponse, Enum, Object};
@@ -104,9 +102,11 @@ pub async fn query_find_by_char_id_and_rarity(
 }
 
 pub async fn find_by_name_and_rarity(
+    api_config: &ApiConfig,
     pool: &PgPool,
     wiki_client: &WikiClient,
     redis_client: &Arc<RedisClient>,
+    s3_client: &S3BackupClient,
     name_query: &str,
     rarity_query: &str,
 ) -> Result<FindByNameAndRarityResponse> {
@@ -155,9 +155,11 @@ pub async fn find_by_name_and_rarity(
         }
     };
 
-    let (wiki_template, series_data) = futures::try_join!(
+    let image_base_url = api_config.get_image_cache_domain().await?;
+    let (wiki_template, series_data, card_icons, ..) = futures::try_join!(
         cache::card_template_data(redis_client, wiki_client, &card.card_id,),
-        cache::character_series_data(redis_client, wiki_client, &card.char_id, &card.link_name,),
+        cache::character_series_data(redis_client, wiki_client, &card.char_id, &card.link_name),
+        cache::card_icons(redis_client, wiki_client, s3_client, &image_base_url, &card)
     )?;
 
     let card_with_template = Card {
@@ -170,6 +172,7 @@ pub async fn find_by_name_and_rarity(
             None => false,
             Some(s) => s.1,
         },
+        icons: card_icons,
         ..Card::from(card)
     };
 

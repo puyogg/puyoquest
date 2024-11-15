@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::{api_tag::ApiTag, cache::RedisClient};
+use crate::{api_tag::ApiTag, aws::s3::S3BackupClient, cache::RedisClient, config::ApiConfig};
 use poem::web::Data;
 use poem_openapi::{
     param::{Path, Query},
@@ -38,9 +38,11 @@ impl CardsRouter {
     #[oai(path = "/", method = "get")]
     async fn find(
         &self,
+        api_config: Data<&Arc<ApiConfig>>,
         pool: Data<&PgPool>,
         wiki_client: Data<&wiki::wiki_client::WikiClient>,
         redis_client: Data<&Arc<RedisClient>>,
+        s3_client: Data<&Arc<S3BackupClient>>,
         name: Query<Option<String>>,
         rarity: Query<Option<String>>,
     ) -> poem::Result<FindByNameAndRarityResponse> {
@@ -49,7 +51,16 @@ impl CardsRouter {
         let redis_client = redis_client.0.clone();
 
         if let (Some(n), Some(r)) = (&name, &rarity) {
-            return find_by_name_and_rarity(pool.0, wiki_client.0, &redis_client, n, r).await
+            return find_by_name_and_rarity(
+                api_config.0,
+                pool.0,
+                wiki_client.0,
+                &redis_client,
+                s3_client.0,
+                n,
+                r,
+            )
+            .await;
         }
 
         let mut missing_params: Vec<String> = Vec::new();
@@ -60,7 +71,7 @@ impl CardsRouter {
             missing_params.push("rarity".to_string());
         }
         Ok(FindByNameAndRarityResponse::MissingNameOrRarity(Json(
-            find_by_name_rarity::BadRequestReason::missing_params(missing_params)
+            find_by_name_rarity::BadRequestReason::missing_params(missing_params),
         )))
     }
 

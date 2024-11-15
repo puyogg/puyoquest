@@ -3,6 +3,8 @@ use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
+use crate::cache::CardIconUrls;
+
 use super::template_data::CardTemplateData;
 
 #[derive(Enum, Clone, Debug, Serialize, Deserialize, sqlx::Type, PartialEq, Eq)]
@@ -79,7 +81,7 @@ pub struct Card {
     pub wiki_template: CardTemplateData,
     pub series_name: Option<String>,
     pub is_lore: bool,
-    // pub icon_url: Option<String>,
+    pub icons: CardIconUrls,
     pub cached_at: DateTime<Utc>,
 
     pub updated_at: DateTime<Utc>,
@@ -147,6 +149,7 @@ impl From<CardDb> for Card {
             updated_at: c.updated_at.unwrap_or_default(),
             series_name: None,
             is_lore: false,
+            icons: CardIconUrls::default(),
             cached_at: Utc::now(),
         }
     }

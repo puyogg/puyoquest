@@ -1,19 +1,19 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
-use std::sync::Arc;
 
 use poem::error::InternalServerError;
-use redis::{AsyncCommands, RedisError};
+use poem_openapi::Object;
+use redis::AsyncCommands;
 use serde::{Deserialize, Serialize};
 use wiki::wiki_client::{ImageUrl, PageImageFilenames, WikiClient};
 
 use crate::aws::s3::S3BackupClient;
-use crate::cards::types::Card;
+use crate::cards::types::CardDb;
 use crate::util::format_card_link_name::format_card_link_name;
 
 use super::RedisClient;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Object)]
 pub struct CardIconUrls {
     pub normal: Option<String>,
     pub dual_shift: Option<String>,
@@ -21,14 +21,25 @@ pub struct CardIconUrls {
     pub extra_power_dual_shift: Option<String>,
 }
 
+impl Default for CardIconUrls {
+    fn default() -> Self {
+        Self {
+            normal: None,
+            dual_shift: None,
+            extra_power: None,
+            extra_power_dual_shift: None,
+        }
+    }
+}
+
 pub async fn card_icons(
     redis_client: &RedisClient,
     wiki_client: &WikiClient,
     s3_client: &S3BackupClient,
     image_base_url: &str,
-    card: &Card,
+    card: &CardDb,
 ) -> Result<CardIconUrls, poem::Error> {
-    let Card {
+    let CardDb {
         char_id,
         card_id,
         link_name,

@@ -31,6 +31,12 @@ async fn fetches_card_with_template() -> Result<(), Box<dyn std::error::Error>> 
             serde_json::to_string(&cached_series_data).unwrap(),
         )
         .await;
+    let _: Result<String, redis::RedisError> = redis_conn
+        .set(
+            redis_client.prefixed(&format!("card_icons:{}", &seed::cards::ARLE_07.card_id)),
+            serde_json::to_string(&seed::cards::ARLE_07.icons).unwrap(),
+        )
+        .await;
 
     let response = client
         .get("/cards")

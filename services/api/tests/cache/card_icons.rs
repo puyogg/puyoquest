@@ -1,4 +1,4 @@
-use api::{cache::CardIconUrls, config::ApiConfig};
+use api::{cache::CardIconUrls, cards::types::{CardDb, CardCreate}, config::ApiConfig};
 use redis::{AsyncCommands, RedisError};
 
 use crate::common::{create_test_client, seed, IntTestResult};
@@ -12,7 +12,8 @@ use api::cache::card_icons;
 //     )
 //     .await?;
 
-//     let card = seed::cards::ALLY_AND_RAFISOL_07.clone();
+//     let card = seed::cards::ARLE_07.clone();
+//     let card_db = CardDb::from(CardCreate::from(card));
 
 //     let config = ApiConfig::new().await?;
 //     let image_cache_base_url = &config.get_image_cache_domain().await?;
@@ -21,7 +22,7 @@ use api::cache::card_icons;
 //         &wiki_client,
 //         &s3_client,
 //         image_cache_base_url.as_str(),
-//         &card,
+//         &card_db,
 //     )
 //     .await?;
 //     println!("{:?}", icons);
@@ -36,6 +37,7 @@ async fn fetches_from_cache() -> IntTestResult {
     let (_, _, redis_client, wiki_client, s3_client, ..) = create_test_client("N/A", "N/A").await?;
     
     let card = seed::cards::ALLY_AND_RAFISOL_07.clone();
+    let card_db = CardDb::from(CardCreate::from(card));
     let cached_icon_urls = CardIconUrls {
         normal: Some("https://d14ks6gfutzo56.cloudfront.net/0/06/Img545507.png".to_string()),
         dual_shift: Some("https://d14ks6gfutzo56.cloudfront.net/a/ae/Img545507_msft.png".to_string()),
@@ -47,7 +49,7 @@ async fn fetches_from_cache() -> IntTestResult {
     
     let _: Result<String, RedisError> = redis_conn
         .set(
-            &redis_client.prefixed(&format!("card_icons:{}", &card.card_id)),
+            &redis_client.prefixed(&format!("card_icons:{}", &card_db.card_id)),
             serde_json::to_string(&cached_icon_urls).unwrap(),
         )
         .await;
@@ -58,7 +60,7 @@ async fn fetches_from_cache() -> IntTestResult {
         &wiki_client,
         &s3_client,
         image_cache_base_url,
-        &card
+        &card_db
     ).await?;
 
     assert_eq!(cached_icon_urls.normal, icons.normal);

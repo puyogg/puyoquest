@@ -1,7 +1,7 @@
-use api::cards::{
+use api::{cache::CardIconUrls, cards::{
     template_data::CardTemplateData,
     types::{Card, CardType},
-};
+}};
 use chrono::{TimeZone, Utc};
 use lazy_static::lazy_static;
 use serde_json::json;
@@ -31,6 +31,12 @@ lazy_static! {
         .unwrap(),
         series_name: Some("Original Puyo Puyo Series".to_string()),
         is_lore: false,
+        icons: CardIconUrls {
+            normal: Some("https://d14ks6gfutzo56.cloudfront.net/a/ad/Img201207.png".to_string()),
+            dual_shift: None,
+            extra_power: Some("https://d14ks6gfutzo56.cloudfront.net/8/87/Img201217.png".to_string()),
+            extra_power_dual_shift: None,
+        },
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
@@ -57,6 +63,12 @@ lazy_static! {
         })).unwrap(),
         series_name: None,
         is_lore: false,
+        icons: CardIconUrls {
+            normal: Some("https://d14ks6gfutzo56.cloudfront.net/0/06/Img545507.png".to_string()),
+            dual_shift: Some("https://d14ks6gfutzo56.cloudfront.net/a/ae/Img545507_msft.png".to_string()),
+            extra_power: Some("https://d14ks6gfutzo56.cloudfront.net/a/ab/Img545517.png".to_string()),
+            extra_power_dual_shift: Some("https://d14ks6gfutzo56.cloudfront.net/4/48/Img545517_msft.png".to_string())
+        },
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
