@@ -3,7 +3,7 @@ use std::iter::FromIterator;
 use std::sync::Arc;
 
 use poem::error::InternalServerError;
-use redis::AsyncCommands;
+use redis::{AsyncCommands, RedisError};
 use serde::{Deserialize, Serialize};
 use wiki::wiki_client::{ImageUrl, PageImageFilenames, WikiClient};
 
@@ -15,10 +15,10 @@ use super::RedisClient;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct CardIconUrls {
-    normal: Option<String>,
-    dual_shift: Option<String>,
-    extra_power: Option<String>,
-    extra_power_dual_shift: Option<String>,
+    pub normal: Option<String>,
+    pub dual_shift: Option<String>,
+    pub extra_power: Option<String>,
+    pub extra_power_dual_shift: Option<String>,
 }
 
 pub async fn card_icons(
@@ -59,7 +59,10 @@ pub async fn card_icons(
     match cached_card_icon_urls {
         Some(c) => Ok(c),
         None => {
-            let card_link_name = format!("PPQ:{}", format_card_link_name(link_name, rarity, rarity_modifier));
+            let card_link_name = format!(
+                "PPQ:{}",
+                format_card_link_name(link_name, rarity, rarity_modifier)
+            );
             let page_names = wiki_client
                 .page_image_filenames(&card_link_name)
                 .await
@@ -97,14 +100,31 @@ pub async fn card_icons(
                 ),
             )?;
 
-            // TODO: Set urls to cache
-
-            Ok(CardIconUrls {
+            let card_icon_urls = CardIconUrls {
                 normal,
                 dual_shift,
                 extra_power,
                 extra_power_dual_shift,
-            })
+            };
+            let cache_string =
+                serde_json::to_string(&card_icon_urls).map_err(InternalServerError)?;
+
+            let set_cache_result: Option<String> = redis_conn
+                .set(&key, cache_string)
+                .await
+                .inspect_err(|e| {
+                    println!(
+                        "Warning! Failed to save icon urls to cache for card_id: {}",
+                        &card_id
+                    );
+                    println!("{e}")
+                })
+                .ok();
+            if set_cache_result.is_some() {
+                let _ = redis_conn.expire::<&str, i64>(&key, 86400).await; // 1 day
+            }
+
+            Ok(card_icon_urls)
         }
     }
 }

@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
+use crate::cards::template_data::CardTemplateData;
+use crate::util::resolve_card_template::resolve_card_template;
 use poem::error::InternalServerError;
 use poem_openapi::types::ToJSON;
 use redis::{AsyncCommands, RedisError};
 use serde_json::Value;
 use wiki::wiki_client::{FetchTemplate, WikiClient};
-use crate::cards::template_data::CardTemplateData;
-use crate::util::resolve_card_template::resolve_card_template;
 
 use super::RedisClient;
 
@@ -65,6 +65,7 @@ pub async fn card_template_data(
         }
     };
 
-    let wiki_template = serde_json::from_value::<CardTemplateData>(wiki_template).map_err(InternalServerError);
+    let wiki_template =
+        serde_json::from_value::<CardTemplateData>(wiki_template).map_err(InternalServerError);
     wiki_template
 }
