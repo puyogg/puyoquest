@@ -46,6 +46,7 @@ Class | Method | HTTP request | Description
  - [BadRequestReason](docs/BadRequestReason.md)
  - [Card](docs/Card.md)
  - [CardCreate](docs/CardCreate.md)
+ - [CardIconUrls](docs/CardIconUrls.md)
  - [CardTemplateData](docs/CardTemplateData.md)
  - [CardType](docs/CardType.md)
  - [Character](docs/Character.md)

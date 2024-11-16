@@ -18,6 +18,10 @@ Name | Type | Description | Notes
 **main_color** | **String** |  | 
 **side_color** | Option<**String**> |  | [optional]
 **wiki_template** | [**models::CardTemplateData**](CardTemplateData.md) |  | 
+**series_name** | Option<**String**> |  | [optional]
+**is_lore** | **bool** |  | 
+**icons** | [**models::CardIconUrls**](CardIconUrls.md) |  | 
+**cached_at** | **String** |  | 
 **updated_at** | **String** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
