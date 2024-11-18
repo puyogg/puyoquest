@@ -1,0 +1,309 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'api'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "api",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'api'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=api",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "api",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'api'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=api",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "api",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'test_setup'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=test_setup",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "test_setup",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'test_setup'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=test_setup",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "test_setup",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'aliases'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=aliases",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "aliases",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'aws'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=aws",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "aws",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'cache'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cache",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "cache",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'cards'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=cards",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "cards",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'characters'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=characters",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "characters",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'healthcheck'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=healthcheck",
+          "--package=api"
+        ],
+        "filter": {
+          "name": "healthcheck",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'wiki'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=wiki"
+        ],
+        "filter": {
+          "name": "wiki",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'wiki_client'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=wiki_client",
+          "--package=wiki"
+        ],
+        "filter": {
+          "name": "wiki_client",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'bot'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=bot",
+          "--package=bot"
+        ],
+        "filter": {
+          "name": "bot",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'bot'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=bot",
+          "--package=bot"
+        ],
+        "filter": {
+          "name": "bot",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'sdk'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=sdk"
+        ],
+        "filter": {
+          "name": "sdk",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
