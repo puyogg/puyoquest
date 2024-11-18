@@ -52,12 +52,14 @@ pub struct Card {
     pub icons: Box<models::CardIconUrls>,
     #[serde(rename = "cached_at")]
     pub cached_at: String,
+    #[serde(rename = "url")]
+    pub url: String,
     #[serde(rename = "updated_at")]
     pub updated_at: String,
 }
 
 impl Card {
-    pub fn new(card_id: String, char_id: String, rarity: String, name: String, name_normalized: String, link_name: String, link_name_normalized: String, card_type: models::CardType, main_color: String, wiki_template: models::CardTemplateData, is_lore: bool, icons: models::CardIconUrls, cached_at: String, updated_at: String) -> Card {
+    pub fn new(card_id: String, char_id: String, rarity: String, name: String, name_normalized: String, link_name: String, link_name_normalized: String, card_type: models::CardType, main_color: String, wiki_template: models::CardTemplateData, is_lore: bool, icons: models::CardIconUrls, cached_at: String, url: String, updated_at: String) -> Card {
         Card {
             card_id,
             char_id,
@@ -77,6 +79,7 @@ impl Card {
             is_lore,
             icons: Box::new(icons),
             cached_at,
+            url,
             updated_at,
         }
     }

@@ -22,6 +22,7 @@ Name | Type | Description | Notes
 **is_lore** | **bool** |  | 
 **icons** | [**models::CardIconUrls**](CardIconUrls.md) |  | 
 **cached_at** | **String** |  | 
+**url** | **String** |  | 
 **updated_at** | **String** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
