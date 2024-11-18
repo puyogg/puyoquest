@@ -20,7 +20,7 @@ pub async fn card(
 
         match card {
             Ok(c) => {
-                let embed = card_embed(&c);
+                let embed = card_embed(&c).await?;
                 ctx.send(poise::CreateReply::default()
                     .embed(embed)
                 ).await?;
