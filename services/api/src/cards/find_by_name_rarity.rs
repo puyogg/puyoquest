@@ -1,16 +1,22 @@
 use std::sync::Arc;
 
 use crate::{
-    aliases::query_find_by_alias, aws::s3::S3BackupClient, cache::RedisClient, config::ApiConfig, util::{normalize_name::normalize_name, parse_rarity::parse_rarity}
+    aliases::query_find_by_alias,
+    aws::s3::S3BackupClient,
+    cache::RedisClient,
+    config::ApiConfig,
+    util::{normalize_name::normalize_name, parse_rarity::parse_rarity},
 };
 use poem::{error::InternalServerError, http::StatusCode, Result};
 use poem_openapi::{payload::Json, ApiResponse, Enum, Object};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
+use urlencoding::encode;
 use wiki::wiki_client::WikiClient;
 
 use crate::cache;
 use crate::cards::types::Card;
+use crate::env_config::ENV;
 
 use super::types::CardDb;
 
@@ -173,6 +179,7 @@ pub async fn find_by_name_and_rarity(
             Some(s) => s.1,
         },
         icons: card_icons,
+        url: format!("{}/PPQ:{}", &*ENV.pn_wiki_api_url, encode(&card.link_name)),
         ..Card::from(card)
     };
 

@@ -21,6 +21,7 @@ pub mod config;
 pub mod db;
 pub mod healthcheck;
 pub mod util;
+pub mod env_config;
 
 pub type Api = poem::middleware::AddDataEndpoint<
     poem::middleware::AddDataEndpoint<

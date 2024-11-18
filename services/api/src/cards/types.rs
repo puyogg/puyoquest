@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use urlencoding::encode;
 
 use crate::cache::CardIconUrls;
 
@@ -84,6 +85,9 @@ pub struct Card {
     pub icons: CardIconUrls,
     pub cached_at: DateTime<Utc>,
 
+    // Calculated fields
+    pub url: String,
+
     pub updated_at: DateTime<Utc>,
 }
 
@@ -140,7 +144,7 @@ impl From<CardDb> for Card {
             name_normalized: c.name_normalized,
             jp_name: c.jp_name,
             jp_name_normalized: c.jp_name_normalized,
-            link_name: c.link_name,
+            link_name: c.link_name.clone(),
             link_name_normalized: c.link_name_normalized,
             card_type: c.card_type,
             main_color: c.main_color,
@@ -151,6 +155,7 @@ impl From<CardDb> for Card {
             is_lore: false,
             icons: CardIconUrls::default(),
             cached_at: Utc::now(),
+            url: format!("https://puyonexus.com/wiki/PPQ:{}", encode(&c.link_name)),
         }
     }
 }
