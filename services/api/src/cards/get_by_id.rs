@@ -5,6 +5,9 @@ use poem_openapi::{
     ApiResponse,
 };
 use sqlx::PgPool;
+use wiki::wiki_client::WikiClient;
+
+use crate::{aws::s3::S3BackupClient, cache::RedisClient, config::ApiConfig};
 
 use super::{Card, CardDb};
 
@@ -17,7 +20,14 @@ pub enum GetByIdResponse {
     NotFound(PlainText<String>),
 }
 
-pub async fn get_by_id(pool: Data<&PgPool>, id: Path<String>) -> Result<GetByIdResponse> {
+pub async fn get_by_id(
+    api_config: &ApiConfig,
+    pool: &PgPool,
+    redis_client: &RedisClient,
+    wiki_client: &WikiClient,
+    s3_client: &S3BackupClient,
+    id: &str,
+) -> Result<GetByIdResponse> {
     let card_db: Option<CardDb> = sqlx::query_as(
         r#"
             SELECT *
@@ -26,17 +36,25 @@ pub async fn get_by_id(pool: Data<&PgPool>, id: Path<String>) -> Result<GetByIdR
             LIMIT 1
         "#,
     )
-    .bind(&id.0)
-    .fetch_optional(pool.0)
+    .bind(&id)
+    .fetch_optional(pool)
     .await
     .map_err(InternalServerError)?;
 
-    let card = card_db.map(|c| Card::from(c));
-    match card {
-        Some(c) => Ok(GetByIdResponse::Card(Json(c))),
+    match card_db {
+        Some(card_db) => {
+            let card = Card::upgrade_card_db(
+                api_config,
+                redis_client,
+                wiki_client,
+                s3_client,
+                card_db
+            ).await?;
+            Ok(GetByIdResponse::Card(Json(card)))
+        },
         None => Ok(GetByIdResponse::NotFound(PlainText(format!(
             "Character with id {} not found",
-            &id.0,
+            &id,
         )))),
     }
 }

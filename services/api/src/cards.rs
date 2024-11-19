@@ -29,12 +29,27 @@ pub struct CardsRouter;
 impl CardsRouter {
     /// Find by card_id
     #[oai(path = "/:id", method = "get")]
-    async fn get(&self, pool: Data<&PgPool>, id: Path<String>) -> poem::Result<GetByIdResponse> {
-        get_by_id(pool, id).await
+    async fn get(
+        &self,
+        api_config: Data<&Arc<ApiConfig>>,
+        pool: Data<&PgPool>,
+        redis_client: Data<&Arc<RedisClient>>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+        s3_client: Data<&Arc<S3BackupClient>>,
+        id: Path<String>,
+    ) -> poem::Result<GetByIdResponse> {
+        get_by_id(
+            api_config.0,
+            pool.0,
+            redis_client.0,
+            wiki_client.0,
+            s3_client.0,
+            &id.0,
+        )
+        .await
     }
 
     /// Find by name and rarity
-    /// OR find by category
     #[oai(path = "/", method = "get")]
     async fn find(
         &self,

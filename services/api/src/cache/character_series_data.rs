@@ -20,7 +20,7 @@ enum CacheResponse {
 }
 
 pub async fn character_series_data(
-    redis_client: &Arc<RedisClient>,
+    redis_client: &RedisClient,
     wiki_client: &WikiClient,
     char_id: &str,
     link_name: &str,

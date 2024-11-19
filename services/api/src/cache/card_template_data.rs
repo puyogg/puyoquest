@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::cards::template_data::CardTemplateData;
 use crate::util::resolve_card_template::resolve_card_template;
 use poem::error::InternalServerError;
@@ -11,7 +9,7 @@ use wiki::wiki_client::{FetchTemplate, WikiClient};
 use super::RedisClient;
 
 pub async fn card_template_data(
-    redis_client: &Arc<RedisClient>, // change to redisclient
+    redis_client: &RedisClient,
     wiki_client: &WikiClient,
     card_id: &str,
 ) -> Result<CardTemplateData, poem::Error> {

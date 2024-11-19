@@ -111,7 +111,7 @@ pub async fn find_by_name_and_rarity(
     api_config: &ApiConfig,
     pool: &PgPool,
     wiki_client: &WikiClient,
-    redis_client: &Arc<RedisClient>,
+    redis_client: &RedisClient,
     s3_client: &S3BackupClient,
     name_query: &str,
     rarity_query: &str,
@@ -161,27 +161,8 @@ pub async fn find_by_name_and_rarity(
         }
     };
 
-    let image_base_url = api_config.get_image_cache_domain().await?;
-    let (wiki_template, series_data, card_icons, ..) = futures::try_join!(
-        cache::card_template_data(redis_client, wiki_client, &card.card_id,),
-        cache::character_series_data(redis_client, wiki_client, &card.char_id, &card.link_name),
-        cache::card_icons(redis_client, wiki_client, s3_client, &image_base_url, &card)
-    )?;
+    let card_with_extras =
+        Card::upgrade_card_db(api_config, redis_client, wiki_client, s3_client, card).await?;
 
-    let card_with_template = Card {
-        wiki_template,
-        series_name: match &series_data {
-            None => None,
-            Some(s) => Some(String::from(&s.0)),
-        },
-        is_lore: match &series_data {
-            None => false,
-            Some(s) => s.1,
-        },
-        icons: card_icons,
-        url: format!("{}/PPQ:{}", &*ENV.pn_wiki_api_url, encode(&card.link_name)),
-        ..Card::from(card)
-    };
-
-    Ok(FindByNameAndRarityResponse::Card(Json(card_with_template)))
+    Ok(FindByNameAndRarityResponse::Card(Json(card_with_extras)))
 }

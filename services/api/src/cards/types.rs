@@ -3,8 +3,9 @@ use poem_openapi::{Enum, Object};
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use urlencoding::encode;
+use wiki::wiki_client::WikiClient;
 
-use crate::cache::CardIconUrls;
+use crate::{aws::s3::S3BackupClient, cache::{self, CardIconUrls, RedisClient}, config::ApiConfig, env_config::ENV};
 
 use super::template_data::CardTemplateData;
 
@@ -157,5 +158,39 @@ impl From<CardDb> for Card {
             cached_at: Utc::now(),
             url: format!("https://puyonexus.com/wiki/PPQ:{}", encode(&c.link_name)),
         }
+    }
+}
+
+impl Card {
+    pub async fn upgrade_card_db(
+        api_config: &ApiConfig,
+        redis_client: &RedisClient,
+        wiki_client: &WikiClient,
+        s3_client: &S3BackupClient,
+        card_db: CardDb,
+    ) -> Result<Card, poem::Error> {
+        let image_base_url = api_config.get_image_cache_domain().await?;
+        let (wiki_template, series_data, card_icons, ..) = futures::try_join!(
+            cache::card_template_data(redis_client, wiki_client, &card_db.card_id,),
+            cache::character_series_data(redis_client, wiki_client, &card_db.char_id, &card_db.link_name),
+            cache::card_icons(redis_client, wiki_client, s3_client, &image_base_url, &card_db),
+        )?;
+
+        let card_with_extras = Card {
+            wiki_template,
+            series_name: match &series_data {
+                None => None,
+                Some(s) => Some(String::from(&s.0)),
+            },
+            is_lore: match &series_data {
+                None => false,
+                Some(s) => s.1,
+            },
+            icons: card_icons,
+            url: format!("{}/PPQ:{}", &*ENV.pn_wiki_api_url, encode(&card_db.link_name)),
+            ..Card::from(card_db)
+        };
+
+        Ok(card_with_extras)
     }
 }

@@ -4,7 +4,7 @@ All URIs are relative to *http://localhost:3000*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**cards_get**](CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity OR find by category
+[**cards_get**](CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity
 [**cards_id_get**](CardsApi.md#cards_id_get) | **GET** /cards/{id} | Find by card_id
 [**cards_post**](CardsApi.md#cards_post) | **POST** /cards | Upsert card data (admins only)
 
@@ -13,7 +13,7 @@ Method | HTTP request | Description
 ## cards_get
 
 > models::Card cards_get(name, rarity)
-Find by name and rarity OR find by category
+Find by name and rarity
 
 ### Parameters
 

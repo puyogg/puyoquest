@@ -37,6 +37,7 @@ lazy_static! {
             extra_power: Some("https://d14ks6gfutzo56.cloudfront.net/8/87/Img201217.png".to_string()),
             extra_power_dual_shift: None,
         },
+        url: String::from("https://puyonexus.com/wiki/PPQ:Arle/★7"),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
@@ -69,6 +70,7 @@ lazy_static! {
             extra_power: Some("https://d14ks6gfutzo56.cloudfront.net/a/ab/Img545517.png".to_string()),
             extra_power_dual_shift: Some("https://d14ks6gfutzo56.cloudfront.net/4/48/Img545517_msft.png".to_string())
         },
+        url: String::from("https://puyonexus.com/wiki/PPQ:Ally_&_Rafisol/★7"),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };

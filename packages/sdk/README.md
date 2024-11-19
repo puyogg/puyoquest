@@ -29,7 +29,7 @@ Class | Method | HTTP request | Description
 *AliasesApi* | [**aliases_get**](docs/AliasesApi.md#aliases_get) | **GET** /aliases | List aliases for a char_id
 *AliasesApi* | [**aliases_name_get**](docs/AliasesApi.md#aliases_name_get) | **GET** /aliases/{name} | Find an alias by name
 *AliasesApi* | [**aliases_name_put**](docs/AliasesApi.md#aliases_name_put) | **PUT** /aliases/{name} | 
-*CardsApi* | [**cards_get**](docs/CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity OR find by category
+*CardsApi* | [**cards_get**](docs/CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity
 *CardsApi* | [**cards_id_get**](docs/CardsApi.md#cards_id_get) | **GET** /cards/{id} | Find by card_id
 *CardsApi* | [**cards_post**](docs/CardsApi.md#cards_post) | **POST** /cards | Upsert card data (admins only)
 *CharactersApi* | [**characters_get**](docs/CharactersApi.md#characters_get) | **GET** /characters | Find by alias or category
