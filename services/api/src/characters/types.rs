@@ -17,7 +17,7 @@ pub struct CharacterCreate {
 }
 
 #[derive(Debug, Clone, Object, FromRow, Serialize, Deserialize)]
-pub struct Character {
+pub struct CharacterDb {
     pub char_id: String,
     pub name: Option<String>,
     pub jp_name: Option<String>,
@@ -30,8 +30,8 @@ pub struct Character {
     pub updated_at: DateTime<Utc>,
 }
 
-impl From<Character> for CharacterCreate {
-    fn from(c: Character) -> Self {
+impl From<CharacterDb> for CharacterCreate {
+    fn from(c: CharacterDb) -> Self {
         Self {
             name: c.name,
             jp_name: c.jp_name,

@@ -1,4 +1,4 @@
-use api::characters::types::{Character, CharacterCreate};
+use api::characters::types::{CharacterDb, CharacterCreate};
 use chrono::{TimeZone, Utc};
 use poem::http::StatusCode;
 use poem_openapi::types::ToJSON;
@@ -38,7 +38,7 @@ async fn updates_existing_character() -> Result<(), Box<dyn std::error::Error>> 
         .await;
     response1.assert_status(StatusCode::OK);
 
-    let updated_character = Character {
+    let updated_character = CharacterDb {
         name: Some("SONIC THE HEDGEHOG!!!!!!!!!".to_string()),
         updated_at: Utc.with_ymd_and_hms(2024, 6, 6, 6, 6, 6).unwrap(),
         ..seed::characters::ARLE.clone()
@@ -59,7 +59,7 @@ async fn updates_existing_character() -> Result<(), Box<dyn std::error::Error>> 
 async fn increases_updated_at_timestamp() -> Result<(), Box<dyn std::error::Error>> {
     let (client, ..) = create_test_client("N/A", "N/A").await?;
 
-    let original_character = Character {
+    let original_character = CharacterDb {
         updated_at: Utc.with_ymd_and_hms(1991, 10, 25, 2, 24, 24).unwrap(),
         ..seed::characters::ARLE.clone()
     };
@@ -84,8 +84,8 @@ async fn increases_updated_at_timestamp() -> Result<(), Box<dyn std::error::Erro
         .await;
     response2.assert_status(StatusCode::OK);
 
-    let res1_char: Character = response1.0.take_body().into_json().await.unwrap();
-    let res2_char: Character = response2.0.take_body().into_json().await.unwrap();
+    let res1_char: CharacterDb = response1.0.take_body().into_json().await.unwrap();
+    let res2_char: CharacterDb = response2.0.take_body().into_json().await.unwrap();
 
     assert!(res1_char.updated_at < res2_char.updated_at);
 

@@ -1,4 +1,4 @@
-use super::{Character, CharacterCreate};
+use super::{CharacterDb, CharacterCreate};
 use poem::error::InternalServerError;
 use poem_openapi::{payload::Json, ApiResponse};
 use sqlx::PgPool;
@@ -6,7 +6,7 @@ use sqlx::PgPool;
 #[derive(ApiResponse)]
 pub enum UpsertResponse {
     #[oai(status = 200)]
-    Ok(Json<Character>, #[oai(header = "Location")] String),
+    Ok(Json<CharacterDb>, #[oai(header = "Location")] String),
 }
 
 pub async fn upsert(
@@ -14,7 +14,7 @@ pub async fn upsert(
     id: &str,
     character: &CharacterCreate,
 ) -> poem::Result<UpsertResponse> {
-    let character: Result<Character, sqlx::Error> =
+    let character: Result<CharacterDb, sqlx::Error> =
         sqlx::query_as(r#"
             INSERT INTO character (char_id, name, jp_name, link_name, main_color, side_color, type1, type2, voice_trans, updated_at)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
