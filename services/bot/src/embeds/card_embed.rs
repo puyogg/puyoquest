@@ -1,19 +1,31 @@
-use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{
+    self as serenity, ComponentInteraction, CreateActionRow, CreateButton, EditInteractionResponse,
+};
 
-use sdk::models::Card;
+use sdk::models::{Card, CardIconUrls};
 
 use crate::commands::Error;
+use crate::commands::{Context, Data};
 use crate::util::embed_colors;
 use crate::util::emoji_table::wiki_symbols_to_emojis;
 use crate::util::markdown;
 
-pub async fn card_embed(card: &Card) -> Result<serenity::CreateEmbed, Error> {
+pub async fn card_embed(
+    card: &Card,
+    icon_type: CardIconType,
+) -> Result<(serenity::CreateEmbed, Vec<CreateActionRow>), Error> {
     let embed = serenity::CreateEmbed::default()
         .title(format_card_title(card))
         .url(&card.url)
         .fields(first_page_fields(card));
 
-    let embed = match &card.icons.normal {
+    let icon_url_option = match icon_type {
+        CardIconType::Normal => &card.icons.normal,
+        CardIconType::DualShift => &card.icons.dual_shift,
+        CardIconType::ExtraPower => &card.icons.extra_power,
+        CardIconType::ExtraPowerDualShift => &card.icons.extra_power_dual_shift,
+    };
+    let embed = match icon_url_option {
         Some(url) => embed.thumbnail(url),
         None => embed,
     };
@@ -33,11 +45,75 @@ pub async fn card_embed(card: &Card) -> Result<serenity::CreateEmbed, Error> {
         _ => embed,
     };
 
-    Ok(embed)
+    let mut components: Vec<CreateActionRow> = Vec::new();
+
+    let icon_buttons = icon_select_row(&card.card_id, &card.icons);
+    if let Some(icon_buttons) = icon_buttons {
+        components.push(icon_buttons)
+    };
+
+    Ok((embed, components))
 }
 
-pub async fn update_card_embed_icon(custom_id: &str) -> Result<(), Error> {
-    // card:{card_id}:{icon_type}
+pub enum CardIconType {
+    Normal,
+    DualShift,
+    ExtraPower,
+    ExtraPowerDualShift,
+}
+
+pub async fn update_card_embed_icon(
+    ctx: &serenity::Context,
+    data: &Data,
+    component_interaction: &ComponentInteraction,
+) -> Result<(), Error> {
+    let custom_id = &component_interaction.data.custom_id;
+    let parse_result = parse_card_embed_custom_id(custom_id)?;
+    println!("{:?}", parse_result);
+    match parse_result {
+        Some((card_id, icon_type)) => {
+            let icon_type = match icon_type.as_str() {
+                "main" => CardIconType::Normal,
+                "dual_shift" => CardIconType::DualShift,
+                "extra_power" => CardIconType::ExtraPower,
+                "extra_power_dual_shift" => CardIconType::ExtraPowerDualShift,
+                _ => CardIconType::Normal,
+            };
+
+            let card = sdk::apis::cards_api::cards_id_get(&data.api_config, &card_id).await?;
+
+            let (embed, components) = card_embed(&card, icon_type).await?;
+            let response = serenity::CreateInteractionResponseMessage::default().embed(embed);
+            let response = if components.len() > 0 {
+                response.components(components)
+            } else {
+                response
+            };
+            // let edit = component_interaction.edit_response(ctx, response).await;
+            let edit = component_interaction
+                .create_response(
+                    ctx,
+                    serenity::CreateInteractionResponse::UpdateMessage(response),
+                )
+                .await;
+            match edit {
+                Ok(e) => println!("{:?}", e),
+                Err(e) => println!("{:?}", e),
+            };
+        }
+        None => {
+            component_interaction
+                .create_response(
+                    ctx,
+                    serenity::CreateInteractionResponse::Message(
+                        serenity::CreateInteractionResponseMessage::new()
+                            .content("There was an error handling your card query request!"),
+                    ),
+                )
+                .await?;
+            return Ok(());
+        }
+    };
     Ok(())
 }
 
@@ -58,10 +134,10 @@ fn parse_card_embed_custom_id(custom_id: &str) -> Result<Option<(CardId, IconTyp
             match (card_id, icon_type) {
                 (Some(card_id), Some(icon_type)) => {
                     Some((card_id.as_str().to_string(), icon_type.as_str().to_string()))
-                },
+                }
                 _ => None,
             }
-        },
+        }
         None => None,
     };
 
@@ -296,6 +372,37 @@ fn format_combination_categories(card: &Card) -> Option<String> {
 
     if combins.len() > 0 {
         Some(combins)
+    } else {
+        None
+    }
+}
+
+fn icon_select_row(
+    card_id: &str,
+    card_icon_urls: &CardIconUrls,
+) -> Option<serenity::CreateActionRow> {
+    let mut buttons: Vec<serenity::CreateButton> = Vec::new();
+
+    if card_icon_urls.normal.is_some() {
+        buttons.push(serenity::CreateButton::new(&format!("card:{card_id}:normal")).label("REG"));
+    }
+    if card_icon_urls.dual_shift.is_some() {
+        buttons
+            .push(serenity::CreateButton::new(&format!("card:{card_id}:dual_shift")).label("DS"));
+    }
+    if card_icon_urls.extra_power.is_some() {
+        buttons
+            .push(serenity::CreateButton::new(&format!("card:{card_id}:extra_power")).label("EP"));
+    }
+    if card_icon_urls.extra_power_dual_shift.is_some() {
+        buttons.push(
+            serenity::CreateButton::new(&format!("card:{card_id}:extra_power_dual_shift"))
+                .label("EP+DS"),
+        );
+    }
+
+    if buttons.len() > 0 {
+        Some(serenity::CreateActionRow::Buttons(buttons))
     } else {
         None
     }

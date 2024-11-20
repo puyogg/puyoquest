@@ -1,8 +1,8 @@
 use super::{Context, Error};
-use crate::{commands::Data, util::parse_card_query::parse_alias_and_rarity};
-use sdk::apis::cards_api;
-use serde::Serialize;
 use crate::embeds::card_embed;
+use crate::embeds::CardIconType;
+use crate::util::parse_card_query::parse_alias_and_rarity;
+use sdk::apis::cards_api;
 
 /// Look up a character or card from the PPQ Wiki
 #[poise::command(slash_command)]
@@ -20,10 +20,15 @@ pub async fn card(
 
         match card {
             Ok(c) => {
-                let embed = card_embed(&c).await?;
-                ctx.send(poise::CreateReply::default()
-                    .embed(embed)
-                ).await?;
+                let (embed, components) = card_embed(&c, CardIconType::Normal).await?;
+                let reply = poise::CreateReply::default().embed(embed);
+                let reply = if components.len() > 0 {
+                    reply.components(components)
+                } else {
+                    reply
+                };
+
+                ctx.send(reply).await?;
 
                 return Ok(());
             }

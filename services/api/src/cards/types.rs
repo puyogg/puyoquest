@@ -5,7 +5,13 @@ use sqlx::FromRow;
 use urlencoding::encode;
 use wiki::wiki_client::WikiClient;
 
-use crate::{aws::s3::S3BackupClient, cache::{self, CardIconUrls, RedisClient}, config::ApiConfig, env_config::ENV};
+use crate::{
+    aws::s3::S3BackupClient,
+    cache::{self, CardIconUrls, RedisClient},
+    config::ApiConfig,
+    env_config::ENV,
+    util::format_card_link_name::format_card_link_name,
+};
 
 use super::template_data::CardTemplateData;
 
@@ -172,8 +178,19 @@ impl Card {
         let image_base_url = api_config.get_image_cache_domain().await?;
         let (wiki_template, series_data, card_icons, ..) = futures::try_join!(
             cache::card_template_data(redis_client, wiki_client, &card_db.card_id,),
-            cache::character_series_data(redis_client, wiki_client, &card_db.char_id, &card_db.link_name),
-            cache::card_icons(redis_client, wiki_client, s3_client, &image_base_url, &card_db),
+            cache::character_series_data(
+                redis_client,
+                wiki_client,
+                &card_db.char_id,
+                &card_db.link_name
+            ),
+            cache::card_icons(
+                redis_client,
+                wiki_client,
+                s3_client,
+                &image_base_url,
+                &card_db
+            ),
         )?;
 
         let card_with_extras = Card {
@@ -187,7 +204,15 @@ impl Card {
                 Some(s) => s.1,
             },
             icons: card_icons,
-            url: format!("{}/PPQ:{}", &*ENV.pn_wiki_api_url, encode(&card_db.link_name)),
+            url: format!(
+                "{}/PPQ:{}",
+                &*ENV.pn_wiki_base_url,
+                encode(&format_card_link_name(
+                    &card_db.link_name,
+                    &card_db.rarity,
+                    &card_db.rarity_modifier,
+                ))
+            ),
             ..Card::from(card_db)
         };
 

@@ -23,6 +23,9 @@ async fn main() {
     let framework: Framework<Data, Error> = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             commands,
+            event_handler: |ctx, event, framework, data| {
+                Box::pin(event_handler(ctx, event, framework, data))
+            },
             ..Default::default()
         })
         .setup(move |ctx, ready, framework: &poise::Framework<Data, _>| {
@@ -47,4 +50,35 @@ async fn main() {
         .await;
 
     client.unwrap().start().await.unwrap();
+}
+
+async fn event_handler(
+    ctx: &serenity::Context,
+    event: &serenity::FullEvent,
+    _framework: poise::FrameworkContext<'_, Data, Error>,
+    data: &Data,
+) -> Result<(), Error> {
+    match event {
+        serenity::FullEvent::Ready { data_about_bot, .. } => {
+            println!("Logged in as {}", data_about_bot.user.name);
+        },
+        serenity::FullEvent::InteractionCreate { interaction } => {
+            match interaction {
+                serenity::Interaction::Component(component_interaction) => {
+                    match &component_interaction.data.kind {
+                        serenity::ComponentInteractionDataKind::Button => {
+                            println!("{}", &component_interaction.data.custom_id);
+                            crate::embeds::update_card_embed_icon(ctx, data, component_interaction).await?;
+                        },
+                        // serenity::ComponentInteractionDataKind::StringSelect { values } => todo!(),
+                        _ => {},
+                    }
+                },
+                _ => {},
+            };
+        }
+        _ => {},
+    }
+
+    Ok(())
 }
