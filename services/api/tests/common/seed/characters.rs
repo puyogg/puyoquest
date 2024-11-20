@@ -1,9 +1,9 @@
-use api::characters::types::CharacterDb;
+use api::characters::types::Character;
 use chrono::{TimeZone, Utc};
 use lazy_static::lazy_static;
 
 lazy_static! {
-    pub static ref ARLE: CharacterDb = CharacterDb {
+    pub static ref ARLE: Character = Character {
         char_id: "2012".to_string(),
         name: Some("Arle".to_string()),
         jp_name: Some("アルル".to_string()),
@@ -15,7 +15,7 @@ lazy_static! {
         voice_trans: Some("V2012".to_string()),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
-    pub static ref SANTA_RINGO: CharacterDb = CharacterDb {
+    pub static ref SANTA_RINGO: Character = Character {
         char_id: "3212".to_string(),
         name: Some("Santa Ringo".to_string()),
         jp_name: Some("サンタりんご".to_string()),
@@ -27,7 +27,7 @@ lazy_static! {
         voice_trans: Some("V1018".to_string()),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
-    pub static ref LEGAMUNT: CharacterDb = CharacterDb {
+    pub static ref LEGAMUNT: Character = Character {
         char_id: "4203".to_string(),
         name: Some("Legamünt".to_string()),
         jp_name: Some("レガムント".to_string()),
@@ -39,7 +39,7 @@ lazy_static! {
         voice_trans: Some("V4203".to_string()),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
-    pub static ref SPACE_ECOLO: CharacterDb = CharacterDb {
+    pub static ref SPACE_ECOLO: Character = Character {
         char_id: "5383".to_string(),
         name: Some("Space☆Ecolo".to_string()),
         jp_name: Some("スペース☆エコロ".to_string()),

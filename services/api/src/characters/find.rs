@@ -4,12 +4,12 @@ use sqlx::PgPool;
 
 use crate::util::normalize_name::normalize_name;
 
-use super::types::CharacterDb;
+use super::types::Character;
 
 #[derive(ApiResponse)]
 pub enum FindResponse {
     #[oai(status = 200)]
-    Characters(Json<Vec<CharacterDb>>),
+    Characters(Json<Vec<Character>>),
 
     #[oai(status = 400)]
     BadRequest(PlainText<String>),
@@ -18,7 +18,7 @@ pub enum FindResponse {
 async fn find_by_alias(pool: &PgPool, alias_name: &str) -> Result<FindResponse> {
     let alias_name = normalize_name(alias_name);
 
-    let character = sqlx::query_as::<_, CharacterDb>(
+    let character = sqlx::query_as::<_, Character>(
         r#"
             SELECT character.*
             FROM alias
@@ -34,11 +34,11 @@ async fn find_by_alias(pool: &PgPool, alias_name: &str) -> Result<FindResponse> 
 
     match character {
         Some(c) => {
-            let characters: Vec<CharacterDb> = vec![c];
+            let characters: Vec<Character> = vec![c];
             Ok(FindResponse::Characters(Json(characters)))
         }
         None => {
-            let characters: Vec<CharacterDb> = vec![];
+            let characters: Vec<Character> = vec![];
             Ok(FindResponse::Characters(Json(characters)))
         }
     }

@@ -6,19 +6,19 @@ use poem_openapi::{
 };
 use sqlx::PgPool;
 
-use super::CharacterDb;
+use super::Character;
 
 #[derive(ApiResponse)]
 pub enum GetByIdResponse {
     #[oai(status = 200)]
-    Character(Json<CharacterDb>),
+    Character(Json<Character>),
 
     #[oai(status = 404)]
     NotFound(PlainText<String>),
 }
 
 pub async fn get_by_id(pool: &PgPool, id: &str) -> Result<GetByIdResponse> {
-    let character: Option<CharacterDb> = sqlx::query_as(
+    let character: Option<Character> = sqlx::query_as(
         "
             SELECT *
             FROM character

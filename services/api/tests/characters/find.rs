@@ -1,5 +1,5 @@
 use api::aliases::types::AliasCreate;
-use api::characters::types::{CharacterDb, CharacterCreate};
+use api::characters::types::{Character, CharacterCreate};
 use futures::future::join_all;
 use poem_openapi::types::ToJSON;
 use reqwest::StatusCode;
@@ -90,7 +90,7 @@ async fn returns_empty_vec_if_no_match() -> IntTestResult {
         .send()
         .await;
 
-    let empty_vec: Vec<CharacterDb> = vec![];
+    let empty_vec: Vec<Character> = vec![];
     response.assert_status_is_ok();
     response.assert_json(serde_json::to_value(empty_vec).unwrap()).await;
 

@@ -1,10 +1,5 @@
-use std::sync::Arc;
-
 use crate::aliases;
 use crate::api_tag::ApiTag;
-use crate::aws::s3::S3BackupClient;
-use crate::cache::RedisClient;
-use crate::config::ApiConfig;
 use poem::{web::Data, Result};
 use poem_openapi::param::Query;
 use poem_openapi::{param::Path, payload::Json, OpenApi};
@@ -21,9 +16,7 @@ pub mod find;
 pub use find::{find, FindResponse};
 
 pub mod types;
-use types::{CharacterCreate, CharacterDb};
-
-pub mod list_cards;
+use types::{Character, CharacterCreate};
 
 pub struct CharactersRoute;
 
@@ -65,19 +58,5 @@ impl CharactersRoute {
     ) -> Result<FindResponse> {
         let alias_name: Option<&str> = alias.0.as_deref();
         find(pool.0, alias_name).await
-    }
-
-    /// List a character's cards
-    #[oai(path = "/:id/cards", method = "get")]
-    async fn list_cards(
-        &self,
-        api_config: Data<&Arc<ApiConfig>>,
-        pool: Data<&PgPool>,
-        redis_client: Data<&Arc<RedisClient>>,
-        wiki_client: Data<&wiki::wiki_client::WikiClient>,
-        s3_client: Data<&Arc<S3BackupClient>>,
-        id: Path<String>,
-    ) -> Result<()> {
-        Ok(())
     }
 }
