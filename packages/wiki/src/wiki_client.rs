@@ -22,6 +22,9 @@ pub use resolve_wiki_text::*;
 mod fetch_character_series;
 pub use fetch_character_series::*;
 
+mod character_card_ids;
+pub use character_card_ids::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
