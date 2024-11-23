@@ -1,9 +1,10 @@
 use async_trait::async_trait;
 use fancy_regex::Regex;
+use serde::{Deserialize, Serialize};
 
 use super::{FetchTemplate, FetchTemplateError};
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct CardAndMaterialIds {
     pub card_ids: Vec<String>,
     pub material_ids: Vec<String>,

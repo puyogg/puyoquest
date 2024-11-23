@@ -7,6 +7,9 @@ pub use character_series_data::*;
 mod card_icons;
 pub use card_icons::*;
 
+mod character_card_ids;
+pub use character_card_ids::*;
+
 #[derive(Debug)]
 pub struct RedisClient {
     pub conn: redis::aio::MultiplexedConnection,
