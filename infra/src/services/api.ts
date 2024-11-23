@@ -86,6 +86,7 @@ const imageCacheBucketPolicy = new aws.s3.BucketPolicy(
 export const ec2Role = new aws.iam.Role("ppq-api-ec2-role", {
   name: "ppq-api-ec2-role",
   description: "Role for EC2 instance to access S3 Bucket and DB",
+  maxSessionDuration: 14400, // 4 hours
   assumeRolePolicy: {
     Version: "2012-10-17",
     Statement: [
