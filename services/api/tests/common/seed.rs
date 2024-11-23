@@ -23,3 +23,28 @@ pub async fn seed_arle(pool: &PgPool) -> Result<(), Box<dyn std::error::Error>> 
 
     Ok(())
 }
+
+#[allow(dead_code)]
+pub async fn seed_santa_ringo(pool: &PgPool) -> Result<(), Box<dyn std::error::Error>> {
+    let character = CharacterCreate::from(characters::SANTA_RINGO.clone());
+    api::characters::upsert::upsert(&pool, &characters::SANTA_RINGO.char_id, &character).await.unwrap();
+
+    let cards = vec![
+        cards::SANTA_RINGO_04.clone(),
+        cards::SANTA_RINGO_05.clone(),
+        cards::SANTA_RINGO_06.clone(),
+        cards::SANTA_RINGO_6S.clone(),
+        cards::SANTA_RINGO_MAT1.clone(),
+        cards::SANTA_RINGO_MAT2.clone(),
+        cards::SANTA_RINGO_MAT3.clone(),
+    ];
+    for card in cards {
+        let card = CardCreate::from(card);
+        api::cards::upsert::upsert(&pool, &card).await.unwrap();
+    }
+
+    let alias = AliasCreate::from(aliases::SANTA_RINGO_XMAS.clone());
+    api::aliases::upsert(&pool, &aliases::SANTA_RINGO.alias, &alias).await.unwrap();
+
+    Ok(())
+}

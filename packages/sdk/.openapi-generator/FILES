@@ -10,6 +10,7 @@ docs/CardCreate.md
 docs/CardIconUrls.md
 docs/CardTemplateData.md
 docs/CardType.md
+docs/CardsAndMaterials.md
 docs/CardsApi.md
 docs/Character.md
 docs/CharacterCreate.md
@@ -33,6 +34,7 @@ src/models/card_create.rs
 src/models/card_icon_urls.rs
 src/models/card_template_data.rs
 src/models/card_type.rs
+src/models/cards_and_materials.rs
 src/models/character.rs
 src/models/character_create.rs
 src/models/mod.rs

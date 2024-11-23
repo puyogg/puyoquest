@@ -6,6 +6,7 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**characters_get**](CharactersApi.md#characters_get) | **GET** /characters | Find by alias or category
 [**characters_id_aliases_get**](CharactersApi.md#characters_id_aliases_get) | **GET** /characters/{id}/aliases | 
+[**characters_id_cards_get**](CharactersApi.md#characters_id_cards_get) | **GET** /characters/{id}/cards | 
 [**characters_id_get**](CharactersApi.md#characters_id_get) | **GET** /characters/{id} | TODO: Option to refresh index
 [**characters_id_put**](CharactersApi.md#characters_id_put) | **PUT** /characters/{id} | Create a character or update one if it already exists
 
@@ -63,6 +64,35 @@ No authorization required
 
 - **Content-Type**: Not defined
 - **Accept**: application/json; charset=utf-8, text/plain; charset=utf-8
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## characters_id_cards_get
+
+> models::CardsAndMaterials characters_id_cards_get(id, fetch_fresh)
+
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** |  | [required] |
+**fetch_fresh** | Option<**String**> | Valid values: \"true\", \"false\". Default false. |  |
+
+### Return type
+
+[**models::CardsAndMaterials**](CardsAndMaterials.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json; charset=utf-8
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

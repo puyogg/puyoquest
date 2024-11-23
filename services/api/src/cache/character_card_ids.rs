@@ -17,24 +17,29 @@ pub async fn character_card_ids(
     let key = redis_client.prefixed(&format!("cards_mats:{char_id}"));
     let cached_card_and_material_ids: Option<CardAndMaterialIds> = match fetch_fresh {
         true => None,
-        false => redis_conn
-            .get::<&str, Option<String>>(&key)
-            .await
-            .inspect_err(|e| println!("{e}"))
-            .map_err(InternalServerError)?
-            .and_then(|c| {
-                let result = serde_json::from_str::<CardAndMaterialIds>(&c);
-
-                if let Err(e) = &result {
-                    println!(
-                        "Error parsing cached card and material ids for: {}",
-                        &char_id
-                    );
+        false => {
+            let result = redis_conn
+                .get::<&str, Option<String>>(&key)
+                .await
+                .inspect_err(|e| {
                     println!("{e}");
-                }
+                })
+                .map_err(InternalServerError)?
+                .and_then(|c| {
+                    let result = serde_json::from_str::<CardAndMaterialIds>(&c);
 
-                result.ok()
-            }),
+                    if let Err(e) = &result {
+                        println!(
+                            "Error parsing cached card and material ids for: {}",
+                            &char_id
+                        );
+                        println!("{e}");
+                    }
+
+                    result.ok()
+                });
+            result
+        }
     };
 
     let card_and_material_ids = match cached_card_and_material_ids {

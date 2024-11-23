@@ -14,6 +14,8 @@ pub mod card_template_data;
 pub use self::card_template_data::CardTemplateData;
 pub mod card_type;
 pub use self::card_type::CardType;
+pub mod cards_and_materials;
+pub use self::cards_and_materials::CardsAndMaterials;
 pub mod character;
 pub use self::character::Character;
 pub mod character_create;

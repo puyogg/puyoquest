@@ -34,6 +34,7 @@ Class | Method | HTTP request | Description
 *CardsApi* | [**cards_post**](docs/CardsApi.md#cards_post) | **POST** /cards | Upsert card data (admins only)
 *CharactersApi* | [**characters_get**](docs/CharactersApi.md#characters_get) | **GET** /characters | Find by alias or category
 *CharactersApi* | [**characters_id_aliases_get**](docs/CharactersApi.md#characters_id_aliases_get) | **GET** /characters/{id}/aliases | 
+*CharactersApi* | [**characters_id_cards_get**](docs/CharactersApi.md#characters_id_cards_get) | **GET** /characters/{id}/cards | 
 *CharactersApi* | [**characters_id_get**](docs/CharactersApi.md#characters_id_get) | **GET** /characters/{id} | TODO: Option to refresh index
 *CharactersApi* | [**characters_id_put**](docs/CharactersApi.md#characters_id_put) | **PUT** /characters/{id} | Create a character or update one if it already exists
 *HealthcheckApi* | [**healthcheck_get**](docs/HealthcheckApi.md#healthcheck_get) | **GET** /healthcheck | 
@@ -49,6 +50,7 @@ Class | Method | HTTP request | Description
  - [CardIconUrls](docs/CardIconUrls.md)
  - [CardTemplateData](docs/CardTemplateData.md)
  - [CardType](docs/CardType.md)
+ - [CardsAndMaterials](docs/CardsAndMaterials.md)
  - [Character](docs/Character.md)
  - [CharacterCreate](docs/CharacterCreate.md)
  - [NotFoundReason](docs/NotFoundReason.md)

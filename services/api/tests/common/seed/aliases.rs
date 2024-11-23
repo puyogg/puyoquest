@@ -30,6 +30,14 @@ lazy_static! {
     };
 
     // Santa Ringo
+    pub static ref SANTA_RINGO: Alias = Alias {
+        alias: "santa ringo".nfkd().to_string(),
+        char_id: "3212".to_string(),
+        internal: false,
+        card_type: CardType::Character,
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
     pub static ref SANTA_RINGO_XMAS: Alias = Alias {
         alias: "xmas ringo".nfkd().to_string(),
         char_id: "3212".to_string(),

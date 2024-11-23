@@ -1,9 +1,13 @@
 use crate::aliases;
 use crate::api_tag::ApiTag;
+use crate::aws::s3::S3BackupClient;
+use crate::cache::RedisClient;
+use crate::config::ApiConfig;
 use poem::{web::Data, Result};
 use poem_openapi::param::Query;
 use poem_openapi::{param::Path, payload::Json, OpenApi};
 use sqlx::PgPool;
+use std::sync::Arc;
 
 pub mod get_by_id;
 use get_by_id::get_by_id;
@@ -17,6 +21,9 @@ pub use find::{find, FindResponse};
 
 pub mod types;
 use types::{Character, CharacterCreate};
+
+pub mod list_cards;
+pub use list_cards::{list_cards, ListCardsResponse};
 
 pub struct CharactersRoute;
 
@@ -47,6 +54,39 @@ impl CharactersRoute {
         id: Path<String>,
     ) -> Result<aliases::list_by_char_id::ListByCharIdResponse> {
         aliases::list_by_char_id(pool.0, &Some(id.0)).await
+    }
+
+    #[oai(path = "/:id/cards", method = "get")]
+    async fn list_cards(
+        &self,
+        api_config: Data<&Arc<ApiConfig>>,
+        pool: Data<&PgPool>,
+        redis_client: Data<&Arc<RedisClient>>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+        s3_client: Data<&Arc<S3BackupClient>>,
+        id: Path<String>,
+        /// Valid values: "true", "false". Default false.
+        fetch_fresh: Query<Option<String>>,
+    ) -> Result<ListCardsResponse> {
+        let fetch_fresh = match fetch_fresh.0 {
+            Some(b) => match b.as_str() {
+                "true" => true,
+                "false" => false,
+                _ => false,
+            },
+            None => false,
+        };
+
+        list_cards(
+            api_config.0,
+            pool.0,
+            redis_client.0,
+            wiki_client.0,
+            s3_client.0,
+            &id.0,
+            fetch_fresh,
+        )
+        .await
     }
 
     /// Find by alias or category
