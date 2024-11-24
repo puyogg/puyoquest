@@ -1,8 +1,10 @@
 use super::{Context, Error};
 use crate::embeds::card_embed;
+use crate::embeds::character_embed;
 use crate::embeds::CardIconType;
 use crate::util::parse_card_query::parse_alias_and_rarity;
 use sdk::apis::cards_api;
+use sdk::apis::characters_api;
 
 /// Look up a character or card from the PPQ Wiki
 #[poise::command(slash_command)]
@@ -39,7 +41,22 @@ pub async fn card(
         }
     }
 
-    ctx.say("Gotta look up character...").await?;
+    let alias = characters_api::characters_get(&data.api_config, Some(&query.fallback)).await?;
+    let character = alias.get(0);
+
+    match character {
+        Some(c) => {
+            let (embed, components) = character_embed(&data.api_config, c).await?;
+            let reply = poise::CreateReply::default()
+                .embed(embed)
+                .components(components);
+            ctx.send(reply).await?;
+        }
+        None => {
+            ctx.say(format!("Failed to find character: {}", &query.fallback))
+                .await?;
+        }
+    }
 
     Ok(())
 }
