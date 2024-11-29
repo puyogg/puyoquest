@@ -22,7 +22,7 @@ pub async fn card(
 
         match card {
             Ok(c) => {
-                let (embed, components) = card_embed(&c, CardIconType::Normal).await?;
+                let (embed, components) = card_embed(&c, CardIconType::Normal);
                 let reply = poise::CreateReply::default().embed(embed);
                 let reply = if components.len() > 0 {
                     reply.components(components)
@@ -46,7 +46,8 @@ pub async fn card(
 
     match character {
         Some(c) => {
-            let (embed, components) = character_embed(&data.api_config, c).await?;
+            let cards_and_materials = sdk::apis::characters_api::characters_id_cards_get(&data.api_config, &c.char_id, Some("false")).await?;
+            let (embed, components) = character_embed(c, &cards_and_materials);
             let reply = poise::CreateReply::default()
                 .embed(embed)
                 .components(components);

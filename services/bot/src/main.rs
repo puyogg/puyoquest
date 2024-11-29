@@ -5,6 +5,7 @@ mod util;
 mod commands;
 mod env_config;
 mod embeds;
+mod interaction_router;
 
 #[tokio::main]
 async fn main() {
@@ -63,20 +64,8 @@ async fn event_handler(
             println!("Logged in as {}", data_about_bot.user.name);
         },
         serenity::FullEvent::InteractionCreate { interaction } => {
-            match interaction {
-                serenity::Interaction::Component(component_interaction) => {
-                    match &component_interaction.data.kind {
-                        serenity::ComponentInteractionDataKind::Button => {
-                            println!("{}", &component_interaction.data.custom_id);
-                            crate::embeds::update_card_embed_icon(ctx, data, component_interaction).await?;
-                        },
-                        // serenity::ComponentInteractionDataKind::StringSelect { values } => todo!(),
-                        _ => {},
-                    }
-                },
-                _ => {},
-            };
-        }
+            interaction_router::interaction_router(ctx, data, interaction).await?;
+        },
         _ => {},
     }
 

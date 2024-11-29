@@ -1,5 +1,3 @@
-use sdk::models::Card;
-
 pub fn sort_rarity(
     (a_rarity, a_rarity_modifier): (&str, &Option<String>),
     (b_rarity, b_rarity_modifier): (&str, &Option<String>),

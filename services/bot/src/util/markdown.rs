@@ -37,9 +37,9 @@ pub fn material_link_list(cards: &Vec<Card>) -> String {
         let url = &c.url;
         let name = &c.name;
 
-        format!("[[{name} ★{rarity}]]({url})")
+        format!("[{name} ★{rarity}]({url})")
     }).collect();
 
-    let markdown = markdown_links.join(" ");
+    let markdown = markdown_links.join("\n");
     markdown
 }
