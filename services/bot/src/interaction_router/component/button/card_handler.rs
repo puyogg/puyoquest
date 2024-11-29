@@ -53,8 +53,8 @@ type CardId = String;
 fn parse_card_embed_custom_id(custom_id: &str) -> Result<Option<(CardId, CardIconType)>, Error> {
     // {target_embed_type}:{response_type}:{TBD}:{api_id}:{CardIconType}
     let values = custom_id.split(":").collect::<Vec<&str>>();
-    let card_id = values.get(4);
-    let icon_type = values.get(5);
+    let card_id = values.get(3);
+    let icon_type = values.get(4);
 
     let result = match (card_id, icon_type) {
         (Some(card_id), Some(icon_type)) => {

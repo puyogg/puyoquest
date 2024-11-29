@@ -58,7 +58,7 @@ type CharId = String;
 fn parse_character_custom_id(custom_id: &str) -> Result<Option<CharId>, Error> {
     // character:{response_type}:{TBD}:{char_id}:{TBD}
     let values = custom_id.split(":").collect::<Vec<&str>>();
-    let char_id = values.get(4).map(|c| c.to_string());
+    let char_id = values.get(3).map(|c| c.to_string());
 
     Ok(char_id)
 }
