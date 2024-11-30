@@ -29,6 +29,7 @@ Class | Method | HTTP request | Description
 *AliasesApi* | [**aliases_get**](docs/AliasesApi.md#aliases_get) | **GET** /aliases | List aliases for a char_id
 *AliasesApi* | [**aliases_name_get**](docs/AliasesApi.md#aliases_name_get) | **GET** /aliases/{name} | Find an alias by name
 *AliasesApi* | [**aliases_name_put**](docs/AliasesApi.md#aliases_name_put) | **PUT** /aliases/{name} | 
+*CardsApi* | [**cards_card_id_lore_get**](docs/CardsApi.md#cards_card_id_lore_get) | **GET** /cards/{card_id}/lore | Get card lore
 *CardsApi* | [**cards_get**](docs/CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity
 *CardsApi* | [**cards_id_get**](docs/CardsApi.md#cards_id_get) | **GET** /cards/{id} | Find by card_id
 *CardsApi* | [**cards_post**](docs/CardsApi.md#cards_post) | **POST** /cards | Upsert card data (admins only)
@@ -53,6 +54,8 @@ Class | Method | HTTP request | Description
  - [CardsAndMaterials](docs/CardsAndMaterials.md)
  - [Character](docs/Character.md)
  - [CharacterCreate](docs/CharacterCreate.md)
+ - [Lore](docs/Lore.md)
+ - [MonologueLine](docs/MonologueLine.md)
  - [NotFoundReason](docs/NotFoundReason.md)
  - [NotFoundReasonEnum](docs/NotFoundReasonEnum.md)
 

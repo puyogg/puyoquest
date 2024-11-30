@@ -16,6 +16,8 @@ docs/Character.md
 docs/CharacterCreate.md
 docs/CharactersApi.md
 docs/HealthcheckApi.md
+docs/Lore.md
+docs/MonologueLine.md
 docs/NotFoundReason.md
 docs/NotFoundReasonEnum.md
 git_push.sh
@@ -37,6 +39,8 @@ src/models/card_type.rs
 src/models/cards_and_materials.rs
 src/models/character.rs
 src/models/character_create.rs
+src/models/lore.rs
 src/models/mod.rs
+src/models/monologue_line.rs
 src/models/not_found_reason.rs
 src/models/not_found_reason_enum.rs
