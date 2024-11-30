@@ -120,8 +120,8 @@ pub async fn card_icons(
             let cache_string =
                 serde_json::to_string(&card_icon_urls).map_err(InternalServerError)?;
 
-            let set_cache_result: Option<String> = redis_conn
-                .set(&key, cache_string)
+            let set_cache_result = redis_conn
+                .set::<&str, String, Option<String>>(&key, cache_string)
                 .await
                 .inspect_err(|e| {
                     println!(
@@ -129,9 +129,9 @@ pub async fn card_icons(
                         &card_id
                     );
                     println!("{e}")
-                })
-                .ok();
-            if set_cache_result.is_some() {
+                });
+
+            if set_cache_result.is_ok() {
                 let _ = redis_conn.expire::<&str, i64>(&key, 86400).await; // 1 day
             }
 

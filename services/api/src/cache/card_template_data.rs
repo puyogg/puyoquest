@@ -55,7 +55,7 @@ pub async fn card_template_data(
                 .await;
             let _ = redis_conn
                 .expire::<&str, i64>(
-                    &key, 604800, // 7 days
+                    &key, 86400, // 7 days
                 )
                 .await;
 

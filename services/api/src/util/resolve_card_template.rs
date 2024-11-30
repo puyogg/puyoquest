@@ -1,7 +1,7 @@
 use crate::cards::template_data::CardTemplateData;
 use wiki::wiki_client::{ResolveWikiText, ResolveWikiTextError, WikiClient};
 
-async fn resolve_wiki_text(
+pub async fn resolve_wiki_text(
     wiki_client: &WikiClient,
     text: &Option<String>,
 ) -> Result<Option<String>, ResolveWikiTextError> {

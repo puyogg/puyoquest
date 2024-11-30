@@ -23,6 +23,9 @@ use upsert::{upsert, UpsertResponse};
 pub mod find_by_name_rarity;
 use find_by_name_rarity::{find_by_name_and_rarity, FindByNameAndRarityResponse};
 
+pub mod lore;
+use lore::{GetCardLoreResponse, get_card_lore};
+
 pub struct CardsRouter;
 
 #[OpenApi(prefix_path = "/cards", tag = "ApiTag::Cards")]
@@ -99,6 +102,23 @@ impl CardsRouter {
     ) -> poem::Result<UpsertResponse> {
         // TODO: Apply NFKD normalization before saving
         upsert(pool.0, &card.0).await
+    }
+
+    /// Get card lore
+    #[oai(path = "/:card_id/lore", method = "get")]
+    async fn get_lore(
+        &self,
+        pool: Data<&PgPool>,
+        redis_client: Data<&Arc<RedisClient>>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+        card_id: Path<String>,
+    ) -> poem::Result<GetCardLoreResponse> {
+        get_card_lore(
+            &pool.0,
+            &redis_client.0, 
+            &wiki_client.0,
+            &card_id.0,
+        ).await
     }
 
     // /// List random cards
