@@ -2,21 +2,22 @@ use crate::commands::{Data, Error};
 use crate::embeds;
 use poise::serenity_prelude as serenity;
 
-pub async fn character_handler(
+pub async fn lore_handler(
     ctx: &serenity::Context,
     data: &Data,
     interaction: &serenity::model::application::ComponentInteraction,
 ) -> Result<(), Error> {
     let custom_id = &interaction.data.custom_id;
-    let char_id = parse_character_custom_id(custom_id)?;
-    let char_id = match char_id {
+    let card_id = parse_lore_embed_custom_id(custom_id)?;
+
+    let card_id = match card_id {
         None => {
             interaction
                 .create_response(
                     ctx,
                     serenity::CreateInteractionResponse::Message(
                         serenity::CreateInteractionResponseMessage::new()
-                            .content("There was an error handling your character request!"),
+                            .content("There was an error handling your lore request!"),
                     ),
                 )
                 .await?;
@@ -26,16 +27,10 @@ pub async fn character_handler(
         Some(c) => c,
     };
 
-    let character =
-        sdk::apis::characters_api::characters_id_get(&data.api_config, &char_id).await?;
-    let cards_and_materials = sdk::apis::characters_api::characters_id_cards_get(
-        &data.api_config,
-        &char_id,
-        Some("false"),
-    )
-    .await?;
+    let card = sdk::apis::cards_api::cards_id_get(&data.api_config, &card_id).await?;
+    let lore = sdk::apis::cards_api::cards_card_id_lore_get(&data.api_config, &card_id).await?;
 
-    let (embed, components) = embeds::character_embed(&character, &cards_and_materials);
+    let (embed, components) = embeds::lore_embed(&card, &lore);
     let response = serenity::CreateInteractionResponseMessage::default().embed(embed);
     let response = if components.len() > 0 {
         response.components(components)
@@ -43,7 +38,6 @@ pub async fn character_handler(
         response
     };
 
-    // Assume interaction update response_type for now.
     interaction
         .create_response(
             ctx,
@@ -54,16 +48,16 @@ pub async fn character_handler(
     Ok(())
 }
 
-type CharId = String;
-fn parse_character_custom_id(custom_id: &str) -> Result<Option<CharId>, Error> {
-    // character:{response_type}:{TBD}:{char_id}:{TBD}
+type CardId = String;
+fn parse_lore_embed_custom_id(custom_id: &str) -> Result<Option<CardId>, Error> {
+    // {target_embed_type}:{response_type}:{TBD}:{api_id}:{CardIconType}
     let values = custom_id.split(":").collect::<Vec<&str>>();
-    let char_id = values.get(3).map(|c| c.to_string());
+    let card_id = values.get(3).map(|s| s.to_string());
 
-    Ok(char_id)
+    Ok(card_id)
 }
 
-pub fn character_nav_button(char_id: &str) -> serenity::CreateButton {
-    let custom_id = format!("character:update::{char_id}:");
-    serenity::CreateButton::new(custom_id).label("Character")
+pub fn lore_nav_button(card_id: &str) -> serenity::CreateButton {
+    let custom_id = format!("lore:update::{card_id}:");
+    serenity::CreateButton::new(custom_id).label("Lore")
 }

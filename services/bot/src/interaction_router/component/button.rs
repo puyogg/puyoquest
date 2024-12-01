@@ -3,6 +3,8 @@ use crate::commands::{Data, Error};
 
 pub mod card_handler;
 pub mod character_handler;
+pub mod lore_handler;
+pub mod art_handler;
 
 /// Button responses have this format in the interaction's custom_id:
 /// 
@@ -20,6 +22,10 @@ pub async fn button_router(
     
     if custom_id.starts_with("character:") {
         character_handler::character_handler(ctx, data, interaction).await?;
+    }
+
+    if custom_id.starts_with("lore:") {
+        lore_handler::lore_handler(ctx, data, interaction).await?;
     }
 
     Ok(())

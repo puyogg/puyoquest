@@ -3,7 +3,8 @@ use poise::serenity_prelude::{self as serenity, CreateActionRow};
 use sdk::models::{Card, CardIconUrls};
 
 use crate::interaction_router::component::button::card_handler::card_embed_update_custom_id_builder;
-use crate::interaction_router::component::button::character_handler::character_embed_update_custom_id_builder;
+use crate::interaction_router::component::button::character_handler::character_nav_button;
+use crate::interaction_router::component::button::lore_handler::lore_nav_button;
 use crate::util::embed_colors;
 use crate::util::emoji_table::wiki_symbols_to_emojis;
 use crate::util::markdown;
@@ -55,10 +56,10 @@ pub fn card_embed(
     let navigation = embed_navigation(card);
     components.push(navigation);
 
-    let icon_buttons = icon_select_row(&card.card_id, &card.icons);
-    if let Some(icon_buttons) = icon_buttons {
-        components.push(icon_buttons)
-    };
+    // let icon_buttons = icon_select_row(&card.card_id, &card.icons);
+    // if let Some(icon_buttons) = icon_buttons {
+    //     components.push(icon_buttons)
+    // };
 
     (embed, components)
 }
@@ -354,12 +355,10 @@ fn icon_select_row(
 }
 
 fn embed_navigation(card: &Card) -> serenity::CreateActionRow {
-    let mut buttons: Vec<serenity::CreateButton> = Vec::new();
-
-    buttons.push(
-        serenity::CreateButton::new(character_embed_update_custom_id_builder(&card.char_id))
-            .label("Cards"),
-    );
+    let buttons: Vec<serenity::CreateButton> = vec![
+        character_nav_button(&card.char_id),
+        lore_nav_button(&card.card_id),
+    ];
 
     serenity::CreateActionRow::Buttons(buttons)
 }

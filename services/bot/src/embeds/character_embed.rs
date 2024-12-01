@@ -73,6 +73,8 @@ pub fn character_embed(
         None => embed,
     };
 
+    let mut components: Vec<serenity::CreateActionRow> = Vec::new();
+
     let mut select_menu_options: Vec<CreateSelectMenuOption> = Vec::new();
     let cards_and_mats = [&cards[..], &materials[..]].concat();
     for card in cards_and_mats {
@@ -89,10 +91,9 @@ pub fn character_embed(
         },
     )
     .placeholder("Request card:");
+    components.push(serenity::CreateActionRow::SelectMenu(select_menu));
 
-    let action_row = serenity::CreateActionRow::SelectMenu(select_menu);
-
-    (embed, vec![action_row])
+    (embed, components)
 }
 
 fn format_character_title(character: &Character) -> String {

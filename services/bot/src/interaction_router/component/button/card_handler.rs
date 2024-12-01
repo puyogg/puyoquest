@@ -83,3 +83,9 @@ pub fn card_embed_update_custom_id_builder(card_id: &str, icon_type: CardIconTyp
 
     format!("card:update::{card_id}:{icon_type}")
 }
+
+pub fn card_nav_button(card_id: &str, icon_type: CardIconType) -> serenity::CreateButton {
+    let custom_id = card_embed_update_custom_id_builder(card_id, icon_type);
+    
+    serenity::CreateButton::new(custom_id).label("Card")
+}
