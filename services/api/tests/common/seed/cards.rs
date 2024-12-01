@@ -233,7 +233,7 @@ lazy_static! {
         jp_name_normalized: Some("緑の聖なるベル（金）".nfkd().to_string()),
         link_name: "Santa Ringo/Materials/★5".to_string(),
         link_name_normalized: "santa ringo/materials/★5".nfkd().to_string(),
-        card_type: CardType::Character,
+        card_type: CardType::Material,
         main_color: "Green".to_string(),
         side_color: None,
         wiki_template: serde_json::from_value::<CardTemplateData>(json!({
@@ -267,7 +267,7 @@ lazy_static! {
         jp_name_normalized: Some("=スノードーム（緑）".nfkd().to_string()),
         link_name: "Santa Ringo/Materials/★6-1".to_string(),
         link_name_normalized: "santa ringo/materials/★6-1".nfkd().to_string(),
-        card_type: CardType::Character,
+        card_type: CardType::Material,
         main_color: "Green".to_string(),
         side_color: None,
         wiki_template: serde_json::from_value::<CardTemplateData>(json!({
@@ -301,7 +301,7 @@ lazy_static! {
         jp_name_normalized: Some("スノードーム（赤）".nfkd().to_string()),
         link_name: "Santa Ringo/Materials/★6-2".to_string(),
         link_name_normalized: "santa ringo/materials/★6-2".nfkd().to_string(),
-        card_type: CardType::Character,
+        card_type: CardType::Material,
         main_color: "Red".to_string(),
         side_color: None,
         wiki_template: serde_json::from_value::<CardTemplateData>(json!({
@@ -320,6 +320,68 @@ lazy_static! {
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
             encode("Santa Ringo/Materials/★6-2")
+        ),
+        cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+    pub static ref ON_STAGE_RINGO_07: Card = Card {
+        card_id: "345507".into(),
+        char_id: "3455".into(),
+        rarity: "7".into(),
+        rarity_modifier: None,
+        name: "On-stage Ringo".into(),
+        name_normalized: "on-stage ringo".nfkd().to_string(),
+        jp_name: Some("オンステージのりんご".to_string()),
+        jp_name_normalized: Some("オンステージのりんご".nfkd().to_string()),
+        link_name: "On-stage Ringo".to_string(),
+        link_name_normalized: "on-stage ringo".nfkd().to_string(),
+        card_type: CardType::Character,
+        main_color: "Green".to_string(),
+        side_color: Some("Red".to_string()),
+        wiki_template: serde_json::from_value::<CardTemplateData>(json!({
+            "code": "345507",
+            "rarity": "7",
+            "name": "On-stage Ringo",
+            "ase": "RESOLVED_SKILL_TEXT",
+        }))
+        .unwrap(),
+        series_name: None,
+        is_lore: false,
+        icons: CardIconUrls::default(),
+        url: format!(
+            "https://puyonexus.com/wiki/PPQ:{}",
+            encode("On-stage Ringo"),
+        ),
+        cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+    pub static ref RAINCLOUD_NINE_SIG_07: Card = Card {
+        card_id: "241207".to_string(),
+        char_id: "2412".to_string(),
+        rarity: "7".to_string(),
+        rarity_modifier: None,
+        name: "Raincloud Nine Sig".to_string(),
+        name_normalized: "raincloud nine sig".nfkd().to_string(),
+        jp_name: Some("うきうきのシグ".to_string()),
+        jp_name_normalized: Some("うきうきのシグ".nfkd().to_string()),
+        link_name: "Raincloud Nine Sig".to_string(),
+        link_name_normalized: "raincloud nine sig".nfkd().to_string(),
+        card_type: CardType::Character,
+        main_color: "Blue".to_string(),
+        side_color: Some("Purple".to_string()), 
+        wiki_template: serde_json::from_value::<CardTemplateData>(json!({
+            "code": "241207",
+            "rarity": "7",
+            "name": "On-stage Ringo",
+            "ase": "RESOLVED_SKILL_TEXT",
+        }))
+        .unwrap(),
+        series_name: None,
+        is_lore: false,
+        icons: CardIconUrls::default(),
+        url: format!(
+            "https://puyonexus.com/wiki/PPQ:{}",
+            encode("Raincloud Nine Sig"),
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),

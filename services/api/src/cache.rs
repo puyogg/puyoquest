@@ -13,6 +13,9 @@ pub use character_card_ids::*;
 mod card_lore;
 pub use card_lore::*;
 
+mod card_art;
+pub use card_art::*;
+
 #[derive(Debug)]
 pub struct RedisClient {
     pub conn: redis::aio::MultiplexedConnection,

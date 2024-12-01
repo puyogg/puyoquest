@@ -140,7 +140,7 @@ pub async fn card_icons(
     }
 }
 
-async fn backup_pn_image(
+pub async fn backup_pn_image(
     wiki_client: &WikiClient,
     s3_client: &S3BackupClient,
     image_base_url: &str,

@@ -1,6 +1,7 @@
 mod common;
 
 mod cache {
+    mod card_art;
     mod card_icons;
     mod card_lore;
     mod card_template_data;
