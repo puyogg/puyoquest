@@ -44,9 +44,10 @@ pub struct Lore {
 }
 
 lazy_static::lazy_static! {
-    static ref RE_TRANSLATION_CREDIT: Regex = Regex::new(r"(?ms)Translator\n*?(^.*?$)\n*?Editor\n*?(^.*?$)").unwrap();
     static ref RE_CITATION: Regex = Regex::new(r"(?ms)\[\d\]").unwrap();
     static ref RE_BRACKETS: Regex = Regex::new(r"[\[\]]").unwrap();
+    static ref RE_TRANSLATORS: Regex = Regex::new(r"(?ms)Translator\n(^.*?$)").unwrap();
+    static ref RE_EDITORS: Regex = Regex::new(r"(?ms)Editor\n(^.*?$)").unwrap();
 }
 
 impl From<WikiLore> for Lore {
@@ -70,46 +71,60 @@ impl From<WikiLore> for Lore {
         let (translator, editor) = match value.ftc {
             None => (None, None),
             Some(ftc) => {
-                let captures = RE_TRANSLATION_CREDIT.captures(&ftc).ok().flatten();
+                let translator_captures = RE_TRANSLATORS.captures_iter(&ftc);
+                let translators = translator_captures.flat_map(|c| {
+                    match c {
+                        Err(_) => None,
+                        Ok(c) => {
+                            let translator = c.get(1);
+                            match translator {
+                                None => None,
+                                Some(t) => {
+                                    let t = t.as_str();
+                                    let t = RE_CITATION.replace_all(&t, "");
+                                    let t = RE_BRACKETS.replace_all(&t, "");
+                                    let t = t.trim();
 
-                match captures {
-                    None => (None, None),
-                    Some(c) => {
-                        let t = c
-                            .get(1)
-                            .map(|t| t.as_str())
-                            .map(|s| {
-                                let s = RE_CITATION.replace_all(&s, "");
-                                let s = RE_BRACKETS.replace_all(&s, "");
-                                s.trim().to_string()
-                            })
-                            .and_then(|s| {
-                                if s == "None" {
-                                    return None;
+                                    if t == "None" {
+                                        None
+                                    } else {
+                                        Some(t.to_string())
+                                    }
                                 }
-
-                                Some(s)
-                            });
-                        let e = c
-                            .get(2)
-                            .map(|e| e.as_str())
-                            .map(|s| {
-                                let s = RE_CITATION.replace_all(&s, "");
-                                let s = RE_BRACKETS.replace_all(&s, "");
-                                s.trim().to_string()
-                            })
-                            .and_then(|s| {
-                                if s == "None" {
-                                    return None;
-                                }
-
-                                Some(s)
-                            });
-
-                        (t, e)
+                            }
+                        }
                     }
-                }
-            }
+                }).collect::<Vec<String>>();
+
+                let editor_captures = RE_EDITORS.captures_iter(&ftc);
+                let editors = editor_captures.flat_map(|c| {
+                    match c {
+                        Err(_) => None,
+                        Ok(c) => {
+                            let editor = c.get(1);
+                            match editor {
+                                None => None,
+                                Some(e) => {
+                                    let e = e.as_str();
+                                    let e = RE_CITATION.replace_all(&e, "");
+                                    let e = RE_BRACKETS.replace_all(&e, "");
+                                    let e = e.trim();
+
+                                    if e == "None" {
+                                        None
+                                    } else {
+                                        Some(e.to_string())
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }).collect::<Vec<String>>();
+
+                let t = if translators.len() > 0 { Some(translators.join(", ")) } else { None };
+                let e = if editors.len() > 0 { Some(editors.join(", ")) } else { None };
+                (t, e)
+            },
         };
 
         Self {

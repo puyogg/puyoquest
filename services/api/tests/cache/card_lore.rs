@@ -51,6 +51,42 @@ async fn fetches_lore_from_wiki_real() -> IntTestResult {
 }
 
 #[tokio::test]
+#[ignore]
+async fn fetches_lore_from_wiki_multiple_translators_real() -> IntTestResult {
+    let (_, _, redis_client, wiki_client, _, ..) = create_test_client(
+        "https://puyonexus.com/mediawiki/api.php",
+        "https://puyonexus.com/wiki",
+    )
+    .await?;
+    let mut redis_conn = redis_client.conn.clone();
+
+    let key = redis_client.prefixed(&format!("lore:241207"));
+
+    // Cache should be empty
+    let current_cache: Option<String> = redis_conn.get(&key).await?;
+    assert!(current_cache.is_none());
+
+    let lore = card_lore_data(&redis_client, &wiki_client, "241207").await?;
+
+    assert_eq!(
+        lore,
+        WikiLore {
+            ft: Some("さまざまな世界を旅して まわっている「時空の旅人」。 怒らせるとちょっとコワイ。".to_string()),
+            fta: Some("A \"space-time traveler\" who travels around various worlds. He becomes a bit scary when agitated.".to_string()),
+            ftc: Some("Translator\n[Beachedking][1]\nEditor\n[Pi][2]\n\n[1]: /wiki/User:Beachedking\n[2]: /wiki/User:Pi".to_string()),
+            ft1: Some("あ、いたの？ 気付かなかった".to_string()),
+            fta1: Some("Ah, you were there? I didn't notice.".to_string()),
+            ft2: Some("いろんなところを旅してきたけど ここもひかくてき楽しいね".to_string()),
+            fta2: Some("I've traveled to lots of different places, but coming here is also pretty fun!".to_string()),
+            ft3: Some("とってもいい気分だよ くすくすくすくす…".to_string()),
+            fta3: Some("I feel great! *chuckle*".to_string()),
+        },
+    );
+
+    Ok(())
+}
+
+#[tokio::test]
 async fn fetches_lore_from_cache() -> IntTestResult {
     let (_, _, redis_client, wiki_client, _, ..) = create_test_client(
         "N/A",
