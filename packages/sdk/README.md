@@ -29,6 +29,7 @@ Class | Method | HTTP request | Description
 *AliasesApi* | [**aliases_get**](docs/AliasesApi.md#aliases_get) | **GET** /aliases | List aliases for a char_id
 *AliasesApi* | [**aliases_name_get**](docs/AliasesApi.md#aliases_name_get) | **GET** /aliases/{name} | Find an alias by name
 *AliasesApi* | [**aliases_name_put**](docs/AliasesApi.md#aliases_name_put) | **PUT** /aliases/{name} | 
+*CardsApi* | [**cards_card_id_full_art_get**](docs/CardsApi.md#cards_card_id_full_art_get) | **GET** /cards/{card_id}/full-art | Get card full art (all orientations)
 *CardsApi* | [**cards_card_id_lore_get**](docs/CardsApi.md#cards_card_id_lore_get) | **GET** /cards/{card_id}/lore | Get card lore
 *CardsApi* | [**cards_get**](docs/CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity
 *CardsApi* | [**cards_id_get**](docs/CardsApi.md#cards_id_get) | **GET** /cards/{id} | Find by card_id
@@ -48,6 +49,7 @@ Class | Method | HTTP request | Description
  - [BadRequestReason](docs/BadRequestReason.md)
  - [Card](docs/Card.md)
  - [CardCreate](docs/CardCreate.md)
+ - [CardFullArtUrls](docs/CardFullArtUrls.md)
  - [CardIconUrls](docs/CardIconUrls.md)
  - [CardTemplateData](docs/CardTemplateData.md)
  - [CardType](docs/CardType.md)

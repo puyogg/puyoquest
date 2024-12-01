@@ -8,6 +8,8 @@ pub mod card;
 pub use self::card::Card;
 pub mod card_create;
 pub use self::card_create::CardCreate;
+pub mod card_full_art_urls;
+pub use self::card_full_art_urls::CardFullArtUrls;
 pub mod card_icon_urls;
 pub use self::card_icon_urls::CardIconUrls;
 pub mod card_template_data;
