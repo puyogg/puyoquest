@@ -8,7 +8,7 @@ pub async fn card_handler(
     data: &Data,
     interaction: &serenity::model::application::ComponentInteraction,
     values: &Vec<String>,
-) -> Result<(), Error> {
+) -> Result<(), Error> {   
     let card_id = values.get(0);
     let card_id = match card_id {
         None => {

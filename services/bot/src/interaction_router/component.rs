@@ -3,6 +3,7 @@ use poise::serenity_prelude as serenity;
 
 pub mod button;
 pub mod string_select;
+mod permissions;
 
 pub async fn component_router(
     ctx: &serenity::Context,
