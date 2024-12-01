@@ -4,6 +4,7 @@ use sdk::models::{Card, CardIconUrls};
 
 use crate::interaction_router::component::button::card_handler::card_embed_update_custom_id_builder;
 use crate::interaction_router::component::button::character_handler::character_nav_button;
+use crate::interaction_router::component::button::full_art_handler::full_art_nav_button;
 use crate::interaction_router::component::button::lore_handler::lore_nav_button;
 use crate::util::embed_colors;
 use crate::util::emoji_table::wiki_symbols_to_emojis;
@@ -357,6 +358,7 @@ fn icon_select_row(
 fn embed_navigation(card: &Card) -> serenity::CreateActionRow {
     let buttons: Vec<serenity::CreateButton> = vec![
         character_nav_button(&card.char_id),
+        full_art_nav_button(&card.card_id),
         lore_nav_button(&card.card_id),
     ];
 

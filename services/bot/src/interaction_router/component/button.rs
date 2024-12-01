@@ -5,6 +5,7 @@ pub mod card_handler;
 pub mod character_handler;
 pub mod lore_handler;
 pub mod art_handler;
+pub mod full_art_handler;
 
 /// Button responses have this format in the interaction's custom_id:
 /// 
@@ -26,6 +27,10 @@ pub async fn button_router(
 
     if custom_id.starts_with("lore:") {
         lore_handler::lore_handler(ctx, data, interaction).await?;
+    }
+
+    if custom_id.starts_with("full_art:") {
+        full_art_handler::full_art_handler(ctx, data, interaction).await?;
     }
 
     Ok(())

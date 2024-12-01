@@ -2,6 +2,7 @@ use poise::serenity_prelude as serenity;
 use crate::commands::{Data, Error};
 
 mod card_handler;
+mod full_art_handler;
 
 pub async fn string_select_router(
     ctx: &serenity::Context,
@@ -15,6 +16,10 @@ pub async fn string_select_router(
 
     if custom_id.starts_with("card:") {
         card_handler::card_handler(ctx, data, interaction, values).await?;
+    }
+
+    if custom_id.starts_with("full_art:") {
+        full_art_handler::full_art_handler(ctx, data, interaction, values).await?;
     }
 
     Ok(())

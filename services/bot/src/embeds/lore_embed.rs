@@ -7,6 +7,7 @@ use super::format_card_title;
 
 use crate::interaction_router::component::button::card_handler::card_nav_button;
 use crate::interaction_router::component::button::character_handler::character_nav_button;
+use crate::interaction_router::component::button::full_art_handler::full_art_nav_button;
 use crate::util::embed_colors;
 
 pub fn lore_embed(
@@ -99,7 +100,7 @@ fn embed_navigation(card: &Card) -> serenity::CreateActionRow {
     let buttons: Vec<serenity::CreateButton> = vec![
         character_nav_button(&card.char_id),
         card_nav_button(&card.card_id, CardIconType::Normal),
-        // serenity::CreateButton::new("tbd_full_art").label("Art"),
+        full_art_nav_button(&card.card_id),
     ];
 
     serenity::CreateActionRow::Buttons(buttons)
