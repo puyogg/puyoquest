@@ -51,4 +51,16 @@ lazy_static! {
         voice_trans: Some("V5383".to_string()),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
+    pub static ref ON_STAGE_RINGO: Character = Character {
+        char_id: "3455".to_string(),
+        name: Some("On-stage Ringo".to_string()),
+        jp_name: Some("オンステージのりんご".to_string()),
+        link_name: Some("On-stage Ringo".to_string()),
+        main_color: Some("Green".to_string()),
+        side_color: Some("Red".to_string()),
+        type1: Some("Balance".to_string()),
+        type2: Some("Single".to_string()),
+        voice_trans: Some("V3455".to_string()),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
 }

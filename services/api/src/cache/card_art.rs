@@ -8,41 +8,12 @@ use serde::{Deserialize, Serialize};
 use wiki::wiki_client::{ImageUrl, PageImageFilenames, WikiClient};
 
 use crate::aws::s3::S3BackupClient;
+use crate::cards::full_art::CardFullArtUrls;
 use crate::cards::types::CardDb;
 use crate::util::format_card_link_name::format_card_link_name;
 
 use super::RedisClient;
 use super::card_icons::backup_pn_image;
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Object)]
-pub struct CardFullArtUrls {
-    pub normal_left: Option<String>,
-    pub normal_right: Option<String>,
-    pub extra_power_left: Option<String>,
-    pub extra_power_right: Option<String>,
-    /// Full Power or Cross Ability
-    pub ss: Option<String>,
-    pub extra_power_ss: Option<String>,
-    pub dual_shift_left: Option<String>,
-    pub dual_shift_right: Option<String>,
-    pub extra_power_dual_shift: Option<String>,
-}
-
-impl Default for CardFullArtUrls {
-    fn default() -> Self {
-        Self {
-            normal_left: None,
-            normal_right: None,
-            extra_power_left: None,
-            extra_power_right: None,
-            ss: None,
-            extra_power_ss: None,
-            dual_shift_left: None,
-            dual_shift_right: None,
-            extra_power_dual_shift: None,
-        }
-    }
-}
 
 pub async fn card_art(
     redis_client: &RedisClient,

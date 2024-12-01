@@ -26,6 +26,9 @@ use find_by_name_rarity::{find_by_name_and_rarity, FindByNameAndRarityResponse};
 pub mod lore;
 use lore::{GetCardLoreResponse, get_card_lore};
 
+pub mod full_art;
+use full_art::{get_full_art, GetFullArtResponse};
+
 pub struct CardsRouter;
 
 #[OpenApi(prefix_path = "/cards", tag = "ApiTag::Cards")]
@@ -117,6 +120,27 @@ impl CardsRouter {
             &pool.0,
             &redis_client.0, 
             &wiki_client.0,
+            &card_id.0,
+        ).await
+    }
+
+    /// Get card full art (all orientations)
+    #[oai(path = "/:card_id/full-art", method = "get")]
+    async fn get_full_art(
+        &self,
+        api_config: Data<&Arc<ApiConfig>>,
+        pool: Data<&PgPool>,
+        redis_client: Data<&Arc<RedisClient>>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+        s3_client: Data<&Arc<S3BackupClient>>,
+        card_id: Path<String>,
+    ) -> poem::Result<GetFullArtResponse> {
+        get_full_art(
+            api_config.0,
+            pool.0,
+            redis_client.0,
+            wiki_client.0,
+            s3_client.0,
             &card_id.0,
         ).await
     }

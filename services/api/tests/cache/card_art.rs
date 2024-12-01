@@ -1,5 +1,6 @@
+use api::cards::full_art::CardFullArtUrls;
 use redis::AsyncCommands;
-use api::cache::{card_art, CardFullArtUrls};
+use api::cache::card_art;
 use api::cards::types::{CardCreate, CardDb};
 use api::config::ApiConfig;
 
