@@ -83,6 +83,8 @@ pub struct CardTemplateData {
     pub ssstart: Option<String>,
     pub ssend: Option<String>,
     pub sse: Option<String>,
+    /// Dual Shift Activation Count
+    pub dsn: Option<String>,
 }
 
 impl Default for CardTemplateData {
@@ -167,6 +169,7 @@ impl Default for CardTemplateData {
             ssstart: None,
             ssend: None,
             sse: None,
+            dsn: None,
         }
     }
 }

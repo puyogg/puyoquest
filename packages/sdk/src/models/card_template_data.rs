@@ -171,6 +171,9 @@ pub struct CardTemplateData {
     pub ssend: Option<String>,
     #[serde(rename = "sse", skip_serializing_if = "Option::is_none")]
     pub sse: Option<String>,
+    /// Dual Shift Activation Count
+    #[serde(rename = "dsn", skip_serializing_if = "Option::is_none")]
+    pub dsn: Option<String>,
 }
 
 impl CardTemplateData {
@@ -255,6 +258,7 @@ impl CardTemplateData {
             ssstart: None,
             ssend: None,
             sse: None,
+            dsn: None,
         }
     }
 }

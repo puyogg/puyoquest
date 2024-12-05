@@ -83,6 +83,7 @@ Name | Type | Description | Notes
 **ssstart** | Option<**String**> |  | [optional]
 **ssend** | Option<**String**> |  | [optional]
 **sse** | Option<**String**> |  | [optional]
+**dsn** | Option<**String**> | Dual Shift Activation Count | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
