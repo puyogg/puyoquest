@@ -8,7 +8,7 @@ use crate::interaction_router::component::button::full_art_handler::full_art_nav
 use crate::interaction_router::component::button::lore_handler::lore_nav_button;
 use crate::util::embed_colors;
 use crate::util::emoji_table::wiki_symbols_to_emojis;
-use crate::util::markdown;
+use crate::util::markdown::{self, series_link};
 
 pub enum CardIconType {
     Normal,
@@ -37,9 +37,9 @@ pub fn card_embed(
         None => embed,
     };
 
-    let combin_category_links = format_combination_categories(&card);
-    let embed = match &combin_category_links {
-        Some(link_string) => embed.description(link_string),
+    let description = format_description(card);
+    let embed = match &description {
+        Some(d) => embed.description(d),
         None => embed,
     };
 
@@ -76,6 +76,27 @@ fn trim_whitespace(s: &str) -> String {
         result.push_str(w);
     });
     result
+}
+
+fn format_description(card: &Card) -> Option<String> {
+    let series = match &card.series_name {
+        None => None,
+        Some(s) => Some(series_link(&s)),
+    };
+
+    let combinations = format_combination_categories(card);
+
+    let description = match (series, combinations) {
+        (Some(s), Some(c)) => Some(format!(
+            r#"{s}
+{c}"#
+        )),
+        (Some(s), None) => Some(s),
+        (None, Some(c)) => Some(c),
+        (None, None) => None,
+    };
+
+    description
 }
 
 fn format_ls(
@@ -137,6 +158,7 @@ fn format_as(
             "Green" => "<:green:429944006948945931>",
             "Yellow" => "<:yellow:429944006718521345>",
             "Purple" => "<:purple:429944007397736448>",
+            "h" => "<:heartbox:792798475510612009>",
             _ => "?",
         },
         None => "?",
@@ -213,6 +235,107 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
         ));
     }
 
+    if let (Some(active_skill), Some(asfe)) = (&wiki_template.r#as, &wiki_template.asfe) {
+        let tag = match &card.wiki_template.dsn {
+            None => "AS:FP",
+            Some(_) => "AS:DS",
+        };
+
+        fields.push(format_as(
+            tag,
+            &active_skill,
+            &wiki_template.jpas,
+            &wiki_template.aslv,
+            &wiki_template.color,
+            &wiki_template.asfn,
+            &Some(asfe.clone()),
+        ));
+    }
+
+    if let Some(ast) = &wiki_template.ast {
+        fields.push(format_as(
+            "AS+",
+            &ast,
+            &wiki_template.jpast,
+            &None,
+            &wiki_template.color,
+            &wiki_template.astn,
+            &wiki_template.aste,
+        ));
+    }
+
+    if let Some(ast2) = &wiki_template.ast2 {
+        fields.push(format_as(
+            "AS+",
+            &ast2,
+            &wiki_template.jpast2,
+            &None,
+            &wiki_template.color,
+            &wiki_template.ast2n,
+            &wiki_template.ast2e,
+        ));
+    }
+
+    if let Some(ast3) = &wiki_template.ast3 {
+        fields.push(format_as(
+            "AS+",
+            &ast3,
+            &wiki_template.jpast3,
+            &None,
+            &wiki_template.color,
+            &wiki_template.ast3n,
+            &wiki_template.ast3e,
+        ));
+    }
+
+    let has_high_bslv = match &wiki_template.bslv {
+        None => false,
+        Some(lv) => match lv.parse::<i32>() {
+            Ok(lv) => lv >= 15,
+            Err(_) => false,
+        },
+    };
+    // Only show battle skills if it's >=Lv15, or if the card only has a BS (and no AS)
+    if let (Some(bs), true, _) = (&wiki_template.bs, has_high_bslv, &wiki_template.r#as) {
+        fields.push(format_as(
+            "BS",
+            &bs,
+            &wiki_template.jpbs,
+            &wiki_template.bslv,
+            &wiki_template.color,
+            &wiki_template.bsn,
+            &wiki_template.bse,
+        ));
+    } else if let (Some(bs), _, None) = (&wiki_template.bs, has_high_bslv, &wiki_template.r#as) {
+        fields.push(format_as(
+            "BS",
+            &bs,
+            &wiki_template.jpbs,
+            &wiki_template.bslv,
+            &wiki_template.color,
+            &wiki_template.bsn,
+            &wiki_template.bse,
+        ));
+    }
+
+    if let Some(ca) = &wiki_template.ca {
+        let cross_ability_activation_color = match (&wiki_template.color, &wiki_template.caalt) {
+            (_, Some(caalt)) => Some(caalt.clone()),
+            (Some(color), _) => Some(color.clone()),
+            (_, _) => None,
+        };
+
+        fields.push(format_as(
+            "CA",
+            &ca,
+            &wiki_template.jpca,
+            &wiki_template.calv,
+            &cross_ability_activation_color,
+            &wiki_template.bsn,
+            &wiki_template.bse,
+        ));
+    }
+
     fields
 }
 
@@ -266,10 +389,17 @@ fn format_base_max_lv_stats(card: &Card) -> (String, String) {
         _ => String::from("?"),
     };
 
-    let description = format!(
-        r#"HP: {hp}　ATK: {atk}　RCV: {rcv}
+    let description = match &card.wiki_template.dsn {
+        None => format!(
+            r#"HP: {hp}　ATK: {atk}　RCV: {rcv}
 Cost: {cost}　Type: {card_type}"#
-    );
+        ),
+        Some(dsn) => format!(
+            r#"HP: {hp}　ATK: {atk}　RCV: {rcv}
+Cost: {cost}　Type: {card_type}
+Dual Shift: <:dualshift:1314042310291623937>{dsn}"#
+        ),
+    };
 
     (title, description)
 }
@@ -292,14 +422,14 @@ pub fn format_combination_categories(card: &Card) -> Option<String> {
             } else {
                 Some(markdown::combination_link(s))
             }
-        },
+        }
         None => None,
     })
     .collect::<Vec<String>>()
     .join(" ");
 
     if combins.len() > 0 {
-        Some(combins)
+        Some(format!("<:combination:792798801034346558> {combins}"))
     } else {
         None
     }
