@@ -1,3 +1,4 @@
+use fancy_regex::Regex;
 use poise::serenity_prelude::{self as serenity, CreateActionRow};
 
 use sdk::models::{Card, CardIconUrls};
@@ -37,7 +38,7 @@ pub fn card_embed(
         None => embed,
     };
 
-    let description = format_description(card);
+    let description = format_embed_description(card);
     let embed = match &description {
         Some(d) => embed.description(d),
         None => embed,
@@ -78,7 +79,7 @@ fn trim_whitespace(s: &str) -> String {
     result
 }
 
-fn format_description(card: &Card) -> Option<String> {
+fn format_embed_description(card: &Card) -> Option<String> {
     let series = match &card.series_name {
         None => None,
         Some(s) => Some(series_link(&s)),
@@ -97,6 +98,40 @@ fn format_description(card: &Card) -> Option<String> {
     };
 
     description
+}
+
+lazy_static::lazy_static! {
+    static ref RE_CITATION: Regex = Regex::new(r"\[\d\]").unwrap();
+    static ref RE_FIELD_EFFECT: Regex = Regex::new(r"\[\[Field Effect\](.*?)\]").unwrap();
+}
+
+fn format_description_markdown(desc: &str) -> String {
+    let field_effect_captures = RE_FIELD_EFFECT.captures(desc);
+    let field_effect_value = match field_effect_captures {
+        Err(_) => None,
+        Ok(c) => match c {
+            None => None,
+            Some(c) => c.get(1).map(|s| s.as_str()),
+        },
+    };
+    let desc = match field_effect_value {
+        None => desc.to_string(),
+        Some(v) => RE_FIELD_EFFECT
+            .replace(desc, format!("**[Field Effect]{v}**"))
+            .to_string(),
+    };
+
+    let splits = desc.split("\n").collect::<Vec<&str>>();
+    let index = splits.iter().position(|line| line.starts_with("[1]"));
+
+    let desc_without_footnotes = match index {
+        None => splits.join("\n"),
+        Some(index) => splits[..index].join("\n"),
+    };
+
+    let desc_without_citations = RE_CITATION.replace_all(&desc_without_footnotes, "");
+    let replaced_emojis = wiki_symbols_to_emojis(&desc_without_citations);
+    replaced_emojis
 }
 
 fn format_ls(
@@ -119,7 +154,7 @@ fn format_ls(
 
     let title = trim_whitespace(&format!("[{}] {} {}", tag, english, japanese));
     let description = match description {
-        Some(d) => wiki_symbols_to_emojis(d),
+        Some(d) => format_description_markdown(d),
         None => String::from("N/A"),
     };
 
@@ -131,19 +166,28 @@ fn format_as(
     english: &str,
     japanese: &Option<String>,
     level: &Option<String>,
+    special_training: bool,
     color: &Option<String>,
     activation_count: &Option<String>,
     description: &Option<String>,
 ) -> (String, String, bool) {
-    let english = match level {
-        Some(lv) => format!("{} Lv. {}", english, lv),
-        None => String::from(english),
+    let english = match special_training {
+        true => format!("{english} (+)"),
+        false => match level {
+            Some(lv) => format!("{} Lv. {}", english, lv),
+            None => String::from(english),
+        },
     };
 
-    let japanese = match (japanese, level) {
-        (Some(j), Some(lv)) => format!("({} Lv. {})", j, lv),
-        (Some(j), None) => format!("({})", j),
-        _ => String::from(""),
+    let japanese = match japanese {
+        None => "".to_string(),
+        Some(japanese) => match special_training {
+            true => format!("{japanese}(+)"),
+            false => match level {
+                Some(lv) => format!("({} Lv. {})", japanese, lv),
+                None => format!("({})", japanese),
+            },
+        },
     };
 
     let activation_count = match activation_count {
@@ -168,7 +212,7 @@ fn format_as(
         "[{tag}] {english} {japanese} [{activation_puyo_emoji}×{activation_count}]"
     ));
     let description = match description {
-        Some(d) => wiki_symbols_to_emojis(d),
+        Some(d) => format_description_markdown(d),
         None => String::from("N/A"),
     };
 
@@ -203,6 +247,19 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
         ));
     }
 
+    if let (None, Some(lste)) = (&wiki_template.lst, &wiki_template.lste) {
+        fields.push(format_ls(
+            "LS+",
+            &format!("{} SP", wiki_template.name),
+            &(match &wiki_template.jpname {
+                Some(jpname) => Some(format!("{} SP", jpname)),
+                None => None,
+            }),
+            &None,
+            &wiki_template.lste,
+        ));
+    }
+
     if let Some(lst2) = &wiki_template.lst2 {
         fields.push(format_ls(
             "LS+",
@@ -229,6 +286,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &active_skill,
             &wiki_template.jpas,
             &wiki_template.aslv,
+            false,
             &wiki_template.color,
             &wiki_template.asn,
             &wiki_template.ase,
@@ -246,6 +304,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &active_skill,
             &wiki_template.jpas,
             &wiki_template.aslv,
+            false,
             &wiki_template.color,
             &wiki_template.asfn,
             &Some(asfe.clone()),
@@ -258,10 +317,39 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &ast,
             &wiki_template.jpast,
             &None,
+            false,
             &wiki_template.color,
             &wiki_template.astn,
             &wiki_template.aste,
         ));
+    }
+
+    match (&wiki_template.r#as, &wiki_template.ast, &wiki_template.aste) {
+        (_, Some(ast), Some(aste)) => {
+            fields.push(format_as(
+                "AS+",
+                &ast,
+                &wiki_template.jpast,
+                &None,
+                false,
+                &wiki_template.color,
+                &wiki_template.astn,
+                &wiki_template.aste,
+            ));
+        }
+        (Some(active_skill), None, Some(_aste)) => {
+            fields.push(format_as(
+                "AS+",
+                &active_skill,
+                &wiki_template.jpas,
+                &None,
+                true,
+                &wiki_template.color,
+                &wiki_template.astn,
+                &wiki_template.aste,
+            ));
+        }
+        _ => {}
     }
 
     if let Some(ast2) = &wiki_template.ast2 {
@@ -270,6 +358,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &ast2,
             &wiki_template.jpast2,
             &None,
+            false,
             &wiki_template.color,
             &wiki_template.ast2n,
             &wiki_template.ast2e,
@@ -282,6 +371,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &ast3,
             &wiki_template.jpast3,
             &None,
+            false,
             &wiki_template.color,
             &wiki_template.ast3n,
             &wiki_template.ast3e,
@@ -302,6 +392,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &bs,
             &wiki_template.jpbs,
             &wiki_template.bslv,
+            false,
             &wiki_template.color,
             &wiki_template.bsn,
             &wiki_template.bse,
@@ -312,6 +403,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &bs,
             &wiki_template.jpbs,
             &wiki_template.bslv,
+            false,
             &wiki_template.color,
             &wiki_template.bsn,
             &wiki_template.bse,
@@ -330,6 +422,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
             &ca,
             &wiki_template.jpca,
             &wiki_template.calv,
+            false,
             &cross_ability_activation_color,
             &wiki_template.bsn,
             &wiki_template.bse,
