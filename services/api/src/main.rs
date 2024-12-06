@@ -2,21 +2,26 @@ use api::aws::s3::S3BackupClient;
 use api::config::ApiConfig;
 use poem::{listener::TcpListener, Result, Server};
 
-use api::cache::{create_redis_connection, DEFAULT_REDIS_KEY_PREFIX};
+use api::cache::create_redis_connection;
 use api::db::create_pool;
-use api::init_api;
+use api::{env_config, init_api};
 use wiki::wiki_client::WikiClient;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let env = &*env_config::ENV;
+
     let pool = create_pool().await?;
-    let wiki_client = WikiClient::new(
-        "https://puyonexus.com/mediawiki/api.php",
-        "https://puyonexus.com/wiki",
-    );
+    let wiki_client = WikiClient::new(&env.pn_wiki_api_url, &env.pn_wiki_base_url);
 
     let redis_conn = std::sync::Arc::new(
-        create_redis_connection("0.0.0.0", "36379", DEFAULT_REDIS_KEY_PREFIX.to_string()).await,
+        create_redis_connection(
+            &env.redis_uri_scheme,
+            &env.redis_host,
+            &env.redis_port,
+            env.redis_key_prefix.clone(),
+        )
+        .await,
     );
 
     let api_config = std::sync::Arc::new(ApiConfig::new().await?);

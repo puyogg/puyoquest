@@ -74,16 +74,17 @@ const role = new aws.iam.Role(
 );
 
 export const pulumiRequiredManagedPolicies = [
-  "arn:aws:iam::aws:policy/AmazonECS_FullAccess",
-  "arn:aws:iam::aws:policy/IAMFullAccess",
-  "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
-  "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-  "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-  "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
-  "arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator",
-  "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
-  "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
-  aws.iam.ManagedPolicy.CloudFrontFullAccess,
+  // "arn:aws:iam::aws:policy/AmazonECS_FullAccess",
+  // "arn:aws:iam::aws:policy/IAMFullAccess",
+  // "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess",
+  // "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+  // "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+  // "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
+  // "arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator",
+  // "arn:aws:iam::aws:policy/AmazonSSMFullAccess",
+  // "arn:aws:iam::aws:policy/AmazonEC2FullAccess",
+  // aws.iam.ManagedPolicy.CloudFrontFullAccess,
+  aws.iam.ManagedPolicy.AdministratorAccess,
 ];
 
 const policyAttachments = pulumiRequiredManagedPolicies.map((arn) => {

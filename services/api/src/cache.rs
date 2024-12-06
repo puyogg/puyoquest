@@ -28,10 +28,13 @@ impl RedisClient {
     }
 }
 
-pub const DEFAULT_REDIS_KEY_PREFIX: &'static str = "";
-
-pub async fn create_redis_connection(host: &str, port: &str, prefix: String) -> RedisClient {
-    let redis_conn_url = format!("redis://:@{host}:{port}");
+pub async fn create_redis_connection(
+    scheme: &str,
+    host: &str,
+    port: &str,
+    prefix: String,
+) -> RedisClient {
+    let redis_conn_url = format!("{scheme}://:@{host}:{port}");
 
     let conn = redis::Client::open(redis_conn_url)
         .expect("Invalid connection URL")
