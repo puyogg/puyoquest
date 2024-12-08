@@ -48,11 +48,20 @@ export const valkeyCache = new aws.elasticache.ServerlessCache(
     subnetIds: [
       ppqVpc.privateSubnetA.id,
       ppqVpc.privateSubnetB.id,
-      ppqVpc.publicSubnet.id,
+      // ppqVpc.publicSubnet.id,
     ],
   },
   { deleteBeforeReplace: true }
 );
 
-export const valkeyAddress = valkeyCache.endpoints[0].address;
-export const valkeyPort = valkeyCache.endpoints[0].port;
+const valkeyAddress = valkeyCache.endpoints[0].address;
+const valkeyPort = valkeyCache.endpoints[0].port;
+
+export const redisConnectionString = new aws.ssm.Parameter(
+  "redis-connection-string",
+  {
+    name: "REDIS_CONNECTION_STRING",
+    type: aws.ssm.ParameterType.SecureString,
+    value: pulumi.interpolate`rediss://:@${valkeyAddress}:${valkeyPort}`,
+  }
+);

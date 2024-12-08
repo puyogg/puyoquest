@@ -4,6 +4,9 @@ import * as pulumi from "@pulumi/pulumi";
 import { Ec2InstanceSsh } from "../ec2/index.js";
 import { ppqVpc } from "../vpc.js";
 import { AWS_ACCOUNT_ID } from "../constants.js";
+import { ppqConnectionString } from "./db.js";
+import { redisConnectionString } from "./cache.js";
+import { apiBin } from "../s3/shared-buckets.js";
 
 const imageCacheBucket = new aws.s3.BucketV2("api-pn-image-cache", {
   bucket: "api-pn-image-cache",
@@ -107,12 +110,19 @@ const ec2RolePolicyDocument = aws.iam.getPolicyDocumentOutput({
     {
       effect: "Allow",
       actions: ["s3:GetObject", "s3:PutObject"],
-      resources: [pulumi.interpolate`${imageCacheBucket.arn}/*`],
+      resources: [
+        pulumi.interpolate`${imageCacheBucket.arn}/*`,
+        pulumi.interpolate`${apiBin.arn}/*`,
+      ],
     },
     {
       effect: "Allow",
       actions: ["ssm:GetParameter"],
-      resources: [distributionUrl.arn],
+      resources: [
+        distributionUrl.arn,
+        ppqConnectionString.arn,
+        redisConnectionString.arn,
+      ],
     },
   ],
 });
@@ -129,7 +139,8 @@ const ec2InstanceProfile = new aws.iam.InstanceProfile("api-instance-profile", {
 const userData = `#!/bin/bash
 sudo yum update -y
 sudo yum install git -y
-sudo amazon-linux-extras install docker -y
+sudo yum install tmux -y
+sudo yum install docker -y
 sudo service docker start
 sudo usermod -a -G docker ec2-user
 mkdir -p /usr/local/lib/docker/cli-plugins

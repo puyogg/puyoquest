@@ -1,2 +1,6 @@
 config:
   aws:region: us-east-1
+  infrastructure:POSTGRES_DB_PASSWORD:
+    secure: AAABAIejB7L2tIVZCQrZTS9y0tfayKD4Yyfya562qKKrdg9lGcSEhEp04qD0ZhjlPRcfCg==
+  infrastructure:POSTGRES_DB_USER:
+    secure: AAABAFrcgGO6DnizbdnjZt8ZCmUI0XwRdgo5xcJ4pIkCX5Q=
