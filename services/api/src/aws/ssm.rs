@@ -13,6 +13,7 @@ pub async fn fetch_parameter(ssm_client: &aws_sdk_ssm::Client, name: &str) -> Re
     ssm_client
         .get_parameter()
         .name(name)
+        .with_decryption(true)
         .send()
         .await
         .map_err(InternalServerError)

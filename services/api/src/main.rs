@@ -11,14 +11,18 @@ use wiki::wiki_client::WikiClient;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let env = &*env_config::ENV;
 
-    let pool = create_pool().await?;
+    let install_default = rustls::crypto::aws_lc_rs::default_provider().install_default().unwrap();
+
+    let pool = create_pool(
+        &env.environment,
+        &env.db_connection_string,
+    ).await?;
     let wiki_client = WikiClient::new(&env.pn_wiki_api_url, &env.pn_wiki_base_url);
 
     let redis_conn = std::sync::Arc::new(
         create_redis_connection(
-            &env.redis_uri_scheme,
-            &env.redis_host,
-            &env.redis_port,
+            &env.environment,
+            &env.redis_connection_string,
             env.redis_key_prefix.clone(),
         )
         .await,

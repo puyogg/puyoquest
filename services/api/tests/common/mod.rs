@@ -3,6 +3,7 @@ use api::{
     cache::{create_redis_connection, RedisClient},
     config::ApiConfig,
     db::{create_pool_from_opts, PoolOpts},
+    env_config::DeploymentEnvironment,
     init_api,
 };
 
@@ -89,8 +90,14 @@ pub async fn create_test_client(
     let test_db_name = request_test_db().await?;
     let pool = create_test_pool(&test_db_name).await?;
     let wiki_client = WikiClient::new(pn_api_url, pn_base_url);
-    let redis_client =
-        std::sync::Arc::new(create_redis_connection("redis", "0.0.0.0", "36379", redis_key_prefix).await);
+    let redis_client = std::sync::Arc::new(
+        create_redis_connection(
+            &DeploymentEnvironment::Local,
+            &Some("redis://:@0.0.0.0:36379".to_string()),
+            redis_key_prefix,
+        )
+        .await,
+    );
     let api_config = std::sync::Arc::new(ApiConfig::new().await?);
     let s3_backup_client = std::sync::Arc::new(S3BackupClient::new().await);
     let api = init_api(

@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 async-trait = "0.1.83"
 aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
+aws-lc-rs = "1.0.0"
 aws-sdk-s3 = "1.59.0"
 aws-sdk-ssm = "1.54.0"
 chrono = { version = "0.4", features = ["serde"] }
@@ -14,18 +15,26 @@ futures = "0.3.30"
 html2text = "0.13.0"
 lazy_static = "1.4.0"
 moka = { version = "0.12.8", features = ["future"] }
+rustls = "0.23"
+openssl = { version = "0.10.68", features = ["vendored"] }
 poem = { version = "3.1.1", features = ["server", "test"] }
 poem-openapi = { version = "5.1.2", features = ["swagger-ui", "chrono"] }
 rand = "0.8.5"
-redis = { version = "0.27.0", features = ["aio", "tokio-comp", "json"] }
+redis = { version = "0.27.0", features = [
+  "aio",
+  "tokio-comp",
+  "json",
+  "tokio-rustls-comp",
+] }
 reqwest = { version = "0.12.4", features = ["json", "stream"] }
 serde = "1.0.203"
 serde_json = { version = "1.0.117", features = ["raw_value"] }
-sqlx = { version = "0.8.0", features = [
+sqlx = { version = "0.8.2", features = [
   "runtime-tokio",
   "postgres",
   "chrono",
   "json",
+  "tls-rustls-aws-lc-rs",
 ] }
 tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 # tokio-stream = "0.1.15"

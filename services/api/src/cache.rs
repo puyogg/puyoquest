@@ -16,6 +16,8 @@ pub use card_lore::*;
 mod card_art;
 pub use card_art::*;
 
+use crate::{aws::ssm, env_config::DeploymentEnvironment};
+
 #[derive(Debug)]
 pub struct RedisClient {
     pub conn: redis::aio::MultiplexedConnection,
@@ -29,18 +31,37 @@ impl RedisClient {
 }
 
 pub async fn create_redis_connection(
-    scheme: &str,
-    host: &str,
-    port: &str,
+    environment: &DeploymentEnvironment,
+    redis_connection_string: &Option<String>,
     prefix: String,
 ) -> RedisClient {
-    let redis_conn_url = format!("{scheme}://:@{host}:{port}");
+    // let redis_conn_url = format!("{scheme}://:@{host}:{port}");
+    match environment {
+        DeploymentEnvironment::Local => {
+            let redis_conn_url = match redis_connection_string {
+                Some(u) => u,
+                None => "redis://:@0.0.0.0:36379",
+            };
+            let conn = redis::Client::open(redis_conn_url)
+                .expect("Invalid connection URL")
+                .get_multiplexed_async_connection()
+                .await
+                .expect("failed to connect to redis");
 
-    let conn = redis::Client::open(redis_conn_url)
-        .expect("Invalid connection URL")
-        .get_multiplexed_async_connection()
-        .await
-        .expect("failed to connect to redis");
+            RedisClient { conn, prefix }
+        },
+        DeploymentEnvironment::Production => {
+            let sdk_config = aws_config::from_env().load().await;
+            let ssm_client = aws_sdk_ssm::Client::new(&sdk_config);
 
-    RedisClient { conn, prefix }
+            let redis_conn_url = ssm::fetch_parameter(&ssm_client, "REDIS_CONNECTION_STRING").await.unwrap();
+            let conn = redis::Client::open(redis_conn_url)
+                .expect("Invalid connection URL")
+                .get_multiplexed_async_connection()
+                .await
+                .expect("failed to connect to redis");
+
+            RedisClient { conn, prefix }
+        }
+    }
 }
