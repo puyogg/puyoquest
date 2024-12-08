@@ -84,6 +84,16 @@ Run integration tests:
 cargo watch -x "test -p api --test '*'"
 ```
 
+### Building for Release
+
+I deploy the API to a t4g ec2 instance. They run on arm64 gnu linux
+
+Install the cross tool.
+
+```sh
+cross build -p api --bin api --release --target aarch64-unknown-linux-gnu
+```
+
 ### Legacy DB Migration
 
 ```sh
