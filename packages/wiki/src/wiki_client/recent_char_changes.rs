@@ -91,7 +91,6 @@ impl RecentCharChanges for super::WikiClient {
                 .query(&query_params)
                 .send()
                 .await?;
-            println!("{}", response.url());
             let response = response.json::<RecentChangesResponse>().await?;
 
             for recent_change in response.query.recentchanges {

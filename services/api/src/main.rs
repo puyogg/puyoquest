@@ -11,7 +11,7 @@ use wiki::wiki_client::WikiClient;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let env = &*env_config::ENV;
 
-    let install_default = rustls::crypto::aws_lc_rs::default_provider().install_default().unwrap();
+    let _install_default = rustls::crypto::aws_lc_rs::default_provider().install_default().unwrap();
 
     let pool = create_pool(
         &env.environment,

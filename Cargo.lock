@@ -95,6 +95,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.94"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c1fd03a028ef38ba2276dce7e33fcd6369c158a1bca17946c4b1b701891c1ff7"
+
+[[package]]
 name = "api"
 version = "0.1.0"
 dependencies = [
@@ -104,7 +110,7 @@ dependencies = [
  "aws-sdk-s3",
  "aws-sdk-ssm",
  "chrono",
- "fancy-regex",
+ "fancy-regex 0.13.0",
  "futures",
  "html2text 0.13.2",
  "lazy_static",
@@ -697,7 +703,16 @@ version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0700ddab506f33b20a03b13996eccd309a48e5ff77d0d95926aa0210fb4e95f1"
 dependencies = [
- "bit-vec",
+ "bit-vec 0.6.3",
+]
+
+[[package]]
+name = "bit-set"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "08807e080ed7f9d5433fa9b275196cfc35414f66a0c79d864dc51a0d825231a3"
+dependencies = [
+ "bit-vec 0.8.0",
 ]
 
 [[package]]
@@ -705,6 +720,12 @@ name = "bit-vec"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "349f9b6a179ed607305526ca489b34ad0a41aed5f7980fa90eb03160b69598fb"
+
+[[package]]
+name = "bit-vec"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e764a1d40d510daf35e07be9eb06e75770908c27d411ee6c92109c9840eaaf7"
 
 [[package]]
 name = "bitflags"
@@ -735,7 +756,7 @@ name = "bot"
 version = "0.1.0"
 dependencies = [
  "dotenvy",
- "fancy-regex",
+ "fancy-regex 0.13.0",
  "lazy_static",
  "phf",
  "poise",
@@ -1349,7 +1370,18 @@ version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "531e46835a22af56d1e3b66f04844bed63158bc094a628bec1d321d9b4c44bf2"
 dependencies = [
- "bit-set",
+ "bit-set 0.5.3",
+ "regex-automata",
+ "regex-syntax",
+]
+
+[[package]]
+name = "fancy-regex"
+version = "0.14.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e24cb5a94bcae1e5408b0effca5cd7172ea3c5755049c5f3af4cd283a165298"
+dependencies = [
+ "bit-set 0.8.0",
  "regex-automata",
  "regex-syntax",
 ]
@@ -2017,6 +2049,29 @@ checksum = "634d9b1461af396cad843f47fdba5597a4f9e6ddd4bfb6ff5d85028c25cb12f6"
 dependencies = [
  "unicode-bidi",
  "unicode-normalization",
+]
+
+[[package]]
+name = "indexers"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "aws-config",
+ "aws-lc-rs",
+ "aws-sdk-ssm",
+ "chrono",
+ "dotenvy",
+ "fancy-regex 0.14.0",
+ "openssl",
+ "reqwest 0.12.4",
+ "rustls 0.23.13",
+ "sdk",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "utils",
+ "wiki",
 ]
 
 [[package]]
@@ -4546,6 +4601,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "09cc8ee72d2a9becf2f2febe0205bbed8fc6615b7cb429ad062dc7b7ddd036a9"
 
 [[package]]
+name = "utils"
+version = "0.1.0"
+dependencies = [
+ "fancy-regex 0.14.0",
+ "lazy_static",
+ "unicode-normalization",
+ "urlencoding",
+]
+
+[[package]]
 name = "uuid"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4737,7 +4802,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "chrono",
- "fancy-regex",
+ "fancy-regex 0.13.0",
  "html2text 0.12.5",
  "lazy_static",
  "reqwest 0.12.4",
