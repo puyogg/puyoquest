@@ -92,6 +92,7 @@ Install the cross tool.
 
 ```sh
 cross build -p api --bin api --release --target aarch64-unknown-linux-gnu
+aws s3 cp ./target/aarch64-unknown-linux-gnu/release/api s3://api-bin/api-linux-gnu-latest
 ```
 
 ### Legacy DB Migration
