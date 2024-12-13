@@ -35,7 +35,7 @@ pub struct CronLastUpdated {
     pub updated_at: DateTime<Utc>,
 }
 
-pub async fn init_db(pool: &PgPool) -> Result<(), anyhow::Error> {
+pub async fn init_db(pool: &PgPool, default_days_ago: i64) -> Result<(), anyhow::Error> {
     let _ = sqlx::raw_sql("CREATE SCHEMA IF NOT EXISTS ppq_api_indexers")
         .execute(pool)
         .await?;
@@ -60,7 +60,7 @@ pub async fn init_db(pool: &PgPool) -> Result<(), anyhow::Error> {
     .await?;
 
     if let None = last_run {
-        let seven_days_ago = Utc::now() - Duration::days(8);
+        let seven_days_ago = Utc::now() - Duration::days(default_days_ago);
 
         let inserted_last_run: CronLastUpdated = sqlx::query_as(
             r#"

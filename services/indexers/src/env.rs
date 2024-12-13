@@ -14,6 +14,7 @@ pub struct EnvConfig {
     pub db_connection_string: String,
     pub ppq_api_base_url: String,
     pub webhook_url: String,
+    pub default_days_ago: i64,
 }
 
 impl EnvConfig {
@@ -30,10 +31,9 @@ impl EnvConfig {
         let sdk_config = aws_config::from_env().load().await;
         let ssm_client = aws_sdk_ssm::Client::new(&sdk_config);
 
-        let load_ssm_or_env =
-            |key: &'static str, default: &'static str| {
-                load_ssm_or_env(&environment, &ssm_client, key, default)
-            };
+        let load_ssm_or_env = |key: &'static str, default: &'static str| {
+            load_ssm_or_env(&environment, &ssm_client, key, default)
+        };
 
         let db_connection_string = load_ssm_or_env(
             "PPQ_DB_CONNECTION_STRING",
@@ -44,8 +44,10 @@ impl EnvConfig {
         Ok(EnvConfig {
             environment,
             db_connection_string,
-            ppq_api_base_url: env::var("PPQ_API_BASE_URL").unwrap_or("http://localhost:3000".to_string()),
+            ppq_api_base_url: env::var("PPQ_API_BASE_URL")
+                .unwrap_or("http://localhost:3000".to_string()),
             webhook_url: env::var("WEBHOOK_URL")?,
+            default_days_ago: env::var("DEFAULT_DAYS_AGO")?.parse::<i64>().unwrap_or(7),
         })
     }
 }

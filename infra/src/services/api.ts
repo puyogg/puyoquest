@@ -147,6 +147,7 @@ mkdir -p /usr/local/lib/docker/cli-plugins
 curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-aarch64 -o /usr/local/lib/docker/cli-plugins/docker-compose
 chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
 git clone https://github.com/puyogg/puyoquest /home/ec2-user/puyoquest
+sudo chown -R ec2-user:ec2-user /home/ec2-user/puyoquest
 `;
 
 const apiInstance = new Ec2InstanceSsh("api-instance", {

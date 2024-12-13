@@ -14,7 +14,7 @@ async fn main() {
     let pool = db::create_pool(&env.environment, &env.db_connection_string)
         .await
         .unwrap();
-    db::init_db(&pool).await.unwrap();
+    db::init_db(&pool, env.default_days_ago).await.unwrap();
 
     let logger = WebhookLogger::new(&env.webhook_url);
     let wiki_client = wiki::wiki_client::WikiClient::new(
@@ -67,6 +67,12 @@ async fn main() {
                 }
 
                 db::update_last_run(&pool, &now).await.unwrap();
+                let _ = logger
+                    .log(&format!(
+                        "Successfully indexed {} characters",
+                        recent_changes.len()
+                    ))
+                    .await;
             }
         };
 
