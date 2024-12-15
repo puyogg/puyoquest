@@ -33,7 +33,7 @@ lazy_static! {
     pub static ref SANTA_RINGO: Alias = Alias {
         alias: "santa ringo".nfkd().to_string(),
         char_id: "3212".to_string(),
-        internal: false,
+        internal: true,
         card_type: CardType::Character,
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
@@ -65,6 +65,46 @@ lazy_static! {
     pub static ref SPACE_ECOLO_JP: Alias = Alias {
         alias: normalize_name("スペース☆エコロ"),
         char_id: "5383".to_string(),
+        internal: true,
+        card_type: CardType::Character,
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref MARS: Alias = Alias {
+        alias: "mars".to_string(),
+        char_id: "1089".to_string(),
+        internal: true,
+        card_type: CardType::Character,
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref YURI: Alias = Alias {
+        alias: "yuri".to_string(),
+        char_id: "2089".to_string(),
+        internal: true,
+        card_type: CardType::Character,
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref HARTMANN: Alias = Alias {
+        alias: "hartmann".to_string(),
+        char_id: "3089".to_string(),
+        internal: true,
+        card_type: CardType::Character,
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref EMILIA: Alias = Alias {
+        alias: "emilia".to_string(),
+        char_id: "4089".to_string(),
+        internal: true,
+        card_type: CardType::Character,
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref VIOLA: Alias = Alias {
+        alias: "viola".to_string(),
+        char_id: "5089".to_string(),
         internal: true,
         card_type: CardType::Character,
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),

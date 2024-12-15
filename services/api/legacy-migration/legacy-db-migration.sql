@@ -41,3 +41,5 @@ BEGIN;
 ALTER TABLE characters RENAME TO character;
 ALTER TABLE character ALTER COLUMN updated_at SET NOT NULL;
 COMMIT;
+
+CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;

@@ -84,6 +84,17 @@ Run integration tests:
 cargo watch -x "test -p api --test '*'"
 ```
 
+#### Notes on writing tests
+
+**Make sure you use poem's ToJSON trait when comparing dates in tests**. `serde_json::to_value` and poem's `response.assert_json`, calls the implemented serialization, which for chrono::DateTime, [adds the trailing z](https://github.com/chronotope/chrono/blob/8b863490d88ba098038392c8aa930012ffd0c439/src/datetime/serde.rs#L41-L47). Poem's response handlers, on the other hand, chooses to serialize chrono::DateTime by [calling to_rfc3339() directly](https://github.com/poem-web/poem/blob/ff6071f7e4cfd677946fa9ec0f4a47224fb596cb/poem-openapi/src/types/external/chrono.rs#L69-L73), which adds a trailing +00:00 instead. `to_json()` needs to be called in tests in advance to keep the format consistent.
+
+```rust
+use poem_openapi::types::ToJSON;
+
+let response = client.get("/").send().await;
+response.assert_json(some_obj.to_json().unwrap).await;
+```
+
 ### Building for Release
 
 I deploy the API to a t4g ec2 instance. They run on arm64 gnu linux

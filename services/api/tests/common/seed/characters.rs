@@ -63,4 +63,69 @@ lazy_static! {
         voice_trans: Some("V3455".to_string()),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
+
+    pub static ref MARS: Character = Character {
+        char_id: "1089".to_string(),
+        name: Some("Mars".to_string()),
+        jp_name: Some("マルス".to_string()),
+        link_name: Some("Mars".to_string()),
+        main_color: Some("Red".to_string()),
+        side_color: Some("Yellow".to_string()),
+        type1: Some("Balance".to_string()),
+        type2: Some("Single".to_string()),
+        voice_trans: Some("V1089".to_string()),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref YURI: Character = Character {
+        char_id: "2089".to_string(),
+        name: Some("Yuri".to_string()),
+        jp_name: Some("ユーリ".to_string()),
+        link_name: Some("Yuri".to_string()),
+        main_color: Some("Blue".to_string()),
+        side_color: Some("Green".to_string()),
+        type1: Some("Balance".to_string()),
+        type2: Some("Single".to_string()),
+        voice_trans: Some("V2089".to_string()),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref HARTMANN: Character = Character {
+        char_id: "3089".to_string(),
+        name: Some("Hartmann".to_string()),
+        jp_name: Some("ハルトマン".to_string()),
+        link_name: Some("Hartmann".to_string()),
+        main_color: Some("Green".to_string()),
+        side_color: Some("Red".to_string()),
+        type1: Some("Balance".to_string()),
+        type2: Some("Single".to_string()),
+        voice_trans: Some("V3089".to_string()),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref EMILIA: Character = Character {
+        char_id: "4089".to_string(),
+        name: Some("Emilia".to_string()),
+        jp_name: Some("エミリア".to_string()),
+        link_name: Some("Hartmann".to_string()),
+        main_color: Some("Green".to_string()),
+        side_color: Some("Red".to_string()),
+        type1: Some("Balance".to_string()),
+        type2: Some("Single".to_string()),
+        voice_trans: Some("V3089".to_string()),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
+
+    pub static ref VIOLA: Character = Character {
+        char_id: "5089".to_string(),
+        name: Some("Viola".to_string()),
+        jp_name: Some("ヴィオラ".to_string()),
+        link_name: Some("Viola".to_string()),
+        main_color: Some("Purple".to_string()),
+        side_color: Some("Yellow".to_string()),
+        type1: Some("Balance".to_string()),
+        type2: Some("Single".to_string()),
+        voice_trans: Some("V5089".to_string()),
+        updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
+    };
 }

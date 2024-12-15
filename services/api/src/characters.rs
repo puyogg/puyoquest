@@ -52,8 +52,10 @@ impl CharactersRoute {
         &self,
         pool: Data<&PgPool>,
         id: Path<String>,
-    ) -> Result<aliases::list_by_char_id::ListByCharIdResponse> {
-        aliases::list_by_char_id(pool.0, &Some(id.0)).await
+    ) -> Result<aliases::list::AliasListResponse> {
+        let id = id.0;
+
+        aliases::list_by_char_id(pool.0, &id).await
     }
 
     #[oai(path = "/:id/cards", method = "get")]
