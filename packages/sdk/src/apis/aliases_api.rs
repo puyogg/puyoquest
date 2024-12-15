@@ -39,7 +39,7 @@ pub enum AliasesNamePutError {
 }
 
 
-pub async fn aliases_get(configuration: &configuration::Configuration, char_id: Option<&str>) -> Result<Vec<models::Alias>, Error<AliasesGetError>> {
+pub async fn aliases_get(configuration: &configuration::Configuration, char_id: Option<&str>, name: Option<&str>) -> Result<Vec<models::Alias>, Error<AliasesGetError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -49,6 +49,9 @@ pub async fn aliases_get(configuration: &configuration::Configuration, char_id: 
 
     if let Some(ref local_var_str) = char_id {
         local_var_req_builder = local_var_req_builder.query(&[("char_id", &local_var_str.to_string())]);
+    }
+    if let Some(ref local_var_str) = name {
+        local_var_req_builder = local_var_req_builder.query(&[("name", &local_var_str.to_string())]);
     }
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
         local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());

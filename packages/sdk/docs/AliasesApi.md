@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 ## aliases_get
 
-> Vec<models::Alias> aliases_get(char_id)
+> Vec<models::Alias> aliases_get(char_id, name)
 List aliases for a char_id
 
 ### Parameters
@@ -21,6 +21,7 @@ List aliases for a char_id
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **char_id** | Option<**String**> |  |  |
+**name** | Option<**String**> |  |  |
 
 ### Return type
 
