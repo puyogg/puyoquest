@@ -17,7 +17,7 @@ pub async fn seed_arle(pool: &PgPool) -> Result<(), Box<dyn std::error::Error>> 
         .await
         .unwrap();
     api::cards::upsert::upsert(&pool, &card).await.unwrap();
-    api::aliases::upsert(&pool, &aliases::ARLE_ALIAS_ORIGINAL.alias, &alias)
+    api::aliases::upsert(&pool, &alias)
         .await
         .unwrap();
 
@@ -44,7 +44,7 @@ pub async fn seed_santa_ringo(pool: &PgPool) -> Result<(), Box<dyn std::error::E
     }
 
     let alias = AliasCreate::from(aliases::SANTA_RINGO_XMAS.clone());
-    api::aliases::upsert(&pool, &aliases::SANTA_RINGO.alias, &alias).await.unwrap();
+    api::aliases::upsert(&pool, &alias).await.unwrap();
 
     Ok(())
 }

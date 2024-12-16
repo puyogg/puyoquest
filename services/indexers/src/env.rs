@@ -15,6 +15,7 @@ pub struct EnvConfig {
     pub ppq_api_base_url: String,
     pub webhook_url: String,
     pub default_days_ago: i64,
+    pub owner_id: String,
 }
 
 impl EnvConfig {
@@ -41,6 +42,8 @@ impl EnvConfig {
         )
         .await?;
 
+        let owner_id = env::var("OWNER_ID")?;
+
         Ok(EnvConfig {
             environment,
             db_connection_string,
@@ -48,6 +51,7 @@ impl EnvConfig {
                 .unwrap_or("http://localhost:3000".to_string()),
             webhook_url: env::var("WEBHOOK_URL")?,
             default_days_ago: env::var("DEFAULT_DAYS_AGO")?.parse::<i64>().unwrap_or(7),
+            owner_id,
         })
     }
 }

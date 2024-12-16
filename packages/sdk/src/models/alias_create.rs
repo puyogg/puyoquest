@@ -14,6 +14,8 @@ use serde::{Deserialize, Serialize};
 /// AliasCreate : Request body type for alias creation. The alias should be given as a path param.
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct AliasCreate {
+    #[serde(rename = "alias")]
+    pub alias: String,
     #[serde(rename = "char_id")]
     pub char_id: String,
     #[serde(rename = "internal")]
@@ -26,8 +28,9 @@ pub struct AliasCreate {
 
 impl AliasCreate {
     /// Request body type for alias creation. The alias should be given as a path param.
-    pub fn new(char_id: String, internal: bool, card_type: models::CardType) -> AliasCreate {
+    pub fn new(alias: String, char_id: String, internal: bool, card_type: models::CardType) -> AliasCreate {
         AliasCreate {
+            alias,
             char_id,
             internal,
             card_type,

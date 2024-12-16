@@ -1,23 +1,22 @@
+use chrono::Utc;
 use poem::error::InternalServerError;
 use poem_openapi::{payload::Json, ApiResponse};
 use sqlx::PgPool;
-
-use crate::util::{normalize_name::normalize_name, url_encode_nfc::url_encode_nfc};
 
 use super::types::{Alias, AliasCreate};
 
 #[derive(ApiResponse)]
 pub enum UpsertResponse {
     #[oai(status = 200)]
-    Ok(Json<Alias>, #[oai(header = "Location")] String),
+    Ok(Json<Alias>),
 }
 
-pub async fn upsert(
-    pool: &PgPool,
-    alias_name: &str,
-    alias: &AliasCreate,
-) -> poem::Result<UpsertResponse> {
-    let normalized_alias = normalize_name(&alias_name);
+pub async fn upsert(pool: &PgPool, alias: &AliasCreate) -> poem::Result<UpsertResponse> {
+    let normalized_alias = utils::normalize_name(&alias.alias);
+    let updated_at = match &alias.updated_at {
+        Some(d) => d,
+        None => &Utc::now(),
+    };
     let alias: Result<Alias, sqlx::Error> = sqlx::query_as(
         r#"
         INSERT INTO alias (alias, char_id, internal, card_type, updated_at)
@@ -35,15 +34,13 @@ pub async fn upsert(
     .bind(&alias.char_id)
     .bind(&alias.internal)
     .bind(&alias.card_type)
-    .bind(&alias.updated_at)
+    .bind(&updated_at)
     .fetch_one(pool)
     .await;
 
     match alias {
         Ok(a) => {
-            let name = a.alias.clone();
-            let location = format!("/aliases/{}", url_encode_nfc(&name));
-            Ok(UpsertResponse::Ok(Json(a), location))
+            Ok(UpsertResponse::Ok(Json(a)))
         }
         Err(e) => match e {
             sqlx::Error::Database(db_error) => {

@@ -5,14 +5,13 @@ All URIs are relative to *http://localhost:3000*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**aliases_get**](AliasesApi.md#aliases_get) | **GET** /aliases | List aliases for a char_id
-[**aliases_name_get**](AliasesApi.md#aliases_name_get) | **GET** /aliases/{name} | Find an alias by name
-[**aliases_name_put**](AliasesApi.md#aliases_name_put) | **PUT** /aliases/{name} | 
+[**aliases_post**](AliasesApi.md#aliases_post) | **POST** /aliases | 
 
 
 
 ## aliases_get
 
-> Vec<models::Alias> aliases_get(char_id, name)
+> Vec<models::Alias> aliases_get(char_id, name, exact)
 List aliases for a char_id
 
 ### Parameters
@@ -22,6 +21,7 @@ Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **char_id** | Option<**String**> |  |  |
 **name** | Option<**String**> |  |  |
+**exact** | Option<**String**> |  |  |
 
 ### Return type
 
@@ -39,37 +39,9 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
-## aliases_name_get
+## aliases_post
 
-> models::Alias aliases_name_get(name)
-Find an alias by name
-
-### Parameters
-
-
-Name | Type | Description  | Required | Notes
-------------- | ------------- | ------------- | ------------- | -------------
-**name** | **String** |  | [required] |
-
-### Return type
-
-[**models::Alias**](Alias.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: application/json; charset=utf-8, text/plain; charset=utf-8
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-
-## aliases_name_put
-
-> models::Alias aliases_name_put(name, alias_create)
+> models::Alias aliases_post(alias_create)
 
 
 ### Parameters
@@ -77,7 +49,6 @@ No authorization required
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**name** | **String** |  | [required] |
 **alias_create** | [**AliasCreate**](AliasCreate.md) |  | [required] |
 
 ### Return type

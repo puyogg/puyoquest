@@ -27,8 +27,7 @@ All URIs are relative to *http://localhost:3000*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AliasesApi* | [**aliases_get**](docs/AliasesApi.md#aliases_get) | **GET** /aliases | List aliases for a char_id
-*AliasesApi* | [**aliases_name_get**](docs/AliasesApi.md#aliases_name_get) | **GET** /aliases/{name} | Find an alias by name
-*AliasesApi* | [**aliases_name_put**](docs/AliasesApi.md#aliases_name_put) | **PUT** /aliases/{name} | 
+*AliasesApi* | [**aliases_post**](docs/AliasesApi.md#aliases_post) | **POST** /aliases | 
 *CardsApi* | [**cards_card_id_full_art_get**](docs/CardsApi.md#cards_card_id_full_art_get) | **GET** /cards/{card_id}/full-art | Get card full art (all orientations)
 *CardsApi* | [**cards_card_id_lore_get**](docs/CardsApi.md#cards_card_id_lore_get) | **GET** /cards/{card_id}/lore | Get card lore
 *CardsApi* | [**cards_get**](docs/CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity

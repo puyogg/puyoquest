@@ -16,21 +16,20 @@ use crate::common::{
 use urlencoding::encode;
 
 async fn seed(pool: &PgPool, data: &[(Character, Alias)]) -> IntTestResult {
-    let creates: Vec<(String, String, CharacterCreate, AliasCreate)> = data
+    let creates: Vec<(String, CharacterCreate, AliasCreate)> = data
         .into_iter()
         .map(|(c, a)| {
             (
                 c.char_id.clone(),
-                a.alias.clone(),
                 CharacterCreate::from(c.clone()),
                 AliasCreate::from(a.clone()),
             )
         })
         .collect();
 
-    let create_futures = creates.iter().map(|(char_id, alias, c, a)| {
+    let create_futures = creates.iter().map(|(char_id, c, a)| {
         api::characters::upsert(pool, &char_id, &c)
-            .and_then(|_| async { api::aliases::upsert(pool, alias, a).await })
+            .and_then(|_| async { api::aliases::upsert(pool, a).await })
     });
     join_all(create_futures).await;
     Ok(())
@@ -62,7 +61,7 @@ async fn lists_aliases_by_char_id() -> Result<(), Box<dyn std::error::Error>> {
     ];
     let alias_futures = alias_creates
         .iter()
-        .map(|(name, ac)| api::aliases::upsert(&pool, &name, &ac));
+        .map(|(name, ac)| api::aliases::upsert(&pool, &ac));
     join_all(alias_futures).await;
 
     let mut response = client.get("/aliases?char_id=2012").send().await;

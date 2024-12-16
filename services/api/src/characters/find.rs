@@ -2,8 +2,6 @@ use poem::{error::InternalServerError, Result};
 use poem_openapi::{payload::{Json, PlainText}, ApiResponse};
 use sqlx::PgPool;
 
-use crate::util::normalize_name::normalize_name;
-
 use super::types::Character;
 
 #[derive(ApiResponse)]
@@ -16,7 +14,7 @@ pub enum FindResponse {
 }
 
 async fn find_by_alias(pool: &PgPool, alias_name: &str) -> Result<FindResponse> {
-    let alias_name = normalize_name(alias_name);
+    let alias_name = utils::normalize_name(alias_name);
 
     let character = sqlx::query_as::<_, Character>(
         r#"

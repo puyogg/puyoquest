@@ -5,7 +5,6 @@ use poem_openapi::types::ToJSON;
 use reqwest::StatusCode;
 
 use crate::common::{create_test_client, create_test_pool, IntTestResult};
-use crate::common::seed::aliases::{ARLE_ALIAS_A, ARLE_ALIAS_B, ARLE_ALIAS_ORIGINAL};
 use crate::common::seed;
 
 #[tokio::test]
@@ -21,22 +20,13 @@ async fn finds_character_by_alias() -> IntTestResult {
     .await
     .unwrap();
 
-    let alias_creates: Vec<(&str, AliasCreate)> = vec![
-        (
-            &ARLE_ALIAS_ORIGINAL.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_ORIGINAL.clone()),
-        ),
-        (
-            &ARLE_ALIAS_A.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()),
-        ),
-        (
-            &ARLE_ALIAS_B.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_B.clone()),
-        ),
+    let alias_creates: Vec<AliasCreate> = vec![
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_ORIGINAL.clone()),
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()),
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_B.clone()),
     ];
-    let alias_futures = alias_creates.iter().map(|(name, ac)| {
-        api::aliases::upsert(&pool, &name, &ac)
+    let alias_futures = alias_creates.iter().map(|ac| {
+        api::aliases::upsert(&pool, &ac)
     });
     join_all(alias_futures).await;
 
@@ -66,22 +56,13 @@ async fn returns_empty_vec_if_no_match() -> IntTestResult {
     .await
     .unwrap();
 
-    let alias_creates: Vec<(&str, AliasCreate)> = vec![
-        (
-            &ARLE_ALIAS_ORIGINAL.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_ORIGINAL.clone()),
-        ),
-        (
-            &ARLE_ALIAS_A.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()),
-        ),
-        (
-            &ARLE_ALIAS_B.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_B.clone()),
-        ),
+    let alias_creates: Vec<AliasCreate> = vec![
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_ORIGINAL.clone()),
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()),
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_B.clone()),
     ];
-    let alias_futures = alias_creates.iter().map(|(name, ac)| {
-        api::aliases::upsert(&pool, &name, &ac)
+    let alias_futures = alias_creates.iter().map(|ac| {
+        api::aliases::upsert(&pool, &ac)
     });
     join_all(alias_futures).await;
 

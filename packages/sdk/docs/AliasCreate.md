@@ -4,6 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**alias** | **String** |  | 
 **char_id** | **String** |  | 
 **internal** | **bool** |  | 
 **card_type** | [**models::CardType**](CardType.md) |  | 

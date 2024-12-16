@@ -89,7 +89,7 @@ async fn autocomplete_name(ctx: Context<'_>, partial: &str) -> Vec<String> {
     let data = ctx.data();
     let api_config = &data.api_config;
 
-    let top_internal_names = sdk::apis::aliases_api::aliases_get(api_config, None, Some(partial))
+    let top_internal_names = sdk::apis::aliases_api::aliases_get(api_config, None, Some(partial), None)
         .await
         .map_or(vec![], |aliases| {
             aliases

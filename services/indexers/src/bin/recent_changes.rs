@@ -53,7 +53,10 @@ async fn main() {
 
                                 if i == 4 {
                                     logger
-                                        .log(&format!("Error indexing char_id {}", char_id))
+                                        .log(&format!(
+                                            "<@{}> Error indexing char_id {}",
+                                            &env.owner_id, char_id
+                                        ))
                                         .await
                                         .unwrap();
                                 }

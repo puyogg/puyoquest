@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
+use crate::aliases::types::Alias;
 use crate::{
-    aliases::query_find_by_alias,
     aws::s3::S3BackupClient,
     cache::RedisClient,
     config::ApiConfig,
-    util::{normalize_name::normalize_name, parse_rarity::parse_rarity},
+    util::parse_rarity::parse_rarity,
 };
 use poem::{error::InternalServerError, http::StatusCode, Result};
 use poem_openapi::{payload::Json, ApiResponse, Enum, Object};
@@ -65,6 +65,23 @@ pub enum FindByNameAndRarityResponse {
     NotFound(Json<NotFoundReason>),
 }
 
+pub async fn query_find_by_alias(pool: &PgPool, alias_name: &str) -> Result<Option<Alias>> {
+    let alias: Option<Alias> = sqlx::query_as(
+        r#"
+            SELECT *
+            FROM alias
+            WHERE alias = $1
+            LIMIT 1
+        "#,
+    )
+    .bind(&alias_name)
+    .fetch_optional(pool)
+    .await
+    .map_err(InternalServerError)?;
+
+    Ok(alias)
+}
+
 pub async fn query_find_by_char_id_and_rarity(
     pool: &PgPool,
     char_id: &str,
@@ -116,7 +133,7 @@ pub async fn find_by_name_and_rarity(
     name_query: &str,
     rarity_query: &str,
 ) -> Result<FindByNameAndRarityResponse> {
-    let alias_name = normalize_name(name_query);
+    let alias_name = utils::normalize_name(name_query);
 
     let alias_lookup = query_find_by_alias(pool, &alias_name).await?;
 

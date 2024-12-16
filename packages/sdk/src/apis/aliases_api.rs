@@ -23,23 +23,15 @@ pub enum AliasesGetError {
     UnknownValue(serde_json::Value),
 }
 
-/// struct for typed errors of method [`aliases_name_get`]
+/// struct for typed errors of method [`aliases_post`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
-pub enum AliasesNameGetError {
-    Status404(String),
-    UnknownValue(serde_json::Value),
-}
-
-/// struct for typed errors of method [`aliases_name_put`]
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(untagged)]
-pub enum AliasesNamePutError {
+pub enum AliasesPostError {
     UnknownValue(serde_json::Value),
 }
 
 
-pub async fn aliases_get(configuration: &configuration::Configuration, char_id: Option<&str>, name: Option<&str>) -> Result<Vec<models::Alias>, Error<AliasesGetError>> {
+pub async fn aliases_get(configuration: &configuration::Configuration, char_id: Option<&str>, name: Option<&str>, exact: Option<&str>) -> Result<Vec<models::Alias>, Error<AliasesGetError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -52,6 +44,9 @@ pub async fn aliases_get(configuration: &configuration::Configuration, char_id: 
     }
     if let Some(ref local_var_str) = name {
         local_var_req_builder = local_var_req_builder.query(&[("name", &local_var_str.to_string())]);
+    }
+    if let Some(ref local_var_str) = exact {
+        local_var_req_builder = local_var_req_builder.query(&[("exact", &local_var_str.to_string())]);
     }
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
         local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
@@ -72,40 +67,13 @@ pub async fn aliases_get(configuration: &configuration::Configuration, char_id: 
     }
 }
 
-pub async fn aliases_name_get(configuration: &configuration::Configuration, name: &str) -> Result<models::Alias, Error<AliasesNameGetError>> {
+pub async fn aliases_post(configuration: &configuration::Configuration, alias_create: models::AliasCreate) -> Result<models::Alias, Error<AliasesPostError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
 
-    let local_var_uri_str = format!("{}/aliases/{name}", local_var_configuration.base_path, name=crate::apis::urlencode(name));
-    let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
-
-    if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
-        local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
-    }
-
-    let local_var_req = local_var_req_builder.build()?;
-    let local_var_resp = local_var_client.execute(local_var_req).await?;
-
-    let local_var_status = local_var_resp.status();
-    let local_var_content = local_var_resp.text().await?;
-
-    if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
-        serde_json::from_str(&local_var_content).map_err(Error::from)
-    } else {
-        let local_var_entity: Option<AliasesNameGetError> = serde_json::from_str(&local_var_content).ok();
-        let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
-        Err(Error::ResponseError(local_var_error))
-    }
-}
-
-pub async fn aliases_name_put(configuration: &configuration::Configuration, name: &str, alias_create: models::AliasCreate) -> Result<models::Alias, Error<AliasesNamePutError>> {
-    let local_var_configuration = configuration;
-
-    let local_var_client = &local_var_configuration.client;
-
-    let local_var_uri_str = format!("{}/aliases/{name}", local_var_configuration.base_path, name=crate::apis::urlencode(name));
-    let mut local_var_req_builder = local_var_client.request(reqwest::Method::PUT, local_var_uri_str.as_str());
+    let local_var_uri_str = format!("{}/aliases", local_var_configuration.base_path);
+    let mut local_var_req_builder = local_var_client.request(reqwest::Method::POST, local_var_uri_str.as_str());
 
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
         local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
@@ -121,7 +89,7 @@ pub async fn aliases_name_put(configuration: &configuration::Configuration, name
     if !local_var_status.is_client_error() && !local_var_status.is_server_error() {
         serde_json::from_str(&local_var_content).map_err(Error::from)
     } else {
-        let local_var_entity: Option<AliasesNamePutError> = serde_json::from_str(&local_var_content).ok();
+        let local_var_entity: Option<AliasesPostError> = serde_json::from_str(&local_var_content).ok();
         let local_var_error = ResponseContent { status: local_var_status, content: local_var_content, entity: local_var_entity };
         Err(Error::ResponseError(local_var_error))
     }

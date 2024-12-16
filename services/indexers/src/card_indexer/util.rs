@@ -1,5 +1,5 @@
-use std::sync::LazyLock;
 use fancy_regex::Regex;
+use std::sync::LazyLock;
 
 pub fn map_fallback_color(c: &str) -> Option<String> {
     let result = match c {
@@ -14,10 +14,10 @@ pub fn map_fallback_color(c: &str) -> Option<String> {
     result.map(|r| r.to_string())
 }
 
-pub static RE_RARITY_MODIFIER: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\/(★\d.*)$").unwrap());
+pub static RE_RARITY_SUFFIX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\/(★\d.*)$").unwrap());
 
 pub fn parse_rarity_modifier(link_name: &str) -> Option<String> {
-    let captures = RE_RARITY_MODIFIER.captures(link_name);
+    let captures = RE_RARITY_SUFFIX.captures(link_name);
     let captures = match captures {
         Err(e) => {
             println!("Regex error trying to parse link_name: {}", link_name);

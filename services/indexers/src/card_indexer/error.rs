@@ -1,4 +1,6 @@
-use sdk::apis::{cards_api::CardsPostError, characters_api::CharactersIdPutError};
+use sdk::apis::{
+    aliases_api::AliasesPostError, cards_api::CardsPostError, characters_api::CharactersIdPutError,
+};
 use wiki::wiki_client::{CardAndMaterialIdsError, FetchTemplateError};
 
 #[derive(Debug)]
@@ -11,6 +13,7 @@ pub enum IndexerError {
 
     UpdateCharacterError(sdk::apis::Error<CharactersIdPutError>),
     UpdateCardError(sdk::apis::Error<CardsPostError>),
+    UpdateAliasError(sdk::apis::Error<AliasesPostError>),
     CardMissingKeyValue(String),
 }
 
@@ -26,6 +29,7 @@ impl std::fmt::Display for IndexerError {
             IndexerError::SerdeJsonError(error) => error.fmt(f),
             IndexerError::UpdateCharacterError(error) => error.fmt(f),
             IndexerError::UpdateCardError(error) => error.fmt(f),
+            IndexerError::UpdateAliasError(error) => error.fmt(f),
             IndexerError::CardMissingKeyValue(key) => {
                 write!(f, "Missing key value from card template: {}", key)
             }

@@ -1,6 +1,5 @@
 use api::aliases::types::{Alias, AliasCreate};
 use api::characters::types::CharacterCreate;
-use api::util::url_encode_nfc::url_encode_nfc;
 use poem_openapi::types::ToJSON;
 use reqwest::StatusCode;
 
@@ -19,16 +18,12 @@ async fn inserts_new_alias() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap();
 
     let response = client
-        .put(format!("/aliases/{}", &seed::aliases::ARLE_ALIAS_A.alias))
+        .post("/aliases")
         .body_json(&AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()))
         .send()
         .await;
 
     response.assert_status(StatusCode::OK);
-    response.assert_header(
-        "Location",
-        format!("/aliases/{}", &seed::aliases::ARLE_ALIAS_A.alias),
-    );
     response
         .assert_json(seed::aliases::ARLE_ALIAS_A.clone().to_json())
         .await;
@@ -46,7 +41,7 @@ async fn updates_alias() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap();
 
     let mut response1 = client
-        .put(format!("/aliases/{}", &seed::aliases::ARLE_ALIAS_A.alias))
+        .post("/aliases")
         .body_json(&AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()))
         .send()
         .await;
@@ -59,7 +54,7 @@ async fn updates_alias() -> Result<(), Box<dyn std::error::Error>> {
         ..AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone())
     };
     let mut response2 = client
-        .put(format!("/aliases/{}", &seed::aliases::ARLE_ALIAS_A.alias))
+        .post("/aliases")
         .body_json(&modified_arle_a)
         .send()
         .await;
@@ -85,16 +80,12 @@ async fn inserts_alias_with_middle_space() -> Result<(), Box<dyn std::error::Err
     .unwrap();
 
     let response = client
-        .put(format!(
-            "/aliases/{}",
-            urlencoding::encode(&seed::aliases::SANTA_RINGO_XMAS.alias)
-        ))
+        .post("/aliases")
         .body_json(&AliasCreate::from(seed::aliases::SANTA_RINGO_XMAS.clone()))
         .send()
         .await;
 
     response.assert_status(StatusCode::OK);
-    response.assert_header("Location", "/aliases/xmas%20ringo");
     response
         .assert_json(seed::aliases::SANTA_RINGO_XMAS.to_json())
         .await;
@@ -116,22 +107,12 @@ async fn inserts_alias_with_japanese_name() -> Result<(), Box<dyn std::error::Er
     .unwrap();
 
     let response = client
-        .put(format!(
-            "/aliases/{}",
-            url_encode_nfc(&seed::aliases::SANTA_RINGO_JP.alias)
-        ))
+        .post("/aliases")
         .body_json(&AliasCreate::from(seed::aliases::SANTA_RINGO_JP.clone()))
         .send()
         .await;
 
     response.assert_status(StatusCode::OK);
-    response.assert_header(
-        "Location",
-        format!(
-            "/aliases/{}",
-            url_encode_nfc(&seed::aliases::SANTA_RINGO_JP.alias)
-        ),
-    );
     response
         .assert_json(seed::aliases::SANTA_RINGO_JP.to_json())
         .await;
@@ -152,14 +133,14 @@ async fn normalizes_alias_name_on_insert() -> Result<(), Box<dyn std::error::Err
     .await
     .unwrap();
 
-    let response = client
-        .put(format!("/aliases/{}", url_encode_nfc("Legamünt")))
-        .body_json(&AliasCreate::from(seed::aliases::LEGAMUNT_ORIGINAL.clone()))
-        .send()
-        .await;
+    let ac = AliasCreate {
+        alias: "Legamünt".to_string(),
+        ..AliasCreate::from(seed::aliases::LEGAMUNT_ORIGINAL.clone())
+    };
+
+    let response = client.post("/aliases").body_json(&ac).send().await;
 
     response.assert_status(StatusCode::OK);
-    response.assert_header("Location", "/aliases/legamunt");
     response
         .assert_json(seed::aliases::LEGAMUNT_ORIGINAL.to_json())
         .await;

@@ -8,6 +8,7 @@ use crate::cards::types::CardType;
 /// Request body type for alias creation. The alias should be given as a path param.
 #[derive(Debug, Clone, Serialize, Deserialize, Object, FromRow)]
 pub struct AliasCreate {
+    pub alias: String,
     pub char_id: String,
     pub internal: bool,
     pub card_type: CardType,
@@ -27,6 +28,7 @@ pub struct Alias {
 impl From<Alias> for AliasCreate {
     fn from(a: Alias) -> Self {
         Self {
+            alias: a.alias,
             char_id: a.char_id,
             internal: a.internal,
             card_type: a.card_type,

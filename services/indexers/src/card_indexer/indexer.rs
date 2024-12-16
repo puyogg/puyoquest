@@ -1,9 +1,14 @@
+use std::collections::HashMap;
+
 use super::error::IndexerError;
 use super::util;
 use chrono::Utc;
+use futures::future::try_join_all;
 use sdk::apis::cards_api;
 use sdk::apis::characters_api;
 use sdk::apis::configuration::Configuration;
+use sdk::models::Alias;
+use sdk::models::AliasCreate;
 use sdk::models::{Card, CardCreate, CardType, Character, CharacterCreate};
 use wiki::wiki_client;
 use wiki::wiki_client::{CharacterCardIds, FetchTemplate, WikiClient};
@@ -70,7 +75,10 @@ impl Indexer {
 
     pub async fn update_character_and_cards(&self) -> Result<(), IndexerError> {
         let _ = self.update_character().await?;
-        let _ = self.update_cards().await?;
+        let (cards, materials) = self.update_cards().await?;
+        let _ = self
+            .create_internal_aliases(&self.char_id, cards, materials)
+            .await?;
         Ok(())
     }
 
@@ -133,7 +141,7 @@ impl Indexer {
         Ok(updated_character)
     }
 
-    async fn update_cards(&self) -> Result<(), IndexerError> {
+    async fn update_cards(&self) -> Result<(Vec<Card>, Vec<Card>), IndexerError> {
         let cards_and_materials = self
             .wiki_client
             .character_card_ids(&self.char_id)
@@ -141,15 +149,23 @@ impl Indexer {
             .map_err(IndexerError::FetchCardIdsError)?;
 
         // TODO: Batch these
-        for card_id in &cards_and_materials.card_ids {
-            let _card = self.update_card(&card_id).await?;
-        }
+        let cards = try_join_all(
+            cards_and_materials
+                .card_ids
+                .iter()
+                .map(|card_id| self.update_card(&card_id)),
+        )
+        .await?;
 
-        for mat_id in &cards_and_materials.material_ids {
-            let _mat = self.update_card(&mat_id).await?;
-        }
+        let materials = try_join_all(
+            cards_and_materials
+                .material_ids
+                .iter()
+                .map(|material_id| self.update_card(&material_id)),
+        )
+        .await?;
 
-        Ok(())
+        Ok((cards, materials))
     }
 
     pub async fn update_card(&self, card_id: &str) -> Result<Card, IndexerError> {
@@ -205,5 +221,63 @@ impl Indexer {
             .map_err(IndexerError::UpdateCardError)?;
 
         Ok(updated_card)
+    }
+
+    pub async fn create_internal_aliases(
+        &self,
+        char_id: &str,
+        cards: Vec<Card>,
+        materials: Vec<Card>,
+    ) -> Result<Vec<Alias>, IndexerError> {
+        let mut unique_aliases: HashMap<String, Alias> = HashMap::new();
+
+        for (card_type, cards) in &[
+            (CardType::Character, cards),
+            (CardType::Material, materials),
+        ] {
+            for card in cards {
+                let alias_create = AliasCreate {
+                    alias: card.name.to_string(),
+                    char_id: char_id.to_string(),
+                    internal: true,
+                    card_type: *card_type,
+                    updated_at: Some(Utc::now().to_rfc3339()),
+                };
+                let a_name =
+                    sdk::apis::aliases_api::aliases_post(&self.api_config, alias_create.clone())
+                        .await
+                        .map_err(IndexerError::UpdateAliasError)?;
+                unique_aliases.insert(a_name.alias.clone(), a_name);
+
+                if let Some(jp_name) = &card.jp_name {
+                    let a_jp_name = sdk::apis::aliases_api::aliases_post(
+                        &self.api_config,
+                        AliasCreate {
+                            alias: jp_name.clone(),
+                            ..alias_create.clone()
+                        },
+                    )
+                    .await
+                    .map_err(IndexerError::UpdateAliasError)?;
+                    unique_aliases.insert(a_jp_name.alias.clone(), a_jp_name);
+                }
+
+                let a_link_name = sdk::apis::aliases_api::aliases_post(
+                    &self.api_config,
+                    AliasCreate {
+                        alias: card.link_name.clone(),
+                        ..alias_create
+                    },
+                )
+                .await
+                .map_err(IndexerError::UpdateAliasError)?;
+                unique_aliases.insert(a_link_name.alias.clone(), a_link_name);
+            }
+        }
+
+        let aliases = unique_aliases.into_values().collect::<Vec<Alias>>();
+        // println!("Upserted internal aliases: {:#?}", aliases);
+
+        Ok(aliases)
     }
 }
