@@ -5,14 +5,10 @@ use api::{
 use futures::{future::join_all, TryFutureExt};
 use poem_openapi::types::ToJSON;
 use reqwest::StatusCode;
-use serde::Serialize;
 use sqlx::PgPool;
 
+use crate::common::IntTestResult;
 use crate::common::{create_test_client, create_test_pool, seed};
-use crate::common::{
-    seed::aliases::{ARLE_ALIAS_A, ARLE_ALIAS_B, ARLE_ALIAS_ORIGINAL},
-    IntTestResult,
-};
 use urlencoding::encode;
 
 async fn seed(pool: &PgPool, data: &[(Character, Alias)]) -> IntTestResult {
@@ -45,23 +41,14 @@ async fn lists_aliases_by_char_id() -> Result<(), Box<dyn std::error::Error>> {
         .await
         .unwrap();
 
-    let alias_creates: Vec<(&str, AliasCreate)> = vec![
-        (
-            &ARLE_ALIAS_ORIGINAL.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_ORIGINAL.clone()),
-        ),
-        (
-            &ARLE_ALIAS_A.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()),
-        ),
-        (
-            &ARLE_ALIAS_B.alias,
-            AliasCreate::from(seed::aliases::ARLE_ALIAS_B.clone()),
-        ),
+    let alias_creates: Vec<AliasCreate> = vec![
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_ORIGINAL.clone()),
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_A.clone()),
+        AliasCreate::from(seed::aliases::ARLE_ALIAS_B.clone()),
     ];
     let alias_futures = alias_creates
         .iter()
-        .map(|(name, ac)| api::aliases::upsert(&pool, &ac));
+        .map(|ac| api::aliases::upsert(&pool, &ac));
     join_all(alias_futures).await;
 
     let mut response = client.get("/aliases?char_id=2012").send().await;

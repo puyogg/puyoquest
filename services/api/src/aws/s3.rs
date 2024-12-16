@@ -38,7 +38,7 @@ impl S3BackupClient {
             .map(|i| aws_sdk_s3::primitives::ByteStream::from(i))
             .map_err(InternalServerError)?;
 
-        let s3_response = self
+        let _s3_response = self
             .s3_client
             .put_object()
             .bucket(&self.image_cache_bucket_name)

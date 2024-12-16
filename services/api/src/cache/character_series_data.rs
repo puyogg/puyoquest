@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use poem::error::InternalServerError;
 use redis::{AsyncCommands, RedisError};
 use serde::{Deserialize, Serialize};
@@ -55,8 +53,8 @@ pub async fn character_series_data(
                     println!("Error parsing cached series data for char_id: {}", &char_id);
                     println!("{}", e);
                     None
-                },
-                Ok(r) => Some(CacheResponse::SeriesResult(r))
+                }
+                Ok(r) => Some(CacheResponse::SeriesResult(r)),
             }
         })
         .unwrap_or(CacheResponse::KeyNotFound);
@@ -89,6 +87,6 @@ pub async fn character_series_data(
                 .await;
 
             Ok(fetched)
-        },
+        }
     }
 }

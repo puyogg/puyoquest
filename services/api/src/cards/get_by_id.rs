@@ -1,6 +1,5 @@
 use poem::{error::InternalServerError, Result};
 use poem_openapi::{
-    param::Path,
     payload::{Json, PlainText},
     ApiResponse,
 };

@@ -3,7 +3,7 @@ use redis::AsyncCommands;
 use api::cards::lore::{Lore, MonologueLine, WikiLore};
 
 use crate::common::seed::seed_arle;
-use crate::common::{create_test_client, create_test_pool, seed};
+use crate::common::{create_test_client, create_test_pool};
 
 #[tokio::test]
 async fn fetches_lore() -> Result<(), Box<dyn std::error::Error>> {

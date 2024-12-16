@@ -1,9 +1,8 @@
 use fancy_regex::Regex;
 use poise::serenity_prelude::{self as serenity, CreateActionRow};
 
-use sdk::models::{Card, CardIconUrls};
+use sdk::models::Card;
 
-use crate::interaction_router::component::button::card_handler::card_embed_update_custom_id_builder;
 use crate::interaction_router::component::button::character_handler::character_nav_button;
 use crate::interaction_router::component::button::full_art_handler::full_art_nav_button;
 use crate::interaction_router::component::button::lore_handler::lore_nav_button;
@@ -247,7 +246,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
         ));
     }
 
-    if let (None, Some(lste)) = (&wiki_template.lst, &wiki_template.lste) {
+    if let (None, Some(_lste)) = (&wiki_template.lst, &wiki_template.lste) {
         fields.push(format_ls(
             "LS+",
             &format!("{} SP", wiki_template.name),
@@ -325,7 +324,7 @@ fn first_page_fields(card: &Card) -> Vec<(String, String, bool)> {
     }
 
     match (&wiki_template.r#as, &wiki_template.ast, &wiki_template.aste) {
-        (_, Some(ast), Some(aste)) => {
+        (_, Some(ast), Some(_aste)) => {
             fields.push(format_as(
                 "AS+",
                 &ast,
@@ -528,55 +527,55 @@ pub fn format_combination_categories(card: &Card) -> Option<String> {
     }
 }
 
-fn icon_select_row(
-    card_id: &str,
-    card_icon_urls: &CardIconUrls,
-) -> Option<serenity::CreateActionRow> {
-    let mut buttons: Vec<serenity::CreateButton> = Vec::new();
+// fn icon_select_row(
+//     card_id: &str,
+//     card_icon_urls: &CardIconUrls,
+// ) -> Option<serenity::CreateActionRow> {
+//     let mut buttons: Vec<serenity::CreateButton> = Vec::new();
 
-    if card_icon_urls.normal.is_some() {
-        buttons.push(
-            serenity::CreateButton::new(card_embed_update_custom_id_builder(
-                card_id,
-                CardIconType::Normal,
-            ))
-            .label("REG"),
-        );
-    }
-    if card_icon_urls.dual_shift.is_some() {
-        buttons.push(
-            serenity::CreateButton::new(card_embed_update_custom_id_builder(
-                card_id,
-                CardIconType::DualShift,
-            ))
-            .label("DS"),
-        );
-    }
-    if card_icon_urls.extra_power.is_some() {
-        buttons.push(
-            serenity::CreateButton::new(card_embed_update_custom_id_builder(
-                card_id,
-                CardIconType::ExtraPower,
-            ))
-            .label("EP"),
-        );
-    }
-    if card_icon_urls.extra_power_dual_shift.is_some() {
-        buttons.push(
-            serenity::CreateButton::new(card_embed_update_custom_id_builder(
-                card_id,
-                CardIconType::ExtraPowerDualShift,
-            ))
-            .label("EP+DS"),
-        );
-    }
+//     if card_icon_urls.normal.is_some() {
+//         buttons.push(
+//             serenity::CreateButton::new(card_embed_update_custom_id_builder(
+//                 card_id,
+//                 CardIconType::Normal,
+//             ))
+//             .label("REG"),
+//         );
+//     }
+//     if card_icon_urls.dual_shift.is_some() {
+//         buttons.push(
+//             serenity::CreateButton::new(card_embed_update_custom_id_builder(
+//                 card_id,
+//                 CardIconType::DualShift,
+//             ))
+//             .label("DS"),
+//         );
+//     }
+//     if card_icon_urls.extra_power.is_some() {
+//         buttons.push(
+//             serenity::CreateButton::new(card_embed_update_custom_id_builder(
+//                 card_id,
+//                 CardIconType::ExtraPower,
+//             ))
+//             .label("EP"),
+//         );
+//     }
+//     if card_icon_urls.extra_power_dual_shift.is_some() {
+//         buttons.push(
+//             serenity::CreateButton::new(card_embed_update_custom_id_builder(
+//                 card_id,
+//                 CardIconType::ExtraPowerDualShift,
+//             ))
+//             .label("EP+DS"),
+//         );
+//     }
 
-    if buttons.len() > 1 {
-        Some(serenity::CreateActionRow::Buttons(buttons))
-    } else {
-        None
-    }
-}
+//     if buttons.len() > 1 {
+//         Some(serenity::CreateActionRow::Buttons(buttons))
+//     } else {
+//         None
+//     }
+// }
 
 fn embed_navigation(card: &Card) -> serenity::CreateActionRow {
     let buttons: Vec<serenity::CreateButton> = vec![

@@ -48,10 +48,7 @@ pub async fn card(
 
                 return Ok(());
             }
-            Err(e) => {
-                ctx.say("Failed to find card; falling back to character query")
-                    .await?;
-            }
+            _ => (),
         }
     }
 
@@ -89,14 +86,15 @@ async fn autocomplete_name(ctx: Context<'_>, partial: &str) -> Vec<String> {
     let data = ctx.data();
     let api_config = &data.api_config;
 
-    let top_internal_names = sdk::apis::aliases_api::aliases_get(api_config, None, Some(partial), None)
-        .await
-        .map_or(vec![], |aliases| {
-            aliases
-                .iter()
-                .map(|a| a.alias.clone())
-                .collect::<Vec<String>>()
-        });
+    let top_internal_names =
+        sdk::apis::aliases_api::aliases_get(api_config, None, Some(partial), None)
+            .await
+            .map_or(vec![], |aliases| {
+                aliases
+                    .iter()
+                    .map(|a| a.alias.clone())
+                    .collect::<Vec<String>>()
+            });
 
     top_internal_names
 }

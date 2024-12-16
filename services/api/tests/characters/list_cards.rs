@@ -10,7 +10,7 @@ use crate::common::{create_test_client, create_test_pool, IntTestResult};
 
 #[tokio::test]
 async fn lists_cards_by_char_id() -> IntTestResult {
-    let (client, test_db_name, redis_client, wiki_client, s3_client, ..) =
+    let (client, test_db_name, redis_client, _, _, ..) =
         create_test_client("N/A", "N/A").await?;
     let mut redis_conn = redis_client.conn.clone();
     let pool = create_test_pool(&test_db_name).await?;

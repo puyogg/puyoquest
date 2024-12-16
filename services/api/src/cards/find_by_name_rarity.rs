@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use crate::aliases::types::Alias;
 use crate::{
     aws::s3::S3BackupClient,
@@ -11,12 +9,9 @@ use poem::{error::InternalServerError, http::StatusCode, Result};
 use poem_openapi::{payload::Json, ApiResponse, Enum, Object};
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
-use urlencoding::encode;
 use wiki::wiki_client::WikiClient;
 
-use crate::cache;
 use crate::cards::types::Card;
-use crate::env_config::ENV;
 
 use super::types::CardDb;
 

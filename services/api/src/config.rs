@@ -1,6 +1,5 @@
-use std::env;
 use moka::future::Cache;
-use poem::error::InternalServerError;
+use std::env;
 use std::time::Duration;
 
 use crate::aws::ssm::fetch_parameter;
@@ -18,7 +17,7 @@ impl ApiConfig {
             .max_capacity(10)
             .time_to_live(Duration::from_secs(3600))
             .build();
-        
+
         let sdk_config = aws_config::from_env().load().await;
         let ssm_client = aws_sdk_ssm::Client::new(&sdk_config);
 
@@ -26,12 +25,11 @@ impl ApiConfig {
             Ok(s) => s,
             Err(_) => fetch_parameter(&ssm_client, IMAGE_CACHE_KEY).await?,
         };
-        cache.insert(IMAGE_CACHE_KEY.to_string(), image_cache_domain.clone()).await;
+        cache
+            .insert(IMAGE_CACHE_KEY.to_string(), image_cache_domain.clone())
+            .await;
 
-        Ok(ApiConfig {
-            cache,
-            ssm_client,
-        })
+        Ok(ApiConfig { cache, ssm_client })
     }
 
     pub async fn get_image_cache_domain(&self) -> Result<String, poem::Error> {
@@ -40,9 +38,11 @@ impl ApiConfig {
         match cached_domain {
             None => {
                 let domain = fetch_parameter(&self.ssm_client, IMAGE_CACHE_KEY).await?;
-                self.cache.insert(IMAGE_CACHE_KEY.to_string(), domain.clone()).await;
+                self.cache
+                    .insert(IMAGE_CACHE_KEY.to_string(), domain.clone())
+                    .await;
                 Ok(domain)
-            },
+            }
             Some(c) => Ok(c),
         }
     }

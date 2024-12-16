@@ -39,7 +39,6 @@ async fn main() {
                 )
                 .await?;
                 Ok(Data {
-                    hello: "world!".to_string(),
                     api_config,
                 })
             })

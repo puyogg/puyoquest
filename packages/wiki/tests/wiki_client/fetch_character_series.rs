@@ -1,27 +1,28 @@
+use urlencoding::encode;
 use wiki::wiki_client::{FetchCharacterSeries, WikiClient};
 use wiremock::{
-    matchers::{method, path, query_param, query_param_is_missing},
+    matchers::{method, path},
     Mock, MockServer, ResponseTemplate,
 };
-use urlencoding::encode;
 
-// #[tokio::test]
-// async fn gets_series_from_character_real() -> Result<(), Box<dyn std::error::Error>> {
-//     let client = WikiClient::new(
-//         "https://puyonexus.com/mediawiki/api.php",
-//         "https://puyonexus.com/wiki",
-//     );
+#[tokio::test]
+#[ignore]
+async fn gets_series_from_character_real() -> Result<(), Box<dyn std::error::Error>> {
+    let client = WikiClient::new(
+        "https://puyonexus.com/mediawiki/api.php",
+        "https://puyonexus.com/wiki",
+    );
 
-//     let (series_name, is_lore) = client
-//         .fetch_character_series("4203", "Legamünt")
-//         .await?
-//         .unwrap();
+    let (series_name, is_lore) = client
+        .fetch_character_series("4203", "Legamünt")
+        .await?
+        .unwrap();
 
-//     assert_eq!(series_name, String::from("Heavenly Knight Series"));
-//     assert_eq!(is_lore, true);
+    assert_eq!(series_name, String::from("Heavenly Knight Series"));
+    assert_eq!(is_lore, true);
 
-//     Ok(())
-// }
+    Ok(())
+}
 
 const LEGAMUNT_PAGE: &'static str = r#"{{4203|long}}
 {{S089|short}}

@@ -144,7 +144,7 @@ fn type_selector(
         (&full_art.dual_shift_right, FullArtType::DualShiftRight),
         (&full_art.extra_power_dual_shift, FullArtType::ExtraPowerDualShift),
     ] {
-        if let Some(url) = url {
+        if let Some(_url) = url {
             let option = CreateSelectMenuOption::new(
                 full_art_type.friendly_name(),
                 full_art_type.to_string(),

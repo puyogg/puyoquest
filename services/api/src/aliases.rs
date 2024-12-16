@@ -2,13 +2,9 @@ use crate::api_tag::ApiTag;
 
 pub mod types;
 use list::{list_by_exact_name, list_by_partial_name};
-use poem::{
-    error::{BadRequest, InternalServerError},
-    web::Data,
-    Result,
-};
+use poem::{web::Data, Result};
 use poem_openapi::{
-    param::{Path, Query},
+    param::Query,
     payload::{Json, PlainText},
     OpenApi,
 };
