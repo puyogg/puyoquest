@@ -1,9 +1,11 @@
 use super::{Context, Error};
 use crate::embeds::card_embed;
 use crate::embeds::character_embed;
+use crate::embeds::did_you_mean;
 use crate::embeds::CardIconType;
 use crate::util::parse_card_query::parse_alias_and_rarity;
 use crate::util::parse_card_query::{AliasAndRarity, AliasAndRarityQuery};
+use poise::serenity_prelude::futures::future::try_join_all;
 use sdk::apis::cards_api;
 use sdk::apis::characters_api;
 
@@ -56,6 +58,7 @@ pub async fn card(
     let character = alias.get(0);
 
     match character {
+        // Show character embed if card not found
         Some(c) => {
             let cards_and_materials = sdk::apis::characters_api::characters_id_cards_get(
                 &data.api_config,
@@ -69,9 +72,27 @@ pub async fn card(
                 .components(components);
             ctx.send(reply).await?;
         }
+        // Show suggested characters if character not found
         None => {
-            ctx.say(format!("Failed to find character: {}", &query.fallback))
-                .await?;
+            let aliases = sdk::apis::aliases_api::aliases_get(
+                &data.api_config,
+                None,
+                Some(&query.fallback),
+                None,
+            )
+            .await?;
+
+            let character_futures = aliases.iter().map(|a| &a.char_id).map(|char_id| {
+                sdk::apis::characters_api::characters_id_get(&data.api_config, char_id)
+            });
+            let characters = try_join_all(character_futures).await?;
+
+            let (message, component) = did_you_mean(characters, query.fallback);
+            let reply = poise::CreateReply::default()
+                .content(message)
+                .components(vec![component]);
+
+            ctx.send(reply).await?;
         }
     }
 

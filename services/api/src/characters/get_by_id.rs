@@ -32,11 +32,11 @@ pub async fn get_by_id(pool: &PgPool, id: &str) -> Result<GetByIdResponse> {
 
     match character {
         Some(c) => {
-            let now = Utc::now();
-            let diff = now.signed_duration_since(c.updated_at);
-            if diff.num_minutes() >= 10i64 {
-                println!("Should update character!");
-            }
+            // let now = Utc::now();
+            // let diff = now.signed_duration_since(c.updated_at);
+            // if diff.num_minutes() >= 10i64 {
+            //     println!("Should update character!");
+            // }
 
             Ok(GetByIdResponse::Character(Json(c)))
         }
