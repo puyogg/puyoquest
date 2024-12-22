@@ -29,7 +29,7 @@ pub fn normalize_name(text: &str) -> String {
     let replaced_multiwhitespace = RE_MULTIWHITESPACE.replace_all(&replaced_special, " ");
     let replaced_whitespace = RE_WHITESPACE.replace_all(&replaced_multiwhitespace, " ");
 
-    let result = replaced_whitespace.to_lowercase();
+    let result = replaced_whitespace.trim().to_lowercase();
 
     result
 }

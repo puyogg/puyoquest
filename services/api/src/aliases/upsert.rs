@@ -1,6 +1,9 @@
 use chrono::Utc;
 use poem::error::InternalServerError;
-use poem_openapi::{payload::Json, ApiResponse};
+use poem_openapi::{
+    payload::{Json, PlainText},
+    ApiResponse,
+};
 use sqlx::PgPool;
 
 use super::types::{Alias, AliasCreate};
@@ -9,10 +12,21 @@ use super::types::{Alias, AliasCreate};
 pub enum UpsertResponse {
     #[oai(status = 200)]
     Ok(Json<Alias>),
+
+    #[oai(status = 400)]
+    InvalidName(PlainText<String>),
 }
 
 pub async fn upsert(pool: &PgPool, alias: &AliasCreate) -> poem::Result<UpsertResponse> {
     let normalized_alias = utils::normalize_name(&alias.alias);
+
+    // TODO return bad request here if the normalized and trimmed alias is invalid
+    if normalized_alias.len() == 0 {
+        return Ok(UpsertResponse::InvalidName(PlainText(
+            "Invalid alias".to_string(),
+        )));
+    }
+
     let updated_at = match &alias.updated_at {
         Some(d) => d,
         None => &Utc::now(),
@@ -39,9 +53,7 @@ pub async fn upsert(pool: &PgPool, alias: &AliasCreate) -> poem::Result<UpsertRe
     .await;
 
     match alias {
-        Ok(a) => {
-            Ok(UpsertResponse::Ok(Json(a)))
-        }
+        Ok(a) => Ok(UpsertResponse::Ok(Json(a))),
         Err(e) => match e {
             sqlx::Error::Database(db_error) => {
                 println!("{}", &db_error);

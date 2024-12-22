@@ -27,6 +27,7 @@ pub enum AliasesGetError {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum AliasesPostError {
+    Status400(String),
     UnknownValue(serde_json::Value),
 }
 
