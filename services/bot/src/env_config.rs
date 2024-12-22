@@ -1,6 +1,6 @@
+use sdk::apis::configuration::Configuration;
 use std::env;
 use std::sync::LazyLock;
-use sdk::apis::configuration::Configuration;
 
 #[derive(Debug)]
 pub struct Env {
@@ -11,6 +11,7 @@ pub struct Env {
     // pub db_host: String,
     // pub db_name: String,
     pub ppq_api_host: String,
+    pub wiki_editor_role_id: u64,
 }
 
 fn env_string(key: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -36,6 +37,7 @@ fn load_env() -> Env {
         // db_host: env_string("DB_HOST").unwrap(),
         // db_name: env_string("DB_NAME").unwrap(),
         ppq_api_host: env_string("PPQ_API_HOST").unwrap(),
+        wiki_editor_role_id: env_u64("WIKI_EDITOR_ROLE_ID").unwrap(),
     }
 }
 
@@ -45,9 +47,7 @@ pub fn load_env_file() -> Result<Env, Box<dyn std::error::Error>> {
     Ok(load_env())
 }
 
-pub static ENV: LazyLock<Env> = LazyLock::new(|| {
-    load_env_file().unwrap()
-});
+pub static ENV: LazyLock<Env> = LazyLock::new(|| load_env_file().unwrap());
 
 pub static API_CONFIG: LazyLock<Configuration> = LazyLock::new(|| {
     let env = &*ENV;

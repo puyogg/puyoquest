@@ -756,8 +756,10 @@ dependencies = [
 name = "bot"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "dotenvy",
  "fancy-regex 0.13.0",
+ "futures",
  "lazy_static",
  "phf",
  "poise",

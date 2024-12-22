@@ -2,6 +2,7 @@ use crate::commands::{Data, Error};
 use poise::serenity_prelude as serenity;
 
 pub mod component;
+mod interaction_helpers;
 
 pub async fn interaction_router(
     ctx: &serenity::Context,

@@ -1,6 +1,9 @@
 use crate::commands::{Data, Error};
 use crate::embeds;
+use crate::interaction_router::component::check_if_wiki_editor;
+use crate::util::fetch_character_and_aliases;
 use poise::serenity_prelude as serenity;
+use sdk::models::cards_and_materials;
 
 pub async fn did_you_mean_handler(
     ctx: &serenity::Context,
@@ -32,7 +35,10 @@ pub async fn did_you_mean_handler(
     )
     .await?;
 
-    let (embed, components) = embeds::character_embed(&character, &cards_and_materials);
+    let (character, cards_and_materials, aliases) = fetch_character_and_aliases(&data.api_config, &char_id).await?;
+    let is_wiki_editor = check_if_wiki_editor(ctx, &interaction.user).await;
+
+    let (embed, components) = embeds::character_embed(&character, &cards_and_materials, &aliases, is_wiki_editor);
     let response = serenity::CreateInteractionResponseMessage::default().embed(embed);
     let response = if components.len() > 0 {
         response.components(components)

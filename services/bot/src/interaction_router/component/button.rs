@@ -8,6 +8,7 @@ pub mod card_handler;
 pub mod character_handler;
 pub mod full_art_handler;
 pub mod lore_handler;
+pub mod alias_handler;
 
 /// Button responses have this format in the interaction's custom_id:
 ///
@@ -37,6 +38,11 @@ pub async fn button_router(
     if custom_id.starts_with("full_art:") {
         check_from_original_user(ctx, interaction).await?;
         full_art_handler::full_art_handler(ctx, data, interaction).await?;
+    }
+
+    if custom_id.starts_with("alias:") {
+        check_from_original_user(ctx, interaction).await?;
+        alias_handler::alias_handler(ctx, data, interaction).await?;
     }
 
     Ok(())

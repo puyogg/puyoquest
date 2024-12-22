@@ -3,8 +3,10 @@ use crate::embeds::card_embed;
 use crate::embeds::character_embed;
 use crate::embeds::did_you_mean;
 use crate::embeds::CardIconType;
+use crate::interaction_router::component::check_if_wiki_editor;
 use crate::util::parse_card_query::parse_alias_and_rarity;
 use crate::util::parse_card_query::{AliasAndRarity, AliasAndRarityQuery};
+use futures::TryFutureExt;
 use poise::serenity_prelude::futures::future::try_join_all;
 use sdk::apis::cards_api;
 use sdk::apis::characters_api;
@@ -54,19 +56,25 @@ pub async fn card(
         }
     }
 
-    let alias = characters_api::characters_get(&data.api_config, Some(&query.fallback)).await?;
-    let character = alias.get(0);
+    let character = characters_api::characters_get(&data.api_config, Some(&query.fallback)).await?;
+    let character = character.get(0);
 
     match character {
         // Show character embed if card not found
         Some(c) => {
-            let cards_and_materials = sdk::apis::characters_api::characters_id_cards_get(
-                &data.api_config,
-                &c.char_id,
-                Some("false"),
-            )
-            .await?;
-            let (embed, components) = character_embed(c, &cards_and_materials);
+            let (cards_and_materials, aliases) = futures::try_join!(
+                sdk::apis::characters_api::characters_id_cards_get(
+                    &data.api_config,
+                    &c.char_id,
+                    Some("false"),
+                )
+                .map_err(|_| "Failed to fetch character ids".to_string()),
+                sdk::apis::aliases_api::aliases_get(&data.api_config, Some(&c.char_id), None, None)
+                    .map_err(|_| "Failed to fetch aliases".to_string()),
+            )?;
+            let is_wiki_editor = check_if_wiki_editor(ctx.serenity_context(), ctx.author()).await;
+
+            let (embed, components) = character_embed(c, &cards_and_materials, &aliases, is_wiki_editor);
             let reply = poise::CreateReply::default()
                 .embed(embed)
                 .components(components);

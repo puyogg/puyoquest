@@ -1,18 +1,24 @@
-use poise::serenity_prelude::CreateSelectMenuOption;
 use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::CreateSelectMenuOption;
+use sdk::models::Alias;
 use serenity::{CreateActionRow, CreateEmbed};
 use urlencoding::encode;
 
 use sdk::models::{Card, CardsAndMaterials, Character};
 
+use crate::interaction_router::component::button::alias_handler::alias_nav_button;
 use crate::util::markdown;
+use crate::util::set_embed_card_color;
 use crate::util::sort_rarity::sort_rarity;
-use crate::util::embed_colors;
+
+use crate::interaction_router::component::button::alias_handler::AliasButtonAction;
 
 pub fn character_embed(
     character: &Character,
     cards_and_materials: &CardsAndMaterials,
-) -> (CreateEmbed, Vec<CreateActionRow>){
+    aliases: &Vec<Alias>,
+    is_wiki_editor: bool,
+) -> (CreateEmbed, Vec<CreateActionRow>) {
     let embed = serenity::CreateEmbed::default().title(format_character_title(character));
 
     let embed = match &character.link_name {
@@ -23,17 +29,7 @@ pub fn character_embed(
         )),
     };
 
-    let embed = match &character.main_color {
-        None => embed,
-        Some(main_color) => match main_color.as_str() {
-            "Red" => embed.color(embed_colors::RED),
-            "Blue" => embed.color(embed_colors::BLUE),
-            "Green" => embed.color(embed_colors::GREEN),
-            "Yellow" => embed.color(embed_colors::YELLOW),
-            "Purple" => embed.color(embed_colors::PURPLE),
-            _ => embed,
-        }
-    };
+    let embed = set_embed_card_color(embed, &character.main_color);
 
     let cards_and_materials = cards_and_materials.clone();
     let mut cards = cards_and_materials.cards;
@@ -73,7 +69,29 @@ pub fn character_embed(
         None => embed,
     };
 
+    let user_aliases: Vec<&str> = aliases
+        .iter()
+        .filter(|a| !a.internal)
+        .map(|a| a.alias.as_str())
+        .collect();
+    let user_aliases = user_aliases.join(", ");
+
+    let embed = if user_aliases.len() > 0 {
+        embed.field(
+            "Aliases",
+            &user_aliases,
+            false,
+        )
+    } else {
+        embed
+    };
+
     let mut components: Vec<serenity::CreateActionRow> = Vec::new();
+
+    if is_wiki_editor {
+        let alias_buttons = alias_actions(&character.char_id);
+        components.push(alias_buttons);
+    }
 
     let mut select_menu_options: Vec<CreateSelectMenuOption> = Vec::new();
     let cards_and_mats = [&cards[..], &materials[..]].concat();
@@ -96,13 +114,21 @@ pub fn character_embed(
     (embed, components)
 }
 
-fn format_character_title(character: &Character) -> String {
+pub fn format_character_title(character: &Character) -> String {
     match (&character.name, &character.jp_name) {
         (Some(name), Some(jp_name)) => format!("{} ({})", name, jp_name),
         (Some(name), None) => format!("{}", name),
         (None, Some(jp_name)) => format!("? ({})", jp_name),
         _ => String::from("?"),
     }
+}
+
+fn alias_actions(char_id: &str) -> serenity::CreateActionRow {
+    let buttons: Vec<serenity::CreateButton> = vec![
+        alias_nav_button(char_id, AliasButtonAction::Add),
+        alias_nav_button(char_id, AliasButtonAction::Delete),
+    ];
+    serenity::CreateActionRow::Buttons(buttons)
 }
 
 fn format_select_menu_option(card: &Card) -> String {
