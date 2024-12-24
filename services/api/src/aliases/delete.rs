@@ -1,11 +1,20 @@
 use poem::error::InternalServerError;
-use poem_openapi::{payload::PlainText, ApiResponse};
+use poem_openapi::{
+    payload::{Json, PlainText},
+    ApiResponse, Object,
+};
+use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
+
+#[derive(Debug, Clone, Serialize, Deserialize, Object)]
+pub struct DeleteCount {
+    count: u64,
+}
 
 #[derive(ApiResponse)]
 pub enum AliasDeleteResponse {
     #[oai(status = 200)]
-    SuccessfullyDeleted(PlainText<String>),
+    SuccessfullyDeleted(Json<DeleteCount>),
 
     #[oai(status = 400)]
     InvalidName(PlainText<String>),
@@ -23,7 +32,7 @@ pub async fn delete(pool: &PgPool, name: &str) -> poem::Result<AliasDeleteRespon
     let delete_count = sqlx::query(
         r#"
         DELETE FROM alias
-        WHERE alias = $1
+        WHERE alias = $1 AND internal = FALSE
         "#,
     )
     .bind(name)
@@ -32,8 +41,8 @@ pub async fn delete(pool: &PgPool, name: &str) -> poem::Result<AliasDeleteRespon
     .map_err(InternalServerError)?
     .rows_affected();
 
-    let delete_count = delete_count.to_string();
-
-    let response = AliasDeleteResponse::SuccessfullyDeleted(PlainText(delete_count));
+    let response = AliasDeleteResponse::SuccessfullyDeleted(Json(DeleteCount {
+        count: delete_count,
+    }));
     Ok(response)
 }

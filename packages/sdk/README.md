@@ -56,6 +56,7 @@ Class | Method | HTTP request | Description
  - [CardsAndMaterials](docs/CardsAndMaterials.md)
  - [Character](docs/Character.md)
  - [CharacterCreate](docs/CharacterCreate.md)
+ - [DeleteCount](docs/DeleteCount.md)
  - [Lore](docs/Lore.md)
  - [MonologueLine](docs/MonologueLine.md)
  - [NotFoundReason](docs/NotFoundReason.md)

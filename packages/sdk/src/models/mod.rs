@@ -22,6 +22,8 @@ pub mod character;
 pub use self::character::Character;
 pub mod character_create;
 pub use self::character_create::CharacterCreate;
+pub mod delete_count;
+pub use self::delete_count::DeleteCount;
 pub mod lore;
 pub use self::lore::Lore;
 pub mod monologue_line;

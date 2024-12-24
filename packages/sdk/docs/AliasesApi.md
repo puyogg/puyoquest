@@ -12,7 +12,7 @@ Method | HTTP request | Description
 
 ## aliases_delete
 
-> String aliases_delete(name)
+> models::DeleteCount aliases_delete(name)
 
 
 ### Parameters
@@ -24,7 +24,7 @@ Name | Type | Description  | Required | Notes
 
 ### Return type
 
-**String**
+[**models::DeleteCount**](DeleteCount.md)
 
 ### Authorization
 
@@ -33,7 +33,7 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: text/plain; charset=utf-8
+- **Accept**: application/json; charset=utf-8, text/plain; charset=utf-8
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

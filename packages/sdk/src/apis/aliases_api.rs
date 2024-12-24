@@ -40,7 +40,7 @@ pub enum AliasesPostError {
 }
 
 
-pub async fn aliases_delete(configuration: &configuration::Configuration, name: &str) -> Result<String, Error<AliasesDeleteError>> {
+pub async fn aliases_delete(configuration: &configuration::Configuration, name: &str) -> Result<models::DeleteCount, Error<AliasesDeleteError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;

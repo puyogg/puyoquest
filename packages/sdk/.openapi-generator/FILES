@@ -16,6 +16,7 @@ docs/CardsApi.md
 docs/Character.md
 docs/CharacterCreate.md
 docs/CharactersApi.md
+docs/DeleteCount.md
 docs/HealthcheckApi.md
 docs/Lore.md
 docs/MonologueLine.md
@@ -41,6 +42,7 @@ src/models/card_type.rs
 src/models/cards_and_materials.rs
 src/models/character.rs
 src/models/character_create.rs
+src/models/delete_count.rs
 src/models/lore.rs
 src/models/mod.rs
 src/models/monologue_line.rs

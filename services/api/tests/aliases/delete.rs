@@ -1,6 +1,7 @@
 use api::aliases::types::AliasCreate;
 use api::characters::types::CharacterCreate;
 use reqwest::StatusCode;
+use serde_json::json;
 
 use crate::common::{create_test_client, create_test_pool};
 use crate::common::{seed, IntTestResult};
@@ -44,6 +45,6 @@ async fn deletes_an_alias() -> IntTestResult {
         .await;
 
     response.assert_status(StatusCode::OK);
-    response.assert_text("1").await;
+    response.assert_json(json!({ "count": 1 })).await;
     Ok(())
 }
