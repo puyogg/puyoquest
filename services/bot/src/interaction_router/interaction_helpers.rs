@@ -18,3 +18,21 @@ pub async fn basic_component_response(
 
     Ok(())
 }
+
+pub async fn basic_modal_response(
+    ctx: &serenity::Context,
+    interaction: &serenity::ModalInteraction,
+    message: impl AsRef<str>,
+) -> Result<(), Error> {
+    let message = message.as_ref();
+    interaction
+        .create_response(
+            ctx,
+            serenity::CreateInteractionResponse::Message(
+                serenity::CreateInteractionResponseMessage::new().content(message),
+            ),
+        )
+        .await?;
+
+    Ok(())
+}

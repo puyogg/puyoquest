@@ -7,7 +7,8 @@ use sdk::models::{AliasCreate, CardType};
 use crate::{
     commands::{Data, Error},
     interaction_router::{
-        component::check_if_wiki_editor_and_error, interaction_helpers::basic_component_response,
+        component::check_if_wiki_editor_and_error,
+        interaction_helpers::{basic_component_response, basic_modal_response},
     },
 };
 
@@ -142,10 +143,15 @@ pub async fn add_alias_modal(
     )
     .await;
 
+    let modal_response =
+        |message: String| basic_modal_response(ctx, &modal_user_response.interaction, message);
+    let user_id = &modal_user_response.interaction.user.id;
+
     match upserted_alias {
         Ok(a) => {
-            basic_response(&format!(
-                "Successfully added alias **{}** for character: **{}** (id: {})",
+            modal_response(format!(
+                "<@{}> Successfully added alias **{}** for character: **{}** (id: {})",
+                &user_id,
                 &a.alias,
                 &character.name.unwrap_or("??".to_string()),
                 &character.char_id
@@ -153,8 +159,9 @@ pub async fn add_alias_modal(
             .await?;
         }
         Err(_e) => {
-            basic_response(&format!(
-                "There was a problem adding alias **{}** for character: **{}** (id: {})",
+            modal_response(format!(
+                "<@{}> There was a problem adding alias **{}** for character: **{}** (id: {})",
+                &user_id,
                 &submitted_name,
                 &character.name.unwrap_or("??".to_string()),
                 &character.char_id
@@ -214,19 +221,26 @@ pub async fn delete_alias_modal(
     let delete_response =
         sdk::apis::aliases_api::aliases_delete(&data.api_config, &submitted_name).await;
 
+    let modal_response =
+        |message: String| basic_modal_response(ctx, &modal_user_response.interaction, message);
+    let user_id = &modal_user_response.interaction.user.id;
+
     match delete_response {
         Ok(_d) => {
-            basic_response(&format!(
-                "Successfully deleted alias **{}** for character: **{}** (id: {})",
+            modal_response(format!(
+                "<@{}> Successfully deleted alias **{}** for character: **{}** (id: {})",
+                user_id,
                 &submitted_name,
                 &character.name.unwrap_or("??".to_string()),
                 &character.char_id
             ))
             .await?;
         }
-        Err(_e) => {
-            basic_response(&format!(
-                "There was a problem deleting alias **{}** for character: **{}** (id: {})",
+        Err(e) => {
+            println!("{:?}", e);
+            modal_response(format!(
+                "<@{}> There was a problem deleting alias **{}** for character: **{}** (id: {})",
+                user_id,
                 &submitted_name,
                 &character.name.unwrap_or("??".to_string()),
                 &character.char_id
