@@ -4,9 +4,38 @@ All URIs are relative to *http://localhost:3000*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
+[**aliases_delete**](AliasesApi.md#aliases_delete) | **DELETE** /aliases | 
 [**aliases_get**](AliasesApi.md#aliases_get) | **GET** /aliases | List aliases for a char_id
 [**aliases_post**](AliasesApi.md#aliases_post) | **POST** /aliases | 
 
+
+
+## aliases_delete
+
+> String aliases_delete(name)
+
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**name** | **String** |  | [required] |
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: text/plain; charset=utf-8
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 
 ## aliases_get

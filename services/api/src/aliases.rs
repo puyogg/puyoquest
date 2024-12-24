@@ -2,7 +2,7 @@ use crate::api_tag::ApiTag;
 
 pub mod types;
 use list::{list_by_exact_name, list_by_partial_name};
-use poem::{web::Data, Result};
+use poem::{error::BadRequest, web::Data, Result};
 use poem_openapi::{
     param::Query,
     payload::{Json, PlainText},
@@ -16,6 +16,9 @@ pub use list::{list_by_char_id, AliasListResponse};
 
 pub mod upsert;
 pub use upsert::{upsert, UpsertResponse};
+
+mod delete;
+use delete::{delete, AliasDeleteResponse};
 
 pub struct AliasesRouter;
 
@@ -63,5 +66,14 @@ impl AliasesRouter {
         alias: Json<AliasCreate>,
     ) -> Result<UpsertResponse> {
         upsert(pool.0, &alias.0).await
+    }
+
+    #[oai(path = "/", method = "delete")]
+    async fn delete(
+        &self,
+        pool: Data<&PgPool>,
+        name: Query<String>,
+    ) -> Result<AliasDeleteResponse> {
+        delete(pool.0, &name.0).await
     }
 }
