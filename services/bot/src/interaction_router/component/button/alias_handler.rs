@@ -95,14 +95,12 @@ pub async fn add_alias_modal(
     .timeout(std::time::Duration::from_secs(120))
     .short_field("Name");
 
-    let modal_user_response = interaction
-        .quick_modal(ctx, modal)
-        .await?;
+    let modal_user_response = interaction.quick_modal(ctx, modal).await?;
     let modal_user_response = match modal_user_response {
         Some(r) => r,
         None => {
             basic_response("There was an error handling your alias request.").await?;
-            return Ok(())
+            return Ok(());
         }
     };
 
@@ -112,13 +110,13 @@ pub async fn add_alias_modal(
         Some(name) => {
             if name.trim().len() == 0 {
                 basic_response("Invalid alias! Try something else.").await?;
-                return Ok(())
+                return Ok(());
             }
             name
-        },
+        }
         None => {
             basic_response("Invalid alias! Try something else.").await?;
-            return Ok(())
+            return Ok(());
         }
     };
 
@@ -140,8 +138,9 @@ pub async fn add_alias_modal(
                 None => CardType::Character,
             },
             updated_at: None,
-        }
-    ).await;
+        },
+    )
+    .await;
 
     match upserted_alias {
         Ok(a) => {
@@ -150,15 +149,17 @@ pub async fn add_alias_modal(
                 &a.alias,
                 &character.name.unwrap_or("??".to_string()),
                 &character.char_id
-            )).await?;
-        },
+            ))
+            .await?;
+        }
         Err(_e) => {
             basic_response(&format!(
                 "There was a problem adding alias **{}** for character: **{}** (id: {})",
                 &submitted_name,
                 &character.name.unwrap_or("??".to_string()),
                 &character.char_id
-            )).await?;
+            ))
+            .await?;
         }
     }
 
@@ -185,14 +186,12 @@ pub async fn delete_alias_modal(
     .timeout(std::time::Duration::from_secs(120))
     .short_field("Name");
 
-    let modal_user_response = interaction
-        .quick_modal(ctx, modal)
-        .await?;
+    let modal_user_response = interaction.quick_modal(ctx, modal).await?;
     let modal_user_response = match modal_user_response {
         Some(r) => r,
         None => {
             basic_response("There was an error handling your alias request.").await?;
-            return Ok(())
+            return Ok(());
         }
     };
 
@@ -202,17 +201,39 @@ pub async fn delete_alias_modal(
         Some(name) => {
             if name.trim().len() == 0 {
                 basic_response("Invalid alias! Try something else.").await?;
-                return Ok(())
+                return Ok(());
             }
             name
-        },
+        }
         None => {
             basic_response("Invalid alias! Try something else.").await?;
-            return Ok(())
+            return Ok(());
         }
     };
 
-    todo!("Make delete request");
+    let delete_response =
+        sdk::apis::aliases_api::aliases_delete(&data.api_config, &submitted_name).await;
+
+    match delete_response {
+        Ok(_d) => {
+            basic_response(&format!(
+                "Successfully deleted alias **{}** for character: **{}** (id: {})",
+                &submitted_name,
+                &character.name.unwrap_or("??".to_string()),
+                &character.char_id
+            ))
+            .await?;
+        }
+        Err(_e) => {
+            basic_response(&format!(
+                "There was a problem deleting alias **{}** for character: **{}** (id: {})",
+                &submitted_name,
+                &character.name.unwrap_or("??".to_string()),
+                &character.char_id
+            ))
+            .await?;
+        }
+    }
 
     Ok(())
 }
