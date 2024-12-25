@@ -6,6 +6,7 @@ members = [
   "packages/sdk",
   "packages/wiki",
   "packages/utils",
+  "packages/ppq_imageproc",
   "services/indexers",
 ]
 resolver = "2"
