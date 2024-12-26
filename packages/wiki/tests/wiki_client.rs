@@ -1,4 +1,5 @@
 mod wiki_client {
+    mod all_ppq_categories;
     mod card_categories;
     mod character_card_ids;
     mod fetch_character_series;

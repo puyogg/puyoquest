@@ -25,6 +25,9 @@ pub use fetch_character_series::*;
 mod character_card_ids;
 pub use character_card_ids::*;
 
+mod all_ppq_categories;
+pub use all_ppq_categories::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
