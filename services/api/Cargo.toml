@@ -50,3 +50,7 @@ wiremock = "0.6.0"
 [[bin]]
 name = "test_setup"
 test = false
+
+[[bin]]
+name = "migrate_card_link"
+test = false
