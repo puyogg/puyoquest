@@ -1,25 +1,25 @@
 use async_trait::async_trait;
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct AllCategoriesResponse {
     pub batchcomplete: bool,
     pub r#continue: Option<AllCategoriesContinue>,
     pub query: AllCategoriesQuery,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct AllCategoriesContinue {
     pub accontinue: String,
     pub r#continue: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct AllCategoriesQuery {
     pub allcategories: Vec<AllCategoriesItem>,
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct AllCategoriesItem {
     pub category: String,
     pub size: i64,
@@ -41,8 +41,7 @@ impl AllCategories for super::WikiClient {
         let mut r#continue: Option<String> = None;
         let mut accontinue: Option<String> = None;
 
-        for i in 0..30 {
-            println!("Page: {i}");
+        for _i in 0..30 {
             let mut query_params = vec![
                 ("action", "query"),
                 ("format", "json"),
