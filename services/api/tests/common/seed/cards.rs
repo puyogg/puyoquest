@@ -21,8 +21,8 @@ lazy_static! {
         name_normalized: "arle".nfkd().to_string(),
         jp_name: Some("アルル".to_string()),
         jp_name_normalized: Some("アルル".to_string()),
-        link_name: "Arle".to_string(),
-        link_name_normalized: "arle".to_string(),
+        link_name: "Arle/★7".to_string(),
+        link_name_normalized: "arle/7".to_string(),
         card_type: CardType::Character,
         main_color: "Blue".to_string(),
         side_color: None,
@@ -43,7 +43,7 @@ lazy_static! {
             ),
             extra_power_dual_shift: None,
         },
-        url: String::from("https://puyonexus.com/wiki/PPQ:Arle/★7"),
+        url: format!("https://puyonexus.com/wiki/PPQ:{}", encode("Arle/★7")),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
@@ -56,8 +56,8 @@ lazy_static! {
         name_normalized: "ally & rafisol".nfkd().to_string(),
         jp_name: Some("アリィ＆ラフィソル".to_string()),
         jp_name_normalized: Some("アリィ＆ラフィソル".nfkd().to_string()),
-        link_name: "Ally & Rafisol".to_string(),
-        link_name_normalized: "ally & rafisol".to_string(),
+        link_name: "Ally_&_Rafisol/★7".to_string(),
+        link_name_normalized: "ally_&_rafisol".to_string(),
         card_type: CardType::Character,
         main_color: "Purple".to_string(),
         side_color: Some("Green".to_string()),
@@ -82,7 +82,10 @@ lazy_static! {
                 "https://d14ks6gfutzo56.cloudfront.net/4/48/Img545517_msft.png".to_string()
             )
         },
-        url: String::from("https://puyonexus.com/wiki/PPQ:Ally_&_Rafisol/★7"),
+        url: format!(
+            "https://puyonexus.com/wiki/PPQ:{}",
+            encode("Ally_&_Rafisol/★7")
+        ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
     };
@@ -95,8 +98,8 @@ lazy_static! {
         name_normalized: "santa ringo".nfkd().to_string(),
         jp_name: Some("サンタりんご".to_string()),
         jp_name_normalized: Some("サンタりんご".nfkd().to_string()),
-        link_name: "Santa Ringo".to_string(),
-        link_name_normalized: "santa ringo".nfkd().to_string(),
+        link_name: "Santa_Ringo/★4".to_string(),
+        link_name_normalized: "santa_ringo".nfkd().to_string(),
         card_type: CardType::Character,
         main_color: "Green".to_string(),
         side_color: None,
@@ -115,7 +118,7 @@ lazy_static! {
         },
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Santa Ringo/★4")
+            encode("Santa_Ringo/★4")
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -129,8 +132,8 @@ lazy_static! {
         name_normalized: "santa ringo".nfkd().to_string(),
         jp_name: Some("サンタりんご".to_string()),
         jp_name_normalized: Some("サンタりんご".nfkd().to_string()),
-        link_name: "Santa Ringo".to_string(),
-        link_name_normalized: "santa ringo".nfkd().to_string(),
+        link_name: "Santa_Ringo/★5".to_string(),
+        link_name_normalized: "santa_ringo".nfkd().to_string(),
         card_type: CardType::Character,
         main_color: "Green".to_string(),
         side_color: None,
@@ -149,7 +152,7 @@ lazy_static! {
         },
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Santa Ringo/★5")
+            encode("Santa_Ringo/★5")
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -163,8 +166,8 @@ lazy_static! {
         name_normalized: "santa ringo".nfkd().to_string(),
         jp_name: Some("サンタりんご".to_string()),
         jp_name_normalized: Some("サンタりんご".nfkd().to_string()),
-        link_name: "Santa Ringo/★6-1".to_string(),
-        link_name_normalized: "santa ringo/★6-1".nfkd().to_string(),
+        link_name: "Santa_Ringo/★6-1".to_string(),
+        link_name_normalized: "santa_ringo".nfkd().to_string(),
         card_type: CardType::Character,
         main_color: "Green".to_string(),
         side_color: None,
@@ -183,7 +186,7 @@ lazy_static! {
         },
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Santa Ringo/★6-1")
+            encode("Santa_Ringo/★6-1")
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -197,8 +200,8 @@ lazy_static! {
         name_normalized: "santa ringo s".nfkd().to_string(),
         jp_name: Some("サンタりんご・S".to_string()),
         jp_name_normalized: Some("サンタりんご・S".nfkd().to_string()),
-        link_name: "Santa Ringo/★6-2".to_string(),
-        link_name_normalized: "santa ringo/★6-2".nfkd().to_string(),
+        link_name: "Santa_Ringo/★6-2".to_string(),
+        link_name_normalized: "santa_ringo/★6-2".nfkd().to_string(),
         card_type: CardType::Character,
         main_color: "Green".to_string(),
         side_color: Some("Red".to_string()),
@@ -217,7 +220,7 @@ lazy_static! {
         },
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Santa Ringo/★6-2")
+            encode("Santa_Ringo/★6-2")
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -231,8 +234,8 @@ lazy_static! {
         name_normalized: "green holy bell (gold)".nfkd().to_string(),
         jp_name: Some("緑の聖なるベル（金）".to_string()),
         jp_name_normalized: Some("緑の聖なるベル（金）".nfkd().to_string()),
-        link_name: "Santa Ringo/Materials/★5".to_string(),
-        link_name_normalized: "santa ringo/materials/★5".nfkd().to_string(),
+        link_name: "Santa_Ringo/Materials/★5".to_string(),
+        link_name_normalized: "santa_ringo/materials/★5".nfkd().to_string(),
         card_type: CardType::Material,
         main_color: "Green".to_string(),
         side_color: None,
@@ -251,7 +254,7 @@ lazy_static! {
         },
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Santa Ringo/Materials/★5")
+            encode("Santa_Ringo/Materials/★5")
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -265,8 +268,8 @@ lazy_static! {
         name_normalized: "snowglobe (green)".nfkd().to_string(),
         jp_name: Some("スノードーム（緑））".to_string()),
         jp_name_normalized: Some("=スノードーム（緑）".nfkd().to_string()),
-        link_name: "Santa Ringo/Materials/★6-1".to_string(),
-        link_name_normalized: "santa ringo/materials/★6-1".nfkd().to_string(),
+        link_name: "Santa_Ringo/Materials/★6-1".to_string(),
+        link_name_normalized: "santa_ringo/materials/★6-1".nfkd().to_string(),
         card_type: CardType::Material,
         main_color: "Green".to_string(),
         side_color: None,
@@ -285,7 +288,7 @@ lazy_static! {
         },
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Santa Ringo/Materials/★6-1")
+            encode("Santa_Ringo/Materials/★6-1")
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -299,8 +302,8 @@ lazy_static! {
         name_normalized: "snowglobe (red)".nfkd().to_string(),
         jp_name: Some("スノードーム（赤）".to_string()),
         jp_name_normalized: Some("スノードーム（赤）".nfkd().to_string()),
-        link_name: "Santa Ringo/Materials/★6-2".to_string(),
-        link_name_normalized: "santa ringo/materials/★6-2".nfkd().to_string(),
+        link_name: "Santa_Ringo/Materials/★6-2".to_string(),
+        link_name_normalized: "santa_ringo/materials/★6-2".nfkd().to_string(),
         card_type: CardType::Material,
         main_color: "Red".to_string(),
         side_color: None,
@@ -319,7 +322,7 @@ lazy_static! {
         },
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Santa Ringo/Materials/★6-2")
+            encode("Santa_Ringo/Materials/★6-2")
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -333,8 +336,8 @@ lazy_static! {
         name_normalized: "on-stage ringo".nfkd().to_string(),
         jp_name: Some("オンステージのりんご".to_string()),
         jp_name_normalized: Some("オンステージのりんご".nfkd().to_string()),
-        link_name: "On-stage Ringo".to_string(),
-        link_name_normalized: "on-stage ringo".nfkd().to_string(),
+        link_name: "On-stage Ring/★7".to_string(),
+        link_name_normalized: "on-stage_ringo".nfkd().to_string(),
         card_type: CardType::Character,
         main_color: "Green".to_string(),
         side_color: Some("Red".to_string()),
@@ -350,7 +353,7 @@ lazy_static! {
         icons: CardIconUrls::default(),
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("On-stage Ringo"),
+            encode("On-stage_Ringo/★7"),
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
@@ -364,11 +367,11 @@ lazy_static! {
         name_normalized: "raincloud nine sig".nfkd().to_string(),
         jp_name: Some("うきうきのシグ".to_string()),
         jp_name_normalized: Some("うきうきのシグ".nfkd().to_string()),
-        link_name: "Raincloud Nine Sig".to_string(),
+        link_name: "Raincloud_Nine_Sig/★7".to_string(),
         link_name_normalized: "raincloud nine sig".nfkd().to_string(),
         card_type: CardType::Character,
         main_color: "Blue".to_string(),
-        side_color: Some("Purple".to_string()), 
+        side_color: Some("Purple".to_string()),
         wiki_template: serde_json::from_value::<CardTemplateData>(json!({
             "code": "241207",
             "rarity": "7",
@@ -381,7 +384,7 @@ lazy_static! {
         icons: CardIconUrls::default(),
         url: format!(
             "https://puyonexus.com/wiki/PPQ:{}",
-            encode("Raincloud Nine Sig"),
+            encode("Raincloud_Nine_Sig/★7"),
         ),
         cached_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),
         updated_at: Utc.with_ymd_and_hms(2024, 2, 24, 14, 24, 24).unwrap(),

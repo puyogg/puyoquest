@@ -191,16 +191,21 @@ impl Indexer {
         };
 
         let name = get_required("name")?;
+        let rarity = get_required("rarity")?;
+        let rarity_modifier = get("link")
+            .map(|l| util::parse_rarity_modifier(&l))
+            .flatten();
         let link_name = match get("link") {
             Some(l) => l,
-            None => name.clone(),
+            None => format!("{}/★{}", name.clone(), rarity.clone()),
         };
+        let link_name = link_name.replace(" ", "_");
 
         let card_create = CardCreate {
             card_id: card_id.to_string(),
             char_id: self.char_id.to_string(),
-            rarity: get_required("rarity")?,
-            rarity_modifier: util::parse_rarity_modifier(&link_name),
+            rarity,
+            rarity_modifier,
             name: name.clone(),
             name_normalized: utils::normalize_name(&name),
             jp_name: get("jpname"),

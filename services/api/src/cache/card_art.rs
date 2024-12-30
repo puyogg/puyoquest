@@ -54,7 +54,8 @@ pub async fn card_art(
         None => {
             let card_link_name = format!(
                 "PPQ:{}",
-                format_card_link_name(link_name, rarity, rarity_modifier)
+                // format_card_link_name(link_name, rarity, rarity_modifier)
+                link_name
             );
             let page_names = wiki_client
                 .page_image_filenames(&card_link_name)

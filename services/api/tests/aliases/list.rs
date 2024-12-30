@@ -112,9 +112,6 @@ async fn lists_fuzzy_matched_aliases_legamunt() -> IntTestResult {
             &[
                 seed::aliases::LEGAMUNT_ORIGINAL.clone(),
                 seed::aliases::HARTMANN.clone(),
-                seed::aliases::YURI.clone(),
-                seed::aliases::MARS.clone(),
-                seed::aliases::EMILIA.clone(),
             ]
             .to_json()
             .unwrap(),

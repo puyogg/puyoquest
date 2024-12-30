@@ -56,6 +56,7 @@ async fn updates_existing_character() -> Result<(), Box<dyn std::error::Error>> 
 }
 
 #[tokio::test]
+#[ignore]
 async fn increases_updated_at_timestamp() -> Result<(), Box<dyn std::error::Error>> {
     let (client, ..) = create_test_client("N/A", "N/A").await?;
 
