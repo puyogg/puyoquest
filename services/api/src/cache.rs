@@ -16,6 +16,9 @@ pub use card_lore::*;
 mod card_art;
 pub use card_art::*;
 
+mod ppq_categories;
+pub use ppq_categories::*;
+
 use crate::{aws::ssm, env_config::DeploymentEnvironment};
 
 #[derive(Debug)]
