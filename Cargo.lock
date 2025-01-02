@@ -853,6 +853,7 @@ dependencies = [
  "phf",
  "poise",
  "poise_macros",
+ "rand",
  "reqwest 0.12.4",
  "sdk",
  "serde",

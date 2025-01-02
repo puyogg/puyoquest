@@ -1,8 +1,6 @@
 use crate::aliases::types::Alias;
 use crate::{
-    aws::s3::S3BackupClient,
-    cache::RedisClient,
-    config::ApiConfig,
+    aws::s3::S3BackupClient, cache::RedisClient, config::ApiConfig,
     util::parse_rarity::parse_rarity,
 };
 use poem::{error::InternalServerError, http::StatusCode, Result};

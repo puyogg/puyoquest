@@ -9,6 +9,8 @@ Method | HTTP request | Description
 [**cards_get**](CardsApi.md#cards_get) | **GET** /cards | Find by name and rarity
 [**cards_id_get**](CardsApi.md#cards_id_get) | **GET** /cards/{id} | Find by card_id
 [**cards_post**](CardsApi.md#cards_post) | **POST** /cards | Upsert card data (admins only)
+[**cards_random_card_get**](CardsApi.md#cards_random_card_get) | **GET** /cards/random-card | List random cards
+[**cards_random_lore_get**](CardsApi.md#cards_random_lore_get) | **GET** /cards/random-lore | 
 
 
 
@@ -149,6 +151,59 @@ No authorization required
 
 - **Content-Type**: application/json; charset=utf-8
 - **Accept**: application/json; charset=utf-8
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## cards_random_card_get
+
+> Vec<models::Card> cards_random_card_get(count)
+List random cards
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**count** | **i32** |  | [required] |
+
+### Return type
+
+[**Vec<models::Card>**](Card.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json; charset=utf-8
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## cards_random_lore_get
+
+> models::Lore cards_random_lore_get()
+
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**models::Lore**](Lore.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json; charset=utf-8, text/plain; charset=utf-8
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

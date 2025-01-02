@@ -14,6 +14,7 @@ use crate::cards::get_by_id::query_get_by_id;
 
 #[derive(Debug, Clone, Object, Serialize, Deserialize, PartialEq, Eq)]
 pub struct WikiLore {
+    pub code: String,
     /// JP description
     pub ft: Option<String>,
     /// English description
@@ -36,11 +37,28 @@ pub struct MonologueLine {
 
 #[derive(Debug, Clone, Object, Serialize, Deserialize, PartialEq, Eq)]
 pub struct Lore {
+    pub card_id: String,
     pub flavor_text_jp: Option<String>,
     pub flavor_text_en: Option<String>,
     pub monologue_lines: Vec<MonologueLine>,
     pub translator: Option<String>,
     pub editor: Option<String>,
+}
+
+impl Lore {
+    pub fn has_a_translation(&self) -> bool {
+        if self.flavor_text_en.is_some() {
+            return true;
+        }
+
+        for monologue_line in &self.monologue_lines {
+            if monologue_line.en.is_some() {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 lazy_static::lazy_static! {
@@ -72,8 +90,8 @@ impl From<WikiLore> for Lore {
             None => (None, None),
             Some(ftc) => {
                 let translator_captures = RE_TRANSLATORS.captures_iter(&ftc);
-                let translators = translator_captures.flat_map(|c| {
-                    match c {
+                let translators = translator_captures
+                    .flat_map(|c| match c {
                         Err(_) => None,
                         Ok(c) => {
                             let translator = c.get(1);
@@ -93,12 +111,12 @@ impl From<WikiLore> for Lore {
                                 }
                             }
                         }
-                    }
-                }).collect::<Vec<String>>();
+                    })
+                    .collect::<Vec<String>>();
 
                 let editor_captures = RE_EDITORS.captures_iter(&ftc);
-                let editors = editor_captures.flat_map(|c| {
-                    match c {
+                let editors = editor_captures
+                    .flat_map(|c| match c {
                         Err(_) => None,
                         Ok(c) => {
                             let editor = c.get(1);
@@ -118,16 +136,25 @@ impl From<WikiLore> for Lore {
                                 }
                             }
                         }
-                    }
-                }).collect::<Vec<String>>();
+                    })
+                    .collect::<Vec<String>>();
 
-                let t = if translators.len() > 0 { Some(translators.join(", ")) } else { None };
-                let e = if editors.len() > 0 { Some(editors.join(", ")) } else { None };
+                let t = if translators.len() > 0 {
+                    Some(translators.join(", "))
+                } else {
+                    None
+                };
+                let e = if editors.len() > 0 {
+                    Some(editors.join(", "))
+                } else {
+                    None
+                };
                 (t, e)
-            },
+            }
         };
 
         Self {
+            card_id: value.code,
             flavor_text_jp: value.ft,
             flavor_text_en: value.fta,
             monologue_lines,
@@ -175,6 +202,7 @@ mod tests {
     fn translator_and_editor() {
         // 402207
         let wiki_lore = WikiLore {
+            code: "402207".to_string(),
             ft: Some("さまざまな世界を旅して まわっている「時空の旅人」。 怒らせるとちょっとコワイ。".to_string()),
             fta: Some("A \"space-time traveler\" who travels around various worlds. He becomes a bit scary when agitated.".to_string()),
             ftc: Some("Translator\n[Beachedking][1]\nEditor\n[Pi][2]\n\n[1]: /wiki/User:Beachedking\n[2]: /wiki/User:Pi".to_string()),
@@ -187,6 +215,7 @@ mod tests {
         };
 
         let expected_lore = Lore {
+            card_id: "402207".to_string(),
             flavor_text_jp: wiki_lore.ft.clone(),
             flavor_text_en: wiki_lore.fta.clone(),
             monologue_lines: vec![
@@ -214,6 +243,7 @@ mod tests {
     #[test]
     fn translator_only() {
         let wiki_lore = WikiLore {
+            code: "402207".to_string(),
             ft: Some("さまざまな世界を旅して まわっている「時空の旅人」。 怒らせるとちょっとコワイ。".to_string()),
             fta: Some("A \"space-time traveler\" who travels around various worlds. He becomes a bit scary when agitated.".to_string()),
             ftc: Some("Translator\n[Beachedking][1]\nEditor\nNone\n\n[1]: /wiki/User:Beachedking".to_string()),
@@ -226,6 +256,7 @@ mod tests {
         };
 
         let expected_lore = Lore {
+            card_id: "402207".to_string(),
             flavor_text_jp: wiki_lore.ft.clone(),
             flavor_text_en: wiki_lore.fta.clone(),
             monologue_lines: vec![
@@ -253,6 +284,7 @@ mod tests {
     #[test]
     fn no_translator() {
         let wiki_lore = WikiLore {
+            code: "402207".to_string(),
             ft: Some("さまざまな世界を旅して まわっている「時空の旅人」。 怒らせるとちょっとコワイ。".to_string()),
             fta: Some("A \"space-time traveler\" who travels around various worlds. He becomes a bit scary when agitated.".to_string()),
             ftc: None,
@@ -265,6 +297,7 @@ mod tests {
         };
 
         let expected_lore = Lore {
+            card_id: "402207".to_string(),
             flavor_text_jp: wiki_lore.ft.clone(),
             flavor_text_en: wiki_lore.fta.clone(),
             monologue_lines: vec![

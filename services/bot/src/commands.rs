@@ -2,6 +2,7 @@ use sdk::apis::configuration::Configuration;
 
 pub mod char_by_id;
 pub mod card;
+pub mod whoselore;
 
 #[allow(unused)]
 pub type Error = Box<dyn std::error::Error + Send + Sync>;

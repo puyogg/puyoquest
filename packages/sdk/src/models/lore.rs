@@ -13,6 +13,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Default, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Lore {
+    #[serde(rename = "card_id")]
+    pub card_id: String,
     #[serde(rename = "flavor_text_jp", skip_serializing_if = "Option::is_none")]
     pub flavor_text_jp: Option<String>,
     #[serde(rename = "flavor_text_en", skip_serializing_if = "Option::is_none")]
@@ -26,8 +28,9 @@ pub struct Lore {
 }
 
 impl Lore {
-    pub fn new(monologue_lines: Vec<models::MonologueLine>) -> Lore {
+    pub fn new(card_id: String, monologue_lines: Vec<models::MonologueLine>) -> Lore {
         Lore {
+            card_id,
             flavor_text_jp: None,
             flavor_text_en: None,
             monologue_lines,

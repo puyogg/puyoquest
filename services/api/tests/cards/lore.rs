@@ -1,6 +1,6 @@
+use api::cards::lore::{Lore, MonologueLine, WikiLore};
 use poem::http::StatusCode;
 use redis::AsyncCommands;
-use api::cards::lore::{Lore, MonologueLine, WikiLore};
 
 use crate::common::seed::seed_arle;
 use crate::common::{create_test_client, create_test_pool};
@@ -14,6 +14,7 @@ async fn fetches_lore() -> Result<(), Box<dyn std::error::Error>> {
     seed_arle(&pool).await?;
 
     let expected_wiki_lore = WikiLore {
+        code: "201207".to_string(),
         ft: Some("異世界からぷよと一緒に飛ばされてきたとっても元気な魔導師のタマゴ。冒険が大好きで、アヤシイ洞窟や遺跡などを見かけると、つい入りたくなってしまう。".to_string()),
         fta: Some("A spirited, developing magician from another world who flew in alongside Puyo. She loves a good adventure, and whenever she sees a mysterious looking cave or ruins, she feels compelled to enter.".to_string()),
         ftc: Some("Translator\n[Kirub][1]\nEditor\nNone\n\n[1]: /wiki/User:Kirub".to_string()),
@@ -26,29 +27,35 @@ async fn fetches_lore() -> Result<(), Box<dyn std::error::Error>> {
     };
     let cache_string = serde_json::to_string(&expected_wiki_lore).unwrap();
     let _ = redis_conn
-        .set::<&str, String, Option<String>>(
-            &key,
-            cache_string.clone(),
-        )
+        .set::<&str, String, Option<String>>(&key, cache_string.clone())
         .await?;
 
-    let response = client
-        .get("/cards/201207/lore")
-        .send()
-        .await;
+    let response = client.get("/cards/201207/lore").send().await;
     response.assert_status(StatusCode::OK);
 
-    response.assert_json(Lore {
-        flavor_text_jp: expected_wiki_lore.ft.clone(),
-        flavor_text_en: expected_wiki_lore.fta.clone(),
-        monologue_lines: vec![
-            MonologueLine { jp: expected_wiki_lore.ft1, en: expected_wiki_lore.fta1 },
-            MonologueLine { jp: expected_wiki_lore.ft2, en: expected_wiki_lore.fta2 },
-            MonologueLine { jp: expected_wiki_lore.ft3, en: expected_wiki_lore.fta3 },
-        ],
-        translator: Some("Kirub".to_string()),
-        editor: None,
-    }).await;
+    response
+        .assert_json(Lore {
+            card_id: "201207".to_string(),
+            flavor_text_jp: expected_wiki_lore.ft.clone(),
+            flavor_text_en: expected_wiki_lore.fta.clone(),
+            monologue_lines: vec![
+                MonologueLine {
+                    jp: expected_wiki_lore.ft1,
+                    en: expected_wiki_lore.fta1,
+                },
+                MonologueLine {
+                    jp: expected_wiki_lore.ft2,
+                    en: expected_wiki_lore.fta2,
+                },
+                MonologueLine {
+                    jp: expected_wiki_lore.ft3,
+                    en: expected_wiki_lore.fta3,
+                },
+            ],
+            translator: Some("Kirub".to_string()),
+            editor: None,
+        })
+        .await;
 
     Ok(())
 }

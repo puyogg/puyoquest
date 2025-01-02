@@ -24,10 +24,16 @@ pub mod find_by_name_rarity;
 use find_by_name_rarity::{find_by_name_and_rarity, FindByNameAndRarityResponse};
 
 pub mod lore;
-use lore::{GetCardLoreResponse, get_card_lore};
+use lore::{get_card_lore, GetCardLoreResponse};
 
 pub mod full_art;
 use full_art::{get_full_art, GetFullArtResponse};
+
+mod random_cards;
+use random_cards::{random_cards, RandomCardsResponse};
+
+mod random_lore;
+use random_lore::random_lore;
 
 pub struct CardsRouter;
 
@@ -116,12 +122,7 @@ impl CardsRouter {
         wiki_client: Data<&wiki::wiki_client::WikiClient>,
         card_id: Path<String>,
     ) -> poem::Result<GetCardLoreResponse> {
-        get_card_lore(
-            &pool.0,
-            &redis_client.0, 
-            &wiki_client.0,
-            &card_id.0,
-        ).await
+        get_card_lore(&pool.0, &redis_client.0, &wiki_client.0, &card_id.0).await
     }
 
     /// Get card full art (all orientations)
@@ -142,13 +143,39 @@ impl CardsRouter {
             wiki_client.0,
             s3_client.0,
             &card_id.0,
-        ).await
+        )
+        .await
     }
 
-    // /// List random cards
-    // /// TODO: Set cache control
-    // #[oai(path = "/random", method = "get")]
-    // async fn random(&self) -> Result<()> {
-    //     todo!();
-    // }
+    /// List random cards
+    #[oai(path = "/random-card", method = "get")]
+    async fn random_card(
+        &self,
+        api_config: Data<&Arc<ApiConfig>>,
+        pool: Data<&PgPool>,
+        redis_client: Data<&Arc<RedisClient>>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+        s3_client: Data<&Arc<S3BackupClient>>,
+        #[oai(validator(minimum(value = "1"), maximum(value = "20")))] count: Query<i32>,
+    ) -> poem::Result<RandomCardsResponse> {
+        random_cards(
+            api_config.0,
+            pool.0,
+            redis_client.0,
+            wiki_client.0,
+            s3_client.0,
+            count.0,
+        )
+        .await
+    }
+
+    #[oai(path = "/random-lore", method = "get")]
+    async fn random_lore(
+        &self,
+        pool: Data<&PgPool>,
+        redis_client: Data<&Arc<RedisClient>>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+    ) -> poem::Result<GetCardLoreResponse> {
+        random_lore(pool.0, redis_client.0, wiki_client.0).await
+    }
 }
