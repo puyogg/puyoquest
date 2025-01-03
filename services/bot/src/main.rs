@@ -1,11 +1,12 @@
 use commands::{Data, Error};
+use dashmap::{DashMap, DashSet};
 use poise::{serenity_prelude as serenity, Framework};
 
-mod util;
 mod commands;
-mod env_config;
 mod embeds;
+mod env_config;
 mod interaction_router;
+mod util;
 
 #[tokio::main]
 async fn main() {
@@ -19,6 +20,7 @@ async fn main() {
     let commands = std::vec![
         commands::char_by_id::char_by_id(),
         commands::card::card(),
+        commands::whoselore::whoselore(),
     ];
 
     let framework: Framework<Data, Error> = poise::Framework::builder()
@@ -38,9 +40,7 @@ async fn main() {
                     serenity::GuildId::new(guild_id),
                 )
                 .await?;
-                Ok(Data {
-                    api_config,
-                })
+                Ok(Data { api_config, active_lore_game: DashSet::new(), lore_score: DashMap::new() })
             })
         })
         .build();
@@ -61,11 +61,11 @@ async fn event_handler(
     match event {
         serenity::FullEvent::Ready { data_about_bot, .. } => {
             println!("Logged in as {}", data_about_bot.user.name);
-        },
+        }
         serenity::FullEvent::InteractionCreate { interaction } => {
             interaction_router::interaction_router(ctx, data, interaction).await?;
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     Ok(())

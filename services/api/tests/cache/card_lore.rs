@@ -24,6 +24,7 @@ async fn fetches_lore_from_wiki_real() -> IntTestResult {
     assert_eq!(
         lore,
         WikiLore {
+            code: "402207".to_string(),
             ft: Some("さまざまな世界を旅して まわっている「時空の旅人」。 怒らせるとちょっとコワイ。".to_string()),
             fta: Some("A \"space-time traveler\" who travels around various worlds. He becomes a bit scary when agitated.".to_string()),
             ftc: Some("Translator\n[Beachedking][1]\nEditor\n[Pi][2]\n\n[1]: /wiki/User:Beachedking\n[2]: /wiki/User:Pi".to_string()),
@@ -71,6 +72,7 @@ async fn fetches_lore_from_wiki_multiple_translators_real() -> IntTestResult {
     assert_eq!(
         lore,
         WikiLore {
+            code: "241207".to_string(),
             ft: Some("さまざまな世界を旅して まわっている「時空の旅人」。 怒らせるとちょっとコワイ。".to_string()),
             fta: Some("A \"space-time traveler\" who travels around various worlds. He becomes a bit scary when agitated.".to_string()),
             ftc: Some("Translator\n[Beachedking][1]\nEditor\n[Pi][2]\n\n[1]: /wiki/User:Beachedking\n[2]: /wiki/User:Pi".to_string()),
@@ -88,16 +90,13 @@ async fn fetches_lore_from_wiki_multiple_translators_real() -> IntTestResult {
 
 #[tokio::test]
 async fn fetches_lore_from_cache() -> IntTestResult {
-    let (_, _, redis_client, wiki_client, _, ..) = create_test_client(
-        "N/A",
-        "N/A",
-    )
-    .await?;
+    let (_, _, redis_client, wiki_client, _, ..) = create_test_client("N/A", "N/A").await?;
 
     let mut redis_conn = redis_client.conn.clone();
     let key = redis_client.prefixed(&format!("lore:402207"));
 
     let expected_wiki_lore = WikiLore {
+        code: "402207".to_string(),
         ft: Some("さまざまな世界を旅して まわっている「時空の旅人」。 怒らせるとちょっとコワイ。".to_string()),
         fta: Some("A \"space-time traveler\" who travels around various worlds. He becomes a bit scary when agitated.".to_string()),
         ftc: Some("Translator\n[Beachedking][1]\nEditor\n[Pi][2]\n\n[1]: /wiki/User:Beachedking\n[2]: /wiki/User:Pi".to_string()),
@@ -111,17 +110,10 @@ async fn fetches_lore_from_cache() -> IntTestResult {
     let cache_string = serde_json::to_string(&expected_wiki_lore).unwrap();
 
     let _ = redis_conn
-        .set::<&str, String, Option<String>>(
-            &key,
-            cache_string.clone(),
-        )
+        .set::<&str, String, Option<String>>(&key, cache_string.clone())
         .await?;
 
-    let wiki_lore = card_lore_data(
-        &redis_client,
-        &wiki_client,
-        "402207",
-    ).await?;
+    let wiki_lore = card_lore_data(&redis_client, &wiki_client, "402207").await?;
 
     assert_eq!(wiki_lore, expected_wiki_lore);
 

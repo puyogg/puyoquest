@@ -4,6 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**card_id** | **String** |  | 
 **flavor_text_jp** | Option<**String**> |  | [optional]
 **flavor_text_en** | Option<**String**> |  | [optional]
 **monologue_lines** | [**Vec<models::MonologueLine>**](MonologueLine.md) |  | 
