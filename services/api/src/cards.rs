@@ -194,6 +194,6 @@ impl CardsRouter {
     ) {
         let categories = categories.0;
 
-
+        todo!();
     }
 }
