@@ -28,6 +28,9 @@ pub use character_card_ids::*;
 mod all_ppq_categories;
 pub use all_ppq_categories::*;
 
+mod category_members;
+pub use category_members::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
