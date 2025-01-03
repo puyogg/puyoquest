@@ -1,4 +1,5 @@
 use commands::{Data, Error};
+use dashmap::{DashMap, DashSet};
 use poise::{serenity_prelude as serenity, Framework};
 
 mod commands;
@@ -39,7 +40,7 @@ async fn main() {
                     serenity::GuildId::new(guild_id),
                 )
                 .await?;
-                Ok(Data { api_config })
+                Ok(Data { api_config, active_lore_game: DashSet::new(), lore_score: DashMap::new() })
             })
         })
         .build();
