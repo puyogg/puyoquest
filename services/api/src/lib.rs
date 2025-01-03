@@ -16,12 +16,13 @@ pub mod api_tag;
 pub mod aws;
 pub mod cache;
 pub mod cards;
+pub mod categories;
 pub mod characters;
 pub mod config;
 pub mod db;
+pub mod env_config;
 pub mod healthcheck;
 pub mod util;
-pub mod env_config;
 
 pub type Api = poem::middleware::AddDataEndpoint<
     poem::middleware::AddDataEndpoint<

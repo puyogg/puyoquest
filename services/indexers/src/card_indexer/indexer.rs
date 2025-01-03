@@ -199,7 +199,6 @@ impl Indexer {
             Some(l) => l,
             None => format!("{}/★{}", name.clone(), rarity.clone()),
         };
-        let link_name = link_name.replace(" ", "_");
 
         let card_create = CardCreate {
             card_id: card_id.to_string(),

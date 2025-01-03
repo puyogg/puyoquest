@@ -29,6 +29,8 @@ use lore::{GetCardLoreResponse, get_card_lore};
 pub mod full_art;
 use full_art::{get_full_art, GetFullArtResponse};
 
+pub mod category_search;
+
 pub struct CardsRouter;
 
 #[OpenApi(prefix_path = "/cards", tag = "ApiTag::Cards")]
@@ -143,6 +145,22 @@ impl CardsRouter {
             s3_client.0,
             &card_id.0,
         ).await
+    }
+
+    #[oai(path = "/category_search", method = "get")]
+    async fn category_search(
+        &self,
+        api_config: Data<&Arc<ApiConfig>>,
+        pool: Data<&PgPool>,
+        redis_client: Data<&Arc<RedisClient>>,
+        wiki_client: Data<&wiki::wiki_client::WikiClient>,
+        s3_client: Data<&Arc<S3BackupClient>>,
+        id: Path<String>,
+        categories: Query<Vec<String>>,
+    ) {
+        let categories = categories.0;
+
+
     }
 
     // /// List random cards

@@ -6,4 +6,5 @@ pub enum ApiTag {
     Characters,
     Healthcheck,
     Aliases,
+    Categories,
 }
