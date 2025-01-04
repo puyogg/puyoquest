@@ -5,7 +5,7 @@ lazy_static::lazy_static! {
     static ref RE_STAR: Regex = Regex::new(r"☆").unwrap();
 
     // e.g. Santa Ringo/★6S
-    static ref RE_RARITY_SUFFIX: Regex = Regex::new(r"\/★.*").unwrap();
+    pub static ref RE_RARITY_SUFFIX: Regex = Regex::new(r"\/★.*").unwrap();
 
     static ref RE_SPECIAL_CHARACTERS: Regex = Regex::new(r"[\u0300-\u036f]").unwrap();
     static ref RE_MULTIWHITESPACE: Regex = Regex::new(r"\s\s+").unwrap();

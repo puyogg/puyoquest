@@ -30,6 +30,7 @@ pub mod full_art;
 use full_art::{get_full_art, GetFullArtResponse};
 
 pub mod category_search;
+use category_search::{category_search, CategorySearchResponse};
 
 mod random_cards;
 use random_cards::{random_cards, RandomCardsResponse};
@@ -181,7 +182,7 @@ impl CardsRouter {
         random_lore(pool.0, redis_client.0, wiki_client.0).await
     }
 
-    #[oai(path = "/category_search", method = "get")]
+    #[oai(path = "/category-search", method = "get")]
     async fn category_search(
         &self,
         api_config: Data<&Arc<ApiConfig>>,
@@ -189,11 +190,18 @@ impl CardsRouter {
         redis_client: Data<&Arc<RedisClient>>,
         wiki_client: Data<&wiki::wiki_client::WikiClient>,
         s3_client: Data<&Arc<S3BackupClient>>,
-        id: Path<String>,
-        categories: Query<Vec<String>>,
-    ) {
+        #[oai(validator(min_items = "1", max_items = "5"))] categories: Query<Vec<String>>,
+    ) -> poem::Result<CategorySearchResponse> {
         let categories = categories.0;
 
-        todo!();
+        category_search(
+            api_config.0,
+            pool.0,
+            redis_client.0,
+            wiki_client.0,
+            s3_client.0,
+            &categories,
+        )
+        .await
     }
 }

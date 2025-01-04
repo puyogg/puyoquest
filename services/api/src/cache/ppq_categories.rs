@@ -25,7 +25,6 @@ pub async fn ppq_categories(wiki_client: &WikiClient) -> Result<Vec<Category>, p
     let categories = match categories {
         Some(c) => c,
         None => {
-            println!("Fetching categories from wiki.");
             wiki_client
                 .all_ppq_categories()
                 .await
