@@ -37,6 +37,7 @@ Class | Method | HTTP request | Description
 *CardsApi* | [**cards_post**](docs/CardsApi.md#cards_post) | **POST** /cards | Upsert card data (admins only)
 *CardsApi* | [**cards_random_card_get**](docs/CardsApi.md#cards_random_card_get) | **GET** /cards/random-card | List random cards
 *CardsApi* | [**cards_random_lore_get**](docs/CardsApi.md#cards_random_lore_get) | **GET** /cards/random-lore | 
+*CategoriesApi* | [**categories_get**](docs/CategoriesApi.md#categories_get) | **GET** /categories | 
 *CharactersApi* | [**characters_get**](docs/CharactersApi.md#characters_get) | **GET** /characters | Find by alias or category
 *CharactersApi* | [**characters_id_aliases_get**](docs/CharactersApi.md#characters_id_aliases_get) | **GET** /characters/{id}/aliases | 
 *CharactersApi* | [**characters_id_cards_get**](docs/CharactersApi.md#characters_id_cards_get) | **GET** /characters/{id}/cards | 

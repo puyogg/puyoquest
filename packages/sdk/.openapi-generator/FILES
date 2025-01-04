@@ -13,6 +13,7 @@ docs/CardTemplateData.md
 docs/CardType.md
 docs/CardsAndMaterials.md
 docs/CardsApi.md
+docs/CategoriesApi.md
 docs/Character.md
 docs/CharacterCreate.md
 docs/CharactersApi.md
@@ -25,6 +26,7 @@ docs/NotFoundReasonEnum.md
 git_push.sh
 src/apis/aliases_api.rs
 src/apis/cards_api.rs
+src/apis/categories_api.rs
 src/apis/characters_api.rs
 src/apis/configuration.rs
 src/apis/healthcheck_api.rs
