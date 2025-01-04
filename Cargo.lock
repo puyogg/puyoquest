@@ -143,6 +143,7 @@ dependencies = [
  "html2text 0.13.2",
  "lazy_static",
  "moka",
+ "num",
  "openssl",
  "poem",
  "poem-openapi",

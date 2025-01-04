@@ -1,8 +1,9 @@
 use dashmap::{DashMap, DashSet};
 use sdk::apis::configuration::Configuration;
 
-pub mod char_by_id;
 pub mod card;
+pub mod categorysearch;
+pub mod char_by_id;
 pub mod whoselore;
 
 #[allow(unused)]
