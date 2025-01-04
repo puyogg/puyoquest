@@ -51,6 +51,7 @@ pub fn init_api(
             characters::CharactersRoute,
             cards::CardsRouter,
             aliases::AliasesRouter,
+            categories::CategoriesRouter,
         ),
         "PPQ API",
         "0.1.0",

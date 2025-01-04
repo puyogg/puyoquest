@@ -8,7 +8,7 @@ use poem_openapi::{
 use utils::normalize_name;
 use wiki::wiki_client::WikiClient;
 
-pub struct Categories;
+pub struct CategoriesRouter;
 
 #[derive(ApiResponse)]
 enum CategoryListResponse {
@@ -20,7 +20,7 @@ enum CategoryListResponse {
 }
 
 #[OpenApi(prefix_path = "/categories", tag = "ApiTag::Categories")]
-impl Categories {
+impl CategoriesRouter {
     #[oai(path = "/", method = "get")]
     async fn list(
         &self,
