@@ -19,12 +19,11 @@ use super::{Error, configuration};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum CategoriesGetError {
-    Status400(String),
     UnknownValue(serde_json::Value),
 }
 
 
-pub async fn categories_get(configuration: &configuration::Configuration, starts_with: &str) -> Result<Vec<String>, Error<CategoriesGetError>> {
+pub async fn categories_get(configuration: &configuration::Configuration, name: &str, limit: Option<i32>, exact: Option<bool>) -> Result<Vec<String>, Error<CategoriesGetError>> {
     let local_var_configuration = configuration;
 
     let local_var_client = &local_var_configuration.client;
@@ -32,7 +31,13 @@ pub async fn categories_get(configuration: &configuration::Configuration, starts
     let local_var_uri_str = format!("{}/categories", local_var_configuration.base_path);
     let mut local_var_req_builder = local_var_client.request(reqwest::Method::GET, local_var_uri_str.as_str());
 
-    local_var_req_builder = local_var_req_builder.query(&[("starts_with", &starts_with.to_string())]);
+    local_var_req_builder = local_var_req_builder.query(&[("name", &name.to_string())]);
+    if let Some(ref local_var_str) = limit {
+        local_var_req_builder = local_var_req_builder.query(&[("limit", &local_var_str.to_string())]);
+    }
+    if let Some(ref local_var_str) = exact {
+        local_var_req_builder = local_var_req_builder.query(&[("exact", &local_var_str.to_string())]);
+    }
     if let Some(ref local_var_user_agent) = local_var_configuration.user_agent {
         local_var_req_builder = local_var_req_builder.header(reqwest::header::USER_AGENT, local_var_user_agent.clone());
     }

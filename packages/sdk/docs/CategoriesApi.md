@@ -10,7 +10,7 @@ Method | HTTP request | Description
 
 ## categories_get
 
-> Vec<String> categories_get(starts_with)
+> Vec<String> categories_get(name, limit, exact)
 
 
 ### Parameters
@@ -18,7 +18,9 @@ Method | HTTP request | Description
 
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
-**starts_with** | **String** |  | [required] |
+**name** | **String** |  | [required] |
+**limit** | Option<**i32**> |  |  |[default to 10]
+**exact** | Option<**bool**> |  |  |[default to false]
 
 ### Return type
 
@@ -31,7 +33,7 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json; charset=utf-8, text/plain; charset=utf-8
+- **Accept**: application/json; charset=utf-8
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
