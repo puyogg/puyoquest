@@ -1,7 +1,9 @@
+use aws::AwsClient;
 use commands::{Data, Error};
 use dashmap::{DashMap, DashSet};
 use poise::{serenity_prelude as serenity, Framework};
 
+mod aws;
 mod commands;
 mod embeds;
 mod env_config;
@@ -16,6 +18,8 @@ async fn main() {
     let env = &*env_config::ENV;
     let guild_id = env.primary_server_id.clone();
     let api_config = (&*env_config::API_CONFIG).clone();
+    let sdk_config = aws_config::from_env().load().await;
+    let aws_client = AwsClient::new(sdk_config);
 
     let commands = std::vec![
         commands::char_by_id::char_by_id(),
@@ -41,7 +45,7 @@ async fn main() {
                     serenity::GuildId::new(guild_id),
                 )
                 .await?;
-                Ok(Data { api_config, active_lore_game: DashSet::new(), lore_score: DashMap::new() })
+                Ok(Data { api_config, aws_client, active_lore_game: DashSet::new(), lore_score: DashMap::new() })
             })
         })
         .build();

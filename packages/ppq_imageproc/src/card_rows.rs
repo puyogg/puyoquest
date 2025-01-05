@@ -5,6 +5,7 @@ use std::io::Cursor;
 pub enum CardRowsError {
     IoCursorError(std::io::Error),
     ImageDecodeError(ImageError),
+    PngConversionError(ImageError),
 }
 
 impl std::error::Error for CardRowsError {}
@@ -13,6 +14,7 @@ impl std::fmt::Display for CardRowsError {
         match self {
             Self::IoCursorError(error) => error.fmt(f),
             Self::ImageDecodeError(error) => error.fmt(f),
+            Self::PngConversionError(error) => error.fmt(f),
         }
     }
 }
@@ -23,7 +25,7 @@ pub fn card_rows(
     card_height: u32,
     columns: u32,
     icons: Vec<&[u8]>,
-) -> Result<ImageBuffer<Rgba<u8>, Vec<u8>>, CardRowsError> {
+) -> Result<Vec<u8>, CardRowsError> {
     let rows = icons.len() as f64 / f64::from(columns);
     let rows = rows.ceil() as u32;
 
@@ -47,7 +49,12 @@ pub fn card_rows(
         canvas.copy_from(&image, x, y).ok();
     }
 
-    Ok(canvas)
+    let mut png: Vec<u8> = Vec::new();
+    canvas
+        .write_to(&mut Cursor::new(&mut png), image::ImageFormat::Png)
+        .map_err(CardRowsError::PngConversionError)?;
+
+    Ok(png)
 }
 
 #[cfg(test)]
@@ -63,8 +70,9 @@ mod tests {
         }
 
         let output = card_rows(192, 192, 4, images).unwrap();
-        output
-            .save("./sample_output/test_creates_image.png")
-            .unwrap();
+        // output
+        //     .save("./sample_output/test_creates_image.png")
+        //     .unwrap();
+        std::fs::write("arles.png", output).unwrap();
     }
 }
