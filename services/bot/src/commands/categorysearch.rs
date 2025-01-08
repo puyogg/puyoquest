@@ -192,7 +192,7 @@ enum CardLinkEmbed {
 }
 
 fn card_links(cards: &Vec<Card>) -> CardLinkEmbed {
-    let mut markdown_links = cards
+    let markdown_links = cards
         .iter()
         .map(|c| {
             let name = c.link_name.replace("/★7", "");
@@ -210,7 +210,7 @@ fn card_links(cards: &Vec<Card>) -> CardLinkEmbed {
     for link in markdown_links {
         let length_to_add = 1 + link.len();
         if length_to_add + current_embed_content.len() > 4000 {
-            let embed = CreateEmbed::default().description(current_embed_content.trim().clone());
+            let embed = CreateEmbed::default().description(current_embed_content.trim());
             embeds.push(embed);
             current_embed_content = String::from("");
         }
@@ -218,7 +218,7 @@ fn card_links(cards: &Vec<Card>) -> CardLinkEmbed {
         current_embed_content.push_str(&format!(" {}", link));
     }
     if current_embed_content.len() > 0 {
-        let embed = CreateEmbed::default().description(current_embed_content.trim().clone());
+        let embed = CreateEmbed::default().description(current_embed_content.trim());
         embeds.push(embed);
     }
 

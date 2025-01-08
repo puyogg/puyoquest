@@ -31,6 +31,9 @@ pub use all_ppq_categories::*;
 mod category_members;
 pub use category_members::*;
 
+mod fetch_monthly_events;
+pub use fetch_monthly_events::*;
+
 #[derive(Clone)]
 pub struct WikiClient {
     client: reqwest::Client,
