@@ -4,5 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ab_glyph = "0.2.23"
+hyphenation = "0.8.4"
 image = "~0.25.5"
 imageproc = "~0.25.0"
+textwrap = { version = "~0.16", features = ["hyphenation"] }
