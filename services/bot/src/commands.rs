@@ -7,6 +7,7 @@ pub mod card;
 pub mod categorysearch;
 pub mod char_by_id;
 pub mod whoselore;
+pub mod incorrect_quote;
 
 #[allow(unused)]
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
