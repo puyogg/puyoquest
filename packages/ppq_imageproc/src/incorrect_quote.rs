@@ -33,6 +33,7 @@ impl std::fmt::Display for IncorrectQuoteError {
     }
 }
 
+#[derive(Clone, Copy)]
 pub enum IconSide {
     LEFT,
     RIGHT,

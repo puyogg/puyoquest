@@ -26,6 +26,7 @@ async fn main() {
         commands::card::card(),
         commands::whoselore::whoselore(),
         commands::categorysearch::categorysearch(),
+        commands::incorrect_quote::iq(),
     ];
 
     let framework: Framework<Data, Error> = poise::Framework::builder()

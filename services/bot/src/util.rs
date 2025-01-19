@@ -9,3 +9,6 @@ pub use set_embed_card_color::set_embed_card_color;
 
 mod fetch_character;
 pub use fetch_character::*;
+
+mod pn_url_to_s3_key;
+pub use pn_url_to_s3_key::*;
