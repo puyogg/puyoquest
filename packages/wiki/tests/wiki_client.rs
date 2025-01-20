@@ -4,6 +4,7 @@ mod wiki_client {
     mod category_members;
     mod character_card_ids;
     mod fetch_character_series;
+    mod fetch_monthly_events;
     mod fetch_raw_template;
     mod fetch_template;
     mod image_url;
