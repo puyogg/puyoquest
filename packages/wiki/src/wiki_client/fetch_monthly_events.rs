@@ -112,13 +112,13 @@ pub enum PpqEventType {
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct PpqEvent {
-    icon: String,
-    r#type: PpqEventType,
-    start: Option<DateTime<Tz>>,
-    end: Option<DateTime<Tz>>,
-    name: Option<String>,
-    link: Option<String>,
-    jp_name: Option<String>,
+    pub icon: String,
+    pub r#type: PpqEventType,
+    pub start: Option<DateTime<Tz>>,
+    pub end: Option<DateTime<Tz>>,
+    pub name: Option<String>,
+    pub link: Option<String>,
+    pub jp_name: Option<String>,
 }
 
 fn parse_monthly_event_template(template: &str) -> Vec<PpqEvent> {

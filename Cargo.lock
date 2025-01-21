@@ -138,6 +138,7 @@ dependencies = [
  "aws-sdk-s3",
  "aws-sdk-ssm",
  "chrono",
+ "chrono-tz",
  "fancy-regex 0.13.0",
  "futures",
  "html2text 0.13.2",

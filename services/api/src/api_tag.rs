@@ -7,4 +7,5 @@ pub enum ApiTag {
     Healthcheck,
     Aliases,
     Categories,
+    Events,
 }

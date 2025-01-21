@@ -21,6 +21,7 @@ pub mod characters;
 pub mod config;
 pub mod db;
 pub mod env_config;
+pub mod events;
 pub mod healthcheck;
 pub mod util;
 
@@ -52,6 +53,7 @@ pub fn init_api(
             cards::CardsRouter,
             aliases::AliasesRouter,
             categories::CategoriesRouter,
+            events::EventsRouter,
         ),
         "PPQ API",
         "0.1.0",
