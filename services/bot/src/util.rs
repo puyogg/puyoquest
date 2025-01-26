@@ -12,3 +12,6 @@ pub use fetch_character::*;
 
 mod pn_url_to_s3_key;
 pub use pn_url_to_s3_key::*;
+
+mod placeholder_card_icon;
+pub use placeholder_card_icon::PLACEHOLDER_CARD_ICON;

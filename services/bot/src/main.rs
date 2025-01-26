@@ -27,6 +27,7 @@ async fn main() {
         commands::whoselore::whoselore(),
         commands::categorysearch::categorysearch(),
         commands::incorrect_quote::iq(),
+        commands::ppq_events::ppqevents(),
     ];
 
     let framework: Framework<Data, Error> = poise::Framework::builder()

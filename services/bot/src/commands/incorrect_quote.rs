@@ -9,13 +9,11 @@ use ppq_imageproc::IconSide;
 use sdk::apis::{cards_api, characters_api};
 use sdk::models::Card;
 
-use crate::util;
+use crate::util::{self, PLACEHOLDER_CARD_ICON};
 use crate::util::parse_card_query::{parse_alias_and_rarity, AliasAndRarityQuery};
 use crate::util::sort_rarity::sort_rarity;
 
 use super::{Context, Data, Error};
-
-const PLACEHOLDER_ICON: &'static [u8] = include_bytes!("../images/Img000000.png");
 
 enum LookupError {
     AliasNotFound(String),
@@ -299,12 +297,12 @@ async fn resolve_icon(
                     let icon = match key {
                         Some(k) => s3::get_object(&s3_client, &s3::IMAGE_CACHE_BUCKET_NAME, &k)
                             .await
-                            .unwrap_or(Bytes::from_static(PLACEHOLDER_ICON)),
-                        None => Bytes::from_static(PLACEHOLDER_ICON),
+                            .unwrap_or(Bytes::from_static(PLACEHOLDER_CARD_ICON)),
+                        None => Bytes::from_static(PLACEHOLDER_CARD_ICON),
                     };
                     icon
                 }
-                None => Bytes::from_static(PLACEHOLDER_ICON),
+                None => Bytes::from_static(PLACEHOLDER_CARD_ICON),
             };
 
             return Ok((icon, icon_side, icon_type, quote, Some(c)));
@@ -362,15 +360,15 @@ async fn resolve_icon(
                     let icon = match key {
                         Some(k) => s3::get_object(&s3_client, &s3::IMAGE_CACHE_BUCKET_NAME, &k)
                             .await
-                            .unwrap_or(Bytes::from_static(PLACEHOLDER_ICON)),
-                        None => Bytes::from_static(PLACEHOLDER_ICON),
+                            .unwrap_or(Bytes::from_static(PLACEHOLDER_CARD_ICON)),
+                        None => Bytes::from_static(PLACEHOLDER_CARD_ICON),
                     };
                     icon
                 }
-                None => Bytes::from_static(PLACEHOLDER_ICON),
+                None => Bytes::from_static(PLACEHOLDER_CARD_ICON),
             }
         }
-        None => Bytes::from_static(PLACEHOLDER_ICON),
+        None => Bytes::from_static(PLACEHOLDER_CARD_ICON),
     };
 
     let rarest_card = rarest_card.cloned();

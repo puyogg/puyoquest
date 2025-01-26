@@ -1,18 +1,16 @@
-use std::future::IntoFuture;
 use std::sync::Arc;
 
 use crate::env_config::ENV;
 use crate::{api_tag::ApiTag, aws::s3::S3BackupClient, cache::RedisClient, config::ApiConfig};
-use chrono::{DateTime, TimeZone, Utc};
-use chrono_tz::{Japan, Tz};
-use futures::{StreamExt, TryFutureExt};
+use chrono::{DateTime, Utc};
+use futures::StreamExt;
 use poem::{error::InternalServerError, web::Data};
-use poem_openapi::{param::Query, payload::Json, ApiResponse, Enum, Object, OpenApi};
+use poem_openapi::{payload::Json, ApiResponse, Enum, Object, OpenApi};
 use serde::Serialize;
 use sqlx::PgPool;
-use wiki::wiki_client::{FetchMonthlyEvents, FetchMonthlyEventsError, WikiClient};
+use wiki::wiki_client::{FetchMonthlyEvents, WikiClient};
 
-use crate::cache::{card_icons, CardIconUrls};
+use crate::cache::card_icons;
 use crate::cards;
 
 pub struct EventsRouter;
@@ -23,6 +21,7 @@ pub struct EventsRouter;
 pub enum EventType {
     GuildRush,
     LimitedStory,
+    BingoArena,
     Collection,
     Tournament,
     StoryQuest,
@@ -37,6 +36,7 @@ impl From<wiki::wiki_client::PpqEventType> for EventType {
         match value {
             wiki::wiki_client::PpqEventType::GuildRush => EventType::GuildRush,
             wiki::wiki_client::PpqEventType::LimitedStory => EventType::LimitedStory,
+            wiki::wiki_client::PpqEventType::BingoArena => EventType::BingoArena,
             wiki::wiki_client::PpqEventType::Collection => EventType::Collection,
             wiki::wiki_client::PpqEventType::Tournament => EventType::Tournament,
             wiki::wiki_client::PpqEventType::StoryQuest => EventType::StoryQuest,
@@ -60,10 +60,18 @@ pub struct PpqEvent {
     pub jp_name: Option<String>,
 }
 
+#[derive(Debug, Clone, Object)]
+pub struct PpqEventSchedule {
+    pub fetched_at: DateTime<Utc>,
+    pub upcoming: Vec<PpqEvent>,
+    pub ongoing: Vec<PpqEvent>,
+    pub other: Vec<PpqEvent>,
+}
+
 #[derive(ApiResponse)]
 enum EventListResponse {
     #[oai(status = 200)]
-    EventList(Json<Vec<PpqEvent>>),
+    EventList(Json<PpqEventSchedule>),
 }
 
 #[OpenApi(prefix_path = "/events", tag = "ApiTag::Events")]
@@ -84,6 +92,8 @@ impl EventsRouter {
         let image_base_url = api_config.0.get_image_cache_domain().await?;
         let pn_base_url = ENV.pn_wiki_base_url.clone();
 
+        let now = Utc::now();
+
         let events = wiki_client
             .monthly_events()
             .await
@@ -97,6 +107,7 @@ impl EventsRouter {
                 s3_client,
                 &image_base_url,
                 &pn_base_url,
+                &now,
                 event,
             )
         });
@@ -110,7 +121,32 @@ impl EventsRouter {
             .flatten()
             .collect::<Vec<PpqEvent>>();
 
-        Ok(EventListResponse::EventList(Json(events)))
+        let mut upcoming: Vec<PpqEvent> = Vec::new();
+        let mut ongoing: Vec<PpqEvent> = Vec::new();
+        let mut other: Vec<PpqEvent> = Vec::new();
+        for event in events {
+            if let Some(start) = &event.start {
+                if start > &now {
+                    upcoming.push(event);
+                    continue;
+                }
+            }
+            if let Some(end) = &event.end {
+                if end > &now {
+                    ongoing.push(event);
+                    continue;
+                }
+            }
+            other.push(event);
+        }
+
+        let schedule = PpqEventSchedule {
+            fetched_at: now,
+            upcoming,
+            ongoing,
+            other,
+        };
+        Ok(EventListResponse::EventList(Json(schedule)))
     }
 }
 
@@ -121,12 +157,41 @@ async fn map_wiki_event(
     s3_client: &S3BackupClient,
     image_base_url: &str,
     pn_base_url: &str,
+    now: &DateTime<Utc>,
     event: wiki::wiki_client::PpqEvent,
 ) -> poem::Result<Option<PpqEvent>> {
-    let remaining_seconds = match (&event.start, &event.end) {
+    // need to distinguish between events that start before or after now
+    let remaining_seconds: Option<i64> = match (&event.start, &event.end) {
         (Some(start), Some(end)) => {
-            let diff = end.to_utc() - start.to_utc();
-            Some(diff.num_seconds())
+            let start = start.to_utc();
+            let end = end.to_utc();
+            if start > *now {
+                let diff = start - now;
+                Some(diff.num_seconds())
+            } else if end > *now {
+                let diff = end - now;
+                Some(diff.num_seconds())
+            } else {
+                None
+            }
+        }
+        (Some(start), None) => {
+            let start = start.to_utc();
+            if start > *now {
+                let diff = start - now;
+                Some(diff.num_seconds())
+            } else {
+                None
+            }
+        }
+        (None, Some(end)) => {
+            let end = end.to_utc();
+            if end > *now {
+                let diff = end - now;
+                Some(diff.num_seconds())
+            } else {
+                None
+            }
         }
         _ => None,
     };
@@ -145,15 +210,17 @@ async fn map_wiki_event(
     }
 
     let card = cards::get_by_id::query_get_by_id(pool, &event.icon).await?;
-    let card = match card {
-        Some(c) => c,
-        None => return Ok(None),
+
+    let icon_url = match card {
+        None => None,
+        Some(card) => {
+            let icon_urls = card_icons(redis_client, wiki_client, s3_client, image_base_url, &card).await?;
+            icon_urls.normal
+        }
     };
 
-    let icon_urls = card_icons(redis_client, wiki_client, s3_client, image_base_url, &card).await?;
-
     let mapped_event = PpqEvent {
-        icon_url: icon_urls.normal,
+        icon_url,
         event_type: EventType::from(event.r#type),
         start: event.start.map(|d| d.to_utc()),
         end: event.end.map(|d| d.to_utc()),

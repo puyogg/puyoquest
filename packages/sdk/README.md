@@ -43,6 +43,7 @@ Class | Method | HTTP request | Description
 *CharactersApi* | [**characters_id_cards_get**](docs/CharactersApi.md#characters_id_cards_get) | **GET** /characters/{id}/cards | 
 *CharactersApi* | [**characters_id_get**](docs/CharactersApi.md#characters_id_get) | **GET** /characters/{id} | TODO: Option to refresh index
 *CharactersApi* | [**characters_id_put**](docs/CharactersApi.md#characters_id_put) | **PUT** /characters/{id} | Create a character or update one if it already exists
+*EventsApi* | [**events_get**](docs/EventsApi.md#events_get) | **GET** /events | 
 *HealthcheckApi* | [**healthcheck_get**](docs/HealthcheckApi.md#healthcheck_get) | **GET** /healthcheck | 
 
 
@@ -61,10 +62,13 @@ Class | Method | HTTP request | Description
  - [Character](docs/Character.md)
  - [CharacterCreate](docs/CharacterCreate.md)
  - [DeleteCount](docs/DeleteCount.md)
+ - [EventType](docs/EventType.md)
  - [Lore](docs/Lore.md)
  - [MonologueLine](docs/MonologueLine.md)
  - [NotFoundReason](docs/NotFoundReason.md)
  - [NotFoundReasonEnum](docs/NotFoundReasonEnum.md)
+ - [PpqEvent](docs/PpqEvent.md)
+ - [PpqEventSchedule](docs/PpqEventSchedule.md)
 
 
 To get access to the crate's generated documentation, use:

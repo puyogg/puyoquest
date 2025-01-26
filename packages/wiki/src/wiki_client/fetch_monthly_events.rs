@@ -100,6 +100,7 @@ pub static RE_NO_INCLUDE: LazyLock<Regex> =
 #[derive(Debug, PartialEq, Eq)]
 pub enum PpqEventType {
     GuildRush,
+    BingoArena,
     LimitedStory,
     Collection,
     Tournament,
@@ -108,6 +109,23 @@ pub enum PpqEventType {
     Hunting,
     Treasure,
     Unknown,
+}
+
+impl From<&str> for PpqEventType {
+    fn from(value: &str) -> Self {
+        match value {
+            "gr" => PpqEventType::GuildRush,
+            "ba" => PpqEventType::BingoArena,
+            "ls" => PpqEventType::LimitedStory,
+            "cl" => PpqEventType::Collection,
+            "put" => PpqEventType::Tournament,
+            "sq" => PpqEventType::StoryQuest,
+            "int" => PpqEventType::Intrusion,
+            "hunt" => PpqEventType::Hunting,
+            "thb" => PpqEventType::Treasure,
+            _ => PpqEventType::Unknown,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -163,10 +181,7 @@ fn parse_monthly_event_template(template: &str) -> Vec<PpqEvent> {
                     .unwrap_or(String::from("000000")),
                 r#type: match value.get("type") {
                     Some(t) => match t.as_str() {
-                        Some(t) => match t {
-                            "gr" => PpqEventType::GuildRush,
-                            _ => PpqEventType::Unknown,
-                        },
+                        Some(t) => PpqEventType::from(t),
                         None => PpqEventType::Unknown,
                     },
                     None => PpqEventType::Unknown,

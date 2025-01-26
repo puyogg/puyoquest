@@ -94,6 +94,7 @@ pub mod aliases_api;
 pub mod cards_api;
 pub mod categories_api;
 pub mod characters_api;
+pub mod events_api;
 pub mod healthcheck_api;
 
 pub mod configuration;
