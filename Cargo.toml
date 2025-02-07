@@ -8,5 +8,6 @@ members = [
   "packages/utils",
   "packages/ppq_imageproc",
   "services/indexers",
+  "packages/wiki_indexers", "packages/discord_logger",
 ]
 resolver = "2"
