@@ -1,7 +1,7 @@
 use std::sync::mpsc::{self, Receiver, Sender};
 use std::{str::FromStr, sync::LazyLock};
 
-use log::Level;
+pub use log::Level;
 use serde_json::{json, Value};
 use std::time::Duration;
 use ureq::Agent;
@@ -10,23 +10,29 @@ static RUST_LOG: LazyLock<Option<String>> = LazyLock::new(|| std::env::var("RUST
 
 pub struct DiscordLogger {
     sender: Sender<Value>,
+    log_level: Level,
 }
 
 impl DiscordLogger {
+    /// Uses the RUST_LOG environment variable if it exists. Falls back to Level::Info if not.
     pub fn new(sender: Sender<Value>) -> DiscordLogger {
-        DiscordLogger { sender }
-    }
-}
-
-impl log::Log for DiscordLogger {
-    fn enabled(&self, metadata: &log::Metadata) -> bool {
         let log_level = RUST_LOG
             .as_ref()
             .map(|l| Level::from_str(&l).ok())
             .flatten()
             .unwrap_or(Level::Info);
 
-        metadata.level() <= log_level
+        DiscordLogger { sender, log_level }
+    }
+
+    pub fn with_level(sender: Sender<Value>, log_level: Level) -> DiscordLogger {
+        DiscordLogger { sender, log_level }
+    }
+}
+
+impl log::Log for DiscordLogger {
+    fn enabled(&self, metadata: &log::Metadata) -> bool {
+        metadata.level() <= self.log_level
     }
 
     fn log(&self, record: &log::Record) {
@@ -88,6 +94,9 @@ impl DiscordLogListener {
     }
 }
 
+/// Creates a DiscordLogger for the log create.
+/// You can put the DiscordLogListener in an Arc<Mutex<>> to move the
+/// listener to a different thread.
 pub fn discord_logger(webhook_url: String) -> (DiscordLogger, DiscordLogListener) {
     let (sender, receiver) = mpsc::channel::<Value>();
 

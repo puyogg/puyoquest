@@ -27,6 +27,11 @@ async fn main() {
         listener.lock().await.listen();
     });
 
+    let handle_2 = tokio::spawn(async move {
+        log::info!("Test 2.");
+    });
+
     log::info!("Test!!!");
+    handle_2.await.unwrap();
     handle.await.unwrap();
 }
