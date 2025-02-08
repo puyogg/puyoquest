@@ -38,7 +38,7 @@ sqlx = { version = "0.8.2", features = [
   "json",
   "tls-rustls-aws-lc-rs",
 ] }
-tokio = { version = "~1.42.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "~1.43.0", features = ["macros", "rt-multi-thread"] }
 # tokio-stream = "0.1.15"
 unicode-normalization = "0.1.23"
 urlencoding = "2.1.3"

@@ -4,9 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-log = { version = "0.4.25", features = ["std"] }
-reqwest = { version = "0.12.4", features = ["json", "stream"] }
+log = { version = "0.4.25" }
 serde = "1.0.203"
 serde_json = { version = "1.0.117", features = ["raw_value"] }
-tokio = { version = "~1.42.0", features = ["macros", "rt-multi-thread"] }
 ureq = { version = "3.0.4", features = ["json"] }

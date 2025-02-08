@@ -95,6 +95,9 @@ impl DiscordLogListener {
 }
 
 /// Creates a DiscordLogger for the log create.
+///
+/// Set the DiscordLogger with log::set_boxed_logger()
+///
 /// You can put the DiscordLogListener in an Arc<Mutex<>> to move the
 /// listener to a different thread.
 pub fn discord_logger(webhook_url: String) -> (DiscordLogger, DiscordLogListener) {
