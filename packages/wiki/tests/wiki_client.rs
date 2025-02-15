@@ -1,4 +1,5 @@
 mod wiki_client {
+    mod all_char_ids;
     mod all_ppq_categories;
     mod card_categories;
     mod category_members;
