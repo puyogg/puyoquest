@@ -878,6 +878,7 @@ dependencies = [
  "tokio",
  "url",
  "urlencoding",
+ "wiki_indexers",
 ]
 
 [[package]]

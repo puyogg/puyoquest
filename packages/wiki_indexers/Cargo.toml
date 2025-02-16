@@ -1,0 +1,31 @@
+[package]
+name = "wiki_indexers"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.94"
+aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
+aws-lc-rs = "1.0.0"
+aws-sdk-ssm = "1.54.0"
+chrono = { version = "0.4", features = ["serde"] }
+dotenvy = "0.15.7"
+fancy-regex = "0.14.0"
+futures = "0.3.30"
+log = "0.4.25"
+openssl = { version = "0.10.68", features = ["vendored"] }
+reqwest = { version = "0.12.4", features = ["json", "stream"] }
+rustls = "0.23"
+sdk = { path = "../sdk" }
+serde = "1.0.203"
+serde_json = { version = "1.0.117", features = ["raw_value"] }
+sqlx = { version = "0.8.2", features = [
+    "runtime-tokio",
+    "postgres",
+    "chrono",
+    "json",
+    "tls-rustls-aws-lc-rs",
+] }
+tokio = { version = "~1.43.0", features = ["macros", "rt-multi-thread"] }
+utils = { path = "../utils" }
+wiki = { path = "../wiki" }

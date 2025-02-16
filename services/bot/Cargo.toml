@@ -27,6 +27,7 @@ serde_json = { version = "1.0.117", features = ["std", "raw_value"] }
 tokio = { version = "~1.43.0", features = ["macros", "rt-multi-thread"] }
 url = "2.5.4"
 urlencoding = "2.1.3"
+wiki_indexers = { path = "../../packages/wiki_indexers" }
 
 # [dependencies.serenity]
 # default-features = false
