@@ -9,6 +9,7 @@ pub mod char_by_id;
 pub mod whoselore;
 pub mod incorrect_quote;
 pub mod ppq_events;
+pub mod reindex;
 
 #[allow(unused)]
 pub type Error = Box<dyn std::error::Error + Send + Sync>;

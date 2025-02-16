@@ -28,6 +28,7 @@ async fn main() {
         commands::categorysearch::categorysearch(),
         commands::incorrect_quote::iq(),
         commands::ppq_events::ppqevents(),
+        commands::reindex::reindex(),
     ];
 
     let framework: Framework<Data, Error> = poise::Framework::builder()
