@@ -42,15 +42,24 @@ impl EnvConfig {
         )
         .await?;
 
-        let owner_id = env::var("OWNER_ID")?;
+        let owner_id = env::var("OWNER_ID").unwrap_or_else(|_| {
+            log::warn!("WARNING! OWNER_ID not defined");
+            "N/A".to_string()
+        });
 
         Ok(EnvConfig {
             environment,
             db_connection_string,
             ppq_api_base_url: env::var("PPQ_API_BASE_URL")
                 .unwrap_or("http://localhost:3000".to_string()),
-            webhook_url: env::var("WEBHOOK_URL")?,
-            default_days_ago: env::var("DEFAULT_DAYS_AGO")?.parse::<i64>().unwrap_or(7),
+            webhook_url: env::var("WEBHOOK_URL").unwrap_or_else(|_r| {
+                log::warn!("WARNING! WEBHOOK_URL not defined");
+                "N/A".to_string()
+            }),
+            default_days_ago: env::var("DEFAULT_DAYS_AGO")
+                .unwrap_or("7".to_string())
+                .parse::<i64>()
+                .unwrap_or(7),
             owner_id,
         })
     }

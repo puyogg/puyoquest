@@ -9,9 +9,12 @@ aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
 aws-lc-rs = "1.0.0"
 aws-sdk-ssm = "1.54.0"
 chrono = { version = "0.4", features = ["serde"] }
+discord_logger = { path = "../../packages/discord_logger" }
 dotenvy = "0.15.7"
+env_logger = "0.11.6"
 fancy-regex = "0.14.0"
 futures = "0.3.30"
+log = { version = "0.4.25", features = ["std"] }
 openssl = { version = "0.10.68", features = ["vendored"] }
 reqwest = { version = "0.12.4", features = ["json", "stream"] }
 rustls = "0.23"
@@ -26,9 +29,15 @@ sqlx = { version = "0.8.2", features = [
   "tls-rustls-aws-lc-rs",
 ] }
 tokio = { version = "~1.43.0", features = ["macros", "rt-multi-thread"] }
+tokio-retry = "0.3.0"
 utils = { path = "../../packages/utils" }
 wiki = { path = "../../packages/wiki" }
+wiki_indexers = { path = "../../packages/wiki_indexers" }
 
 [[bin]]
 name = "recent_changes"
+test = false
+
+[[bin]]
+name = "all_characters"
 test = false
