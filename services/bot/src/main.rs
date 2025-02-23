@@ -48,7 +48,12 @@ async fn main() {
                     serenity::GuildId::new(guild_id),
                 )
                 .await?;
-                Ok(Data { api_config, aws_client, active_lore_game: DashSet::new(), lore_score: DashMap::new() })
+                Ok(Data {
+                    api_config,
+                    aws_client,
+                    active_lore_game: DashSet::new(),
+                    lore_score: DashMap::new(),
+                })
             })
         })
         .build();

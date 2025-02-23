@@ -6,10 +6,10 @@ use crate::aws::AwsClient;
 pub mod card;
 pub mod categorysearch;
 pub mod char_by_id;
-pub mod whoselore;
 pub mod incorrect_quote;
 pub mod ppq_events;
 pub mod reindex;
+pub mod whoselore;
 
 #[allow(unused)]
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
