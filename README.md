@@ -16,3 +16,7 @@ You will need these tools installed:
 - [sqlx CLI](https://github.com/launchbadge/sqlx/blob/main/sqlx-cli/README.md)
 
 If you're on Windows, use [Windows Subsystem for Linux (WSL)](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+### Dev Tools
+
+- [just](https://github.com/casey/just): `cargo install just`
