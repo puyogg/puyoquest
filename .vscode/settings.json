@@ -33,6 +33,16 @@
       "database": "discordbot-db",
       "username": "postgres",
       "password": "dev_postgres_password"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 35433,
+      "driver": "PostgreSQL",
+      "name": "bot-db",
+      "database": "ppq_bot_db",
+      "username": "postgres",
+      "password": "password"
     }
   ]
 }

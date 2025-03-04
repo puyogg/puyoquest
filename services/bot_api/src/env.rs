@@ -1,6 +1,6 @@
 use poem::error::InternalServerError;
-use std::env::VarError;
-use thiserror::Error;
+
+use crate::aws::AwsClient;
 
 #[derive(Debug)]
 pub enum DeploymentEnvironment {
@@ -11,7 +11,7 @@ pub enum DeploymentEnvironment {
 #[derive(Debug)]
 pub struct BotApiEnv {
     pub environment: DeploymentEnvironment,
-    pub db_connection_string: Option<String>,
+    pub db_connection_string: String,
 }
 
 #[derive(Debug)]
@@ -40,8 +40,8 @@ async fn fetch_parameter(
         .map_err(InternalServerError)
 }
 
-async fn env_or_default(
-    deployment_env: DeploymentEnvironment,
+async fn fetch_env_or_default(
+    deployment_env: &DeploymentEnvironment,
     ssm_client: &aws_sdk_ssm::Client,
     key: &str,
     default: &str,
@@ -66,7 +66,7 @@ async fn env_or_default(
     }
 }
 
-pub async fn load_env() -> BotApiEnv {
+pub async fn load_env(aws_client: &AwsClient) -> Result<BotApiEnv, poem::Error> {
     let deployment_env = match std::env::var("ENVIRONMENT")
         .unwrap_or("local".to_string())
         .as_str()
@@ -79,5 +79,18 @@ pub async fn load_env() -> BotApiEnv {
         }
     };
 
-    todo!();
+    let env_or_default = async |key: &str, default: &str| -> Result<String, poem::Error> {
+        let env =
+            fetch_env_or_default(&deployment_env, &aws_client.ssm_client, key, default).await?;
+        Ok(env)
+    };
+
+    Ok(BotApiEnv {
+        db_connection_string: env_or_default(
+            "BOT_DB_CONNECTION_STRING",
+            "postgres://postgres:password@localhost:35433/ppq_bot_db",
+        )
+        .await?,
+        environment: deployment_env,
+    })
 }
