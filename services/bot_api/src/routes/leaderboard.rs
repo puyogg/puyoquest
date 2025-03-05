@@ -100,6 +100,34 @@ impl Leaderboard {
         Ok(Json(rankings))
     }
 
+    /// Get the player count for a game and server
+    #[oai(path = "/:server_id/:game_type/player_count", method = "get")]
+    async fn server_game_player_count(
+        &self,
+        pool: Data<&PgPool>,
+        server_id: Path<String>,
+        game_type: Path<String>,
+    ) -> poem::Result<Json<i64>> {
+        let pool = pool.0;
+
+        let count: i64 = sqlx::query_scalar(
+            r#"
+                SELECT COUNT(*)
+                FROM leaderboard
+                WHERE
+                    server_id = $1
+                    AND game_type = $2
+            "#,
+        )
+        .bind(&server_id.0)
+        .bind(&game_type.0)
+        .fetch_one(pool)
+        .await
+        .map_err(InternalServerError)?;
+
+        Ok(Json(count))
+    }
+
     /// Upsert a user ranking and increment their score
     #[oai(path = "/:server_id/:game_type/:user_id/increment", method = "post")]
     async fn increment_score(
