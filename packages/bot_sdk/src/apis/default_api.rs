@@ -22,6 +22,27 @@ pub enum HealthcheckGetError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`leaderboard_channel_server_id_game_type_delete`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum LeaderboardChannelServerIdGameTypeDeleteError {
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`leaderboard_channel_server_id_game_type_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum LeaderboardChannelServerIdGameTypeGetError {
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`leaderboard_channel_server_id_game_type_post`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum LeaderboardChannelServerIdGameTypePostError {
+    UnknownValue(serde_json::Value),
+}
+
 /// struct for typed errors of method [`leaderboards_game_type_delete`]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -57,6 +78,27 @@ pub enum LeaderboardsServerIdGameTypeWindowGetError {
     UnknownValue(serde_json::Value),
 }
 
+/// struct for typed errors of method [`server_settings_post`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ServerSettingsPostError {
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`server_settings_server_id_delete`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ServerSettingsServerIdDeleteError {
+    UnknownValue(serde_json::Value),
+}
+
+/// struct for typed errors of method [`server_settings_server_id_get`]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ServerSettingsServerIdGetError {
+    UnknownValue(serde_json::Value),
+}
+
 
 pub async fn healthcheck_get(configuration: &configuration::Configuration, ) -> Result<String, Error<HealthcheckGetError>> {
 
@@ -88,6 +130,117 @@ pub async fn healthcheck_get(configuration: &configuration::Configuration, ) -> 
     } else {
         let content = resp.text().await?;
         let entity: Option<HealthcheckGetError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn leaderboard_channel_server_id_game_type_delete(configuration: &configuration::Configuration, server_id: &str, game_type: &str) -> Result<String, Error<LeaderboardChannelServerIdGameTypeDeleteError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_server_id = server_id;
+    let p_game_type = game_type;
+
+    let uri_str = format!("{}/leaderboard-channel/{server_id}/{game_type}", configuration.base_path, server_id=crate::apis::urlencode(p_server_id), game_type=crate::apis::urlencode(p_game_type));
+    let mut req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Ok(content),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `String`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<LeaderboardChannelServerIdGameTypeDeleteError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn leaderboard_channel_server_id_game_type_get(configuration: &configuration::Configuration, server_id: &str, game_type: &str) -> Result<models::LeaderboardChannel, Error<LeaderboardChannelServerIdGameTypeGetError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_server_id = server_id;
+    let p_game_type = game_type;
+
+    let uri_str = format!("{}/leaderboard-channel/{server_id}/{game_type}", configuration.base_path, server_id=crate::apis::urlencode(p_server_id), game_type=crate::apis::urlencode(p_game_type));
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::LeaderboardChannel`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::LeaderboardChannel`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<LeaderboardChannelServerIdGameTypeGetError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn leaderboard_channel_server_id_game_type_post(configuration: &configuration::Configuration, server_id: &str, game_type: &str) -> Result<models::LeaderboardChannel, Error<LeaderboardChannelServerIdGameTypePostError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_server_id = server_id;
+    let p_game_type = game_type;
+
+    let uri_str = format!("{}/leaderboard-channel/{server_id}/{game_type}", configuration.base_path, server_id=crate::apis::urlencode(p_server_id), game_type=crate::apis::urlencode(p_game_type));
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::LeaderboardChannel`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::LeaderboardChannel`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<LeaderboardChannelServerIdGameTypePostError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent { status, content, entity }))
     }
 }
@@ -275,6 +428,115 @@ pub async fn leaderboards_server_id_game_type_window_get(configuration: &configu
     } else {
         let content = resp.text().await?;
         let entity: Option<LeaderboardsServerIdGameTypeWindowGetError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn server_settings_post(configuration: &configuration::Configuration, server_settings: models::ServerSettings) -> Result<models::ServerSettings, Error<ServerSettingsPostError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_server_settings = server_settings;
+
+    let uri_str = format!("{}/server-settings", configuration.base_path);
+    let mut req_builder = configuration.client.request(reqwest::Method::POST, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+    req_builder = req_builder.json(&p_server_settings);
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ServerSettings`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ServerSettings`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ServerSettingsPostError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn server_settings_server_id_delete(configuration: &configuration::Configuration, server_id: &str) -> Result<String, Error<ServerSettingsServerIdDeleteError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_server_id = server_id;
+
+    let uri_str = format!("{}/server-settings/{server_id}", configuration.base_path, server_id=crate::apis::urlencode(p_server_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::DELETE, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Ok(content),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `String`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ServerSettingsServerIdDeleteError> = serde_json::from_str(&content).ok();
+        Err(Error::ResponseError(ResponseContent { status, content, entity }))
+    }
+}
+
+pub async fn server_settings_server_id_get(configuration: &configuration::Configuration, server_id: &str) -> Result<models::ServerSettings, Error<ServerSettingsServerIdGetError>> {
+    // add a prefix to parameters to efficiently prevent name collisions
+    let p_server_id = server_id;
+
+    let uri_str = format!("{}/server-settings/{server_id}", configuration.base_path, server_id=crate::apis::urlencode(p_server_id));
+    let mut req_builder = configuration.client.request(reqwest::Method::GET, &uri_str);
+
+    if let Some(ref user_agent) = configuration.user_agent {
+        req_builder = req_builder.header(reqwest::header::USER_AGENT, user_agent.clone());
+    }
+
+    let req = req_builder.build()?;
+    let resp = configuration.client.execute(req).await?;
+
+    let status = resp.status();
+    let content_type = resp
+        .headers()
+        .get("content-type")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("application/octet-stream");
+    let content_type = super::ContentType::from(content_type);
+
+    if !status.is_client_error() && !status.is_server_error() {
+        let content = resp.text().await?;
+        match content_type {
+            ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ServerSettings`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ServerSettings`")))),
+        }
+    } else {
+        let content = resp.text().await?;
+        let entity: Option<ServerSettingsServerIdGetError> = serde_json::from_str(&content).ok();
         Err(Error::ResponseError(ResponseContent { status, content, entity }))
     }
 }

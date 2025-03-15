@@ -9,6 +9,7 @@ pub mod char_by_id;
 pub mod incorrect_quote;
 pub mod ppq_events;
 pub mod reindex;
+pub mod server_settings;
 pub mod whoselore;
 
 #[allow(unused)]
@@ -24,4 +25,5 @@ pub struct Data {
     /// Channel id for active lore games.
     pub active_lore_game: DashSet<String>,
     pub lore_score: DashMap<String, u64>,
+    pub bot_api_config: bot_sdk::apis::configuration::Configuration,
 }

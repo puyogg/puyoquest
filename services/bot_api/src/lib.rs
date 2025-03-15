@@ -21,6 +21,8 @@ pub fn init_api(aws_client: Arc<AwsClient>, pool: Pool<Postgres>) -> BotApi {
         (
             routes::healthcheck::Healthcheck,
             routes::leaderboard::Leaderboard,
+            routes::server_settings::ServerSettingsRouter,
+            routes::leaderboard_channel::LeaderboardChannelRouter,
         ),
         "Yotarou API",
         "0.1.0",

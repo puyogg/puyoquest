@@ -12,6 +12,7 @@ pub struct Env {
     // pub db_name: String,
     pub ppq_api_host: String,
     pub wiki_editor_role_id: u64,
+    pub bot_api_host: String,
 }
 
 fn env_string(key: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -38,6 +39,7 @@ fn load_env() -> Env {
         // db_name: env_string("DB_NAME").unwrap(),
         ppq_api_host: env_string("PPQ_API_HOST").unwrap(),
         wiki_editor_role_id: env_u64("WIKI_EDITOR_ROLE_ID").unwrap(),
+        bot_api_host: env_string("BOT_API_HOST").unwrap(),
     }
 }
 
@@ -62,3 +64,18 @@ pub static API_CONFIG: LazyLock<Configuration> = LazyLock::new(|| {
         api_key: None,
     }
 });
+
+pub static BOT_API_CONFIG: LazyLock<bot_sdk::apis::configuration::Configuration> =
+    LazyLock::new(|| {
+        let env = &*ENV;
+
+        bot_sdk::apis::configuration::Configuration {
+            base_path: env.bot_api_host.clone(),
+            user_agent: None,
+            client: reqwest::Client::new(),
+            basic_auth: None,
+            oauth_access_token: None,
+            bearer_access_token: None,
+            api_key: None,
+        }
+    });

@@ -26,3 +26,8 @@ api:
 [working-directory: 'services/bot']
 bot:
   cargo run
+
+# Start the bot's api
+[working-directory: 'services/bot_api']
+bot-api:
+  cargo run

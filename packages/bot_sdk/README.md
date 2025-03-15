@@ -27,15 +27,23 @@ All URIs are relative to *http://localhost:3001*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *DefaultApi* | [**healthcheck_get**](docs/DefaultApi.md#healthcheck_get) | **GET** /healthcheck | 
+*DefaultApi* | [**leaderboard_channel_server_id_game_type_delete**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_delete) | **DELETE** /leaderboard-channel/{server_id}/{game_type} | 
+*DefaultApi* | [**leaderboard_channel_server_id_game_type_get**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_get) | **GET** /leaderboard-channel/{server_id}/{game_type} | 
+*DefaultApi* | [**leaderboard_channel_server_id_game_type_post**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_post) | **POST** /leaderboard-channel/{server_id}/{game_type} | 
 *DefaultApi* | [**leaderboards_game_type_delete**](docs/DefaultApi.md#leaderboards_game_type_delete) | **DELETE** /leaderboards/{game_type} | Delete all the results for a game_type across all servers. I don't want to hold Discord user data for very long.
 *DefaultApi* | [**leaderboards_server_id_game_type_player_count_get**](docs/DefaultApi.md#leaderboards_server_id_game_type_player_count_get) | **GET** /leaderboards/{server_id}/{game_type}/player_count | Get the player count for a game and server
 *DefaultApi* | [**leaderboards_server_id_game_type_top_get**](docs/DefaultApi.md#leaderboards_server_id_game_type_top_get) | **GET** /leaderboards/{server_id}/{game_type}/top | Fetch the top 10 players for a game type on a server
 *DefaultApi* | [**leaderboards_server_id_game_type_user_id_increment_post**](docs/DefaultApi.md#leaderboards_server_id_game_type_user_id_increment_post) | **POST** /leaderboards/{server_id}/{game_type}/{user_id}/increment | Upsert a user ranking and increment their score
 *DefaultApi* | [**leaderboards_server_id_game_type_window_get**](docs/DefaultApi.md#leaderboards_server_id_game_type_window_get) | **GET** /leaderboards/{server_id}/{game_type}/window | Fetch a user's ranking and the 9 players surrounding them. This tries to show 10 users unless the leaderboard+game currently has less than 10 players.
+*DefaultApi* | [**server_settings_post**](docs/DefaultApi.md#server_settings_post) | **POST** /server-settings | 
+*DefaultApi* | [**server_settings_server_id_delete**](docs/DefaultApi.md#server_settings_server_id_delete) | **DELETE** /server-settings/{server_id} | 
+*DefaultApi* | [**server_settings_server_id_get**](docs/DefaultApi.md#server_settings_server_id_get) | **GET** /server-settings/{server_id} | 
 
 
 ## Documentation For Models
 
+ - [LeaderboardChannel](docs/LeaderboardChannel.md)
+ - [ServerSettings](docs/ServerSettings.md)
  - [UserRanking](docs/UserRanking.md)
 
 
