@@ -160,6 +160,7 @@ impl CardsRouter {
         wiki_client: Data<&wiki::wiki_client::WikiClient>,
         s3_client: Data<&Arc<S3BackupClient>>,
         #[oai(validator(minimum(value = "1"), maximum(value = "20")))] count: Query<i32>,
+        exclude: Query<Option<Vec<String>>>,
     ) -> poem::Result<RandomCardsResponse> {
         random_cards(
             api_config.0,
@@ -168,6 +169,7 @@ impl CardsRouter {
             wiki_client.0,
             s3_client.0,
             count.0,
+            exclude.0,
         )
         .await
     }

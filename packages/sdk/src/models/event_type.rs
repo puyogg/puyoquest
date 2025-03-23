@@ -18,6 +18,8 @@ pub enum EventType {
     GuildRush,
     #[serde(rename = "limited_story")]
     LimitedStory,
+    #[serde(rename = "bingo_arena")]
+    BingoArena,
     #[serde(rename = "collection")]
     Collection,
     #[serde(rename = "tournament")]
@@ -40,6 +42,7 @@ impl std::fmt::Display for EventType {
         match self {
             Self::GuildRush => write!(f, "guild_rush"),
             Self::LimitedStory => write!(f, "limited_story"),
+            Self::BingoArena => write!(f, "bingo_arena"),
             Self::Collection => write!(f, "collection"),
             Self::Tournament => write!(f, "tournament"),
             Self::StoryQuest => write!(f, "story_quest"),

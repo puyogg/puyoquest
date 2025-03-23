@@ -186,7 +186,7 @@ No authorization required
 
 ## cards_random_card_get
 
-> Vec<models::Card> cards_random_card_get(count)
+> Vec<models::Card> cards_random_card_get(count, exclude)
 List random cards
 
 ### Parameters
@@ -195,6 +195,7 @@ List random cards
 Name | Type | Description  | Required | Notes
 ------------- | ------------- | ------------- | ------------- | -------------
 **count** | **i32** |  | [required] |
+**exclude** | Option<[**Vec<String>**](String.md)> |  |  |
 
 ### Return type
 

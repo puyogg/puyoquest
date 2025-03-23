@@ -1,6 +1,6 @@
 use futures::future::try_join_all;
-use poem::{error::InternalServerError, Result};
-use poem_openapi::{payload::Json, ApiResponse};
+use poem::{Result, error::InternalServerError};
+use poem_openapi::{ApiResponse, payload::Json};
 use sqlx::PgPool;
 use wiki::wiki_client::WikiClient;
 
@@ -21,16 +21,21 @@ pub async fn random_cards(
     wiki_client: &WikiClient,
     s3_client: &S3BackupClient,
     count: i32,
+    exclude: Option<Vec<String>>,
 ) -> Result<RandomCardsResponse> {
+    let exclude = exclude.unwrap_or(Vec::new());
+
     let card_dbs: Vec<CardDb> = sqlx::query_as(
         r#"
         SELECT *
         FROM card
-        ORDER BY random()
+        WHERE
+            NOT (char_id = ANY($2))
         LIMIT $1
         "#,
     )
     .bind(&count)
+    .bind(&exclude)
     .fetch_all(pool)
     .await
     .map_err(InternalServerError)?;

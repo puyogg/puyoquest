@@ -6,6 +6,7 @@
 |---- | -----|
 | GuildRush | guild_rush |
 | LimitedStory | limited_story |
+| BingoArena | bingo_arena |
 | Collection | collection |
 | Tournament | tournament |
 | StoryQuest | story_quest |
