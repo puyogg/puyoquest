@@ -12,3 +12,6 @@ pub use full_art_embed::*;
 
 mod did_you_mean;
 pub use did_you_mean::*;
+
+mod ntc_embed;
+pub use ntc_embed::*;

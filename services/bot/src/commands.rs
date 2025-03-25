@@ -7,6 +7,7 @@ pub mod card;
 pub mod categorysearch;
 pub mod char_by_id;
 pub mod incorrect_quote;
+pub mod ntc;
 pub mod ppq_events;
 pub mod reindex;
 pub mod server_settings;
@@ -26,4 +27,5 @@ pub struct Data {
     pub active_lore_game: DashSet<String>,
     pub lore_score: DashMap<String, u64>,
     pub bot_api_config: bot_sdk::apis::configuration::Configuration,
+    pub active_ntc_game: DashMap<String, String>,
 }

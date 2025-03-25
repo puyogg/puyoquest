@@ -900,6 +900,7 @@ dependencies = [
  "fancy-regex 0.13.0",
  "futures",
  "lazy_static",
+ "moka",
  "phf",
  "poise",
  "poise_macros",
@@ -914,6 +915,7 @@ dependencies = [
  "tracing-subscriber",
  "url",
  "urlencoding",
+ "utils",
  "wiki_indexers",
 ]
 
