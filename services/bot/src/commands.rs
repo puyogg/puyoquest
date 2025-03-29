@@ -27,5 +27,4 @@ pub struct Data {
     pub active_lore_game: DashSet<String>,
     pub lore_score: DashMap<String, u64>,
     pub bot_api_config: bot_sdk::apis::configuration::Configuration,
-    pub active_ntc_game: DashMap<String, String>,
 }

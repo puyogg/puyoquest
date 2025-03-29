@@ -59,7 +59,6 @@ async fn main() {
                     aws_client,
                     active_lore_game: DashSet::new(),
                     lore_score: DashMap::new(),
-                    active_ntc_game: DashMap::new(),
                     bot_api_config,
                 })
             })

@@ -1,5 +1,6 @@
 use std::{sync::LazyLock, time::Duration};
 
+use bot_sdk::apis::default_api as bot_api;
 use moka::future::Cache;
 use poise::{CreateReply, serenity_prelude as serenity};
 use utils;
@@ -8,7 +9,7 @@ use crate::embeds;
 
 use super::{Context, Error};
 
-pub static active_game_cache: LazyLock<Cache<String, ()>> = LazyLock::new(|| {
+pub static ACTIVE_GAME_CACHE: LazyLock<Cache<String, ()>> = LazyLock::new(|| {
     Cache::builder()
         .time_to_live(Duration::from_secs(300))
         .build()
@@ -19,6 +20,18 @@ pub async fn ntc(ctx: Context<'_>) -> Result<(), Error> {
     let data = ctx.data();
 
     let channel_id = ctx.channel_id().to_string();
+    let guild_id = match ctx.guild_id() {
+        Some(g) => g.to_string(),
+        None => {
+            ctx.send(
+                CreateReply::default()
+                    .content("There was an issue fetching your server. Try again later.")
+                    .ephemeral(true),
+            )
+            .await?;
+            return Ok(());
+        }
+    };
 
     let cards = sdk::apis::cards_api::cards_random_card_get(
         &data.api_config,
@@ -63,7 +76,7 @@ pub async fn ntc(ctx: Context<'_>) -> Result<(), Error> {
             .map(|a| a.alias)
             .collect();
 
-    let has_active_game = active_game_cache.contains_key(&channel_id);
+    let has_active_game = ACTIVE_GAME_CACHE.contains_key(&channel_id);
     if has_active_game {
         ctx.send(
             CreateReply::default()
@@ -75,7 +88,7 @@ pub async fn ntc(ctx: Context<'_>) -> Result<(), Error> {
         return Ok(());
     }
 
-    active_game_cache.insert(channel_id.clone(), ()).await;
+    ACTIVE_GAME_CACHE.insert(channel_id.clone(), ()).await;
 
     let embed = embeds::ntc_embed(&card, &full_art);
     ctx.send(
@@ -90,22 +103,44 @@ pub async fn ntc(ctx: Context<'_>) -> Result<(), Error> {
         .timeout(std::time::Duration::from_secs(120))
         .await
     {
+        let user_id = message.author.id.to_string();
         let normalized_message = utils::normalize_name(&message.content);
 
         if aliases.contains(&normalized_message) {
-            let user_id = message.author.id.to_string();
+            let score = bot_api::leaderboards_server_id_game_type_user_id_increment_post(
+                &data.bot_api_config,
+                &guild_id,
+                "ntc",
+                &user_id,
+            )
+            .await;
+
+            let score = match score {
+                Ok(score) => score.correct,
+                Err(_) => {
+                    ctx.send(CreateReply::default().content(
+                        "There was an issue updating your score. Contact S2 or try again later.",
+                    ))
+                    .await?;
+                    return Ok(());
+                }
+            };
+
             let content = format!(
-                "<@{user_id}> got the correct answer!\nThe card was: **{card_name} [★{rarity}] ({jp_name})**"
+                r#"<@{user_id}> got the correct answer!
+The card was: **{card_name} [★{rarity}] ({jp_name})**
+
+Your total score is: {score}"#
             );
 
             ctx.channel_id().say(ctx, content).await?;
-            active_game_cache.remove(&channel_id).await;
+            ACTIVE_GAME_CACHE.remove(&channel_id).await;
             return Ok(());
         }
     }
 
     // timeout
-    active_game_cache.remove(&channel_id).await;
+    ACTIVE_GAME_CACHE.remove(&channel_id).await;
     let content = format!("The above card was **{card_name} [★{rarity}] ({jp_name})**");
     ctx.channel_id().say(ctx, content).await?;
     Ok(())
