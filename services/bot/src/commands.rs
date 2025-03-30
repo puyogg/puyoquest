@@ -7,6 +7,7 @@ pub mod card;
 pub mod categorysearch;
 pub mod char_by_id;
 pub mod incorrect_quote;
+pub mod leaderboard;
 pub mod ntc;
 pub mod ppq_events;
 pub mod reindex;

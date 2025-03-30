@@ -35,6 +35,7 @@ async fn main() {
         commands::reindex::reindex(),
         commands::server_settings::server_settings(),
         commands::ntc::ntc(),
+        commands::leaderboard::leaderboard(),
     ];
 
     let framework: Framework<Data, Error> = poise::Framework::builder()

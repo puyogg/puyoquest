@@ -15,3 +15,6 @@ pub use did_you_mean::*;
 
 mod ntc_embed;
 pub use ntc_embed::*;
+
+mod leaderboard_embed;
+pub use leaderboard_embed::*;
