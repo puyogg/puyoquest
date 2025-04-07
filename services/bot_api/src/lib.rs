@@ -23,6 +23,7 @@ pub fn init_api(aws_client: Arc<AwsClient>, pool: Pool<Postgres>) -> BotApi {
             routes::leaderboard::Leaderboard,
             routes::server_settings::ServerSettingsRouter,
             routes::leaderboard_channel::LeaderboardChannelRouter,
+            routes::kaga::Kaga,
         ),
         "Yotarou API",
         "0.1.0",

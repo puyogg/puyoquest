@@ -5,6 +5,9 @@ All URIs are relative to *http://localhost:3001*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**healthcheck_get**](DefaultApi.md#healthcheck_get) | **GET** /healthcheck | 
+[**kaga_delete**](DefaultApi.md#kaga_delete) | **DELETE** /kaga | Delete a kaga image url
+[**kaga_get**](DefaultApi.md#kaga_get) | **GET** /kaga | Get a kaga image url
+[**kaga_put**](DefaultApi.md#kaga_put) | **PUT** /kaga | Set a kaga image url
 [**leaderboard_channel_server_id_game_type_delete**](DefaultApi.md#leaderboard_channel_server_id_game_type_delete) | **DELETE** /leaderboard-channel/{server_id}/{game_type} | 
 [**leaderboard_channel_server_id_game_type_get**](DefaultApi.md#leaderboard_channel_server_id_game_type_get) | **GET** /leaderboard-channel/{server_id}/{game_type} | 
 [**leaderboard_channel_server_id_game_type_post**](DefaultApi.md#leaderboard_channel_server_id_game_type_post) | **POST** /leaderboard-channel/{server_id}/{game_type} | 
@@ -40,6 +43,91 @@ No authorization required
 
 - **Content-Type**: Not defined
 - **Accept**: text/plain; charset=utf-8
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## kaga_delete
+
+> kaga_delete(id)
+Delete a kaga image url
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** |  | [required] |
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## kaga_get
+
+> String kaga_get(id)
+Get a kaga image url
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** |  | [required] |
+
+### Return type
+
+**String**
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: text/plain; charset=utf-8
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+
+## kaga_put
+
+> kaga_put(id, url)
+Set a kaga image url
+
+### Parameters
+
+
+Name | Type | Description  | Required | Notes
+------------- | ------------- | ------------- | ------------- | -------------
+**id** | **String** |  | [required] |
+**url** | **String** |  | [required] |
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

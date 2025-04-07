@@ -27,6 +27,9 @@ All URIs are relative to *http://localhost:3001*
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *DefaultApi* | [**healthcheck_get**](docs/DefaultApi.md#healthcheck_get) | **GET** /healthcheck | 
+*DefaultApi* | [**kaga_delete**](docs/DefaultApi.md#kaga_delete) | **DELETE** /kaga | Delete a kaga image url
+*DefaultApi* | [**kaga_get**](docs/DefaultApi.md#kaga_get) | **GET** /kaga | Get a kaga image url
+*DefaultApi* | [**kaga_put**](docs/DefaultApi.md#kaga_put) | **PUT** /kaga | Set a kaga image url
 *DefaultApi* | [**leaderboard_channel_server_id_game_type_delete**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_delete) | **DELETE** /leaderboard-channel/{server_id}/{game_type} | 
 *DefaultApi* | [**leaderboard_channel_server_id_game_type_get**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_get) | **GET** /leaderboard-channel/{server_id}/{game_type} | 
 *DefaultApi* | [**leaderboard_channel_server_id_game_type_post**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_post) | **POST** /leaderboard-channel/{server_id}/{game_type} | 
