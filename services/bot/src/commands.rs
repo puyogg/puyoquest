@@ -13,6 +13,7 @@ pub mod ppq_events;
 pub mod reindex;
 pub mod server_settings;
 pub mod whoselore;
+pub mod pin;
 
 #[allow(unused)]
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
