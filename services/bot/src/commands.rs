@@ -11,6 +11,7 @@ pub mod leaderboard;
 pub mod ntc;
 pub mod ppq_events;
 pub mod reindex;
+pub mod say_in;
 pub mod server_settings;
 pub mod whoselore;
 pub mod pin;
