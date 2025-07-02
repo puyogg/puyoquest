@@ -5,6 +5,8 @@ use poem::{Server, listener::TcpListener};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    tracing_subscriber::fmt::init();
+
     // let _install_default = rustls::crypto::aws_lc_rs::default_provider().install_default().unwrap();
     let sdk_config = aws_config::from_env().load().await;
     let aws_client = bot_api::aws::AwsClient::new(sdk_config);
@@ -18,7 +20,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let aws_client = Arc::new(aws_client);
 
     let api = init_api(aws_client, pool);
-    Server::new(TcpListener::bind("0.0.0.0:3001"))
+    Server::new(TcpListener::bind(format!("0.0.0.0:{}", env.bot_api_port)))
         .run(api)
         .await?;
 

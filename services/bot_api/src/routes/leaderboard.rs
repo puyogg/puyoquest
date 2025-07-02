@@ -4,10 +4,10 @@ use poem_openapi::{
     param::{Path, Query},
     payload::{Json, PlainText},
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, PgPool};
 
-#[derive(Debug, Clone, Object, FromRow, Serialize)]
+#[derive(Debug, Clone, Object, FromRow, Serialize, Deserialize)]
 pub struct UserRanking {
     pub user_id: String,
     pub server_id: String,
@@ -30,8 +30,8 @@ impl Leaderboard {
         let pool = pool.0;
         let rankings: Vec<UserRanking> = sqlx::query_as(
             r#"
-                SELECT *, row_number() OVER (ORDER BY correct DESC) AS ranking
-                FROM leaderboard
+                SELECT *, row_number() OVER (ORDER BY correct DESC, updated_at ASC) AS ranking
+                FROM bot.leaderboard
                 WHERE
                     server_id = $1
                     AND game_type = $2
@@ -62,8 +62,8 @@ impl Leaderboard {
         let rankings: Vec<UserRanking> = sqlx::query_as(
             r#"
                 WITH full_leaderboard AS (
-                    SELECT *, row_number() OVER (ORDER BY correct DESC) AS ranking
-                    FROM leaderboard
+                    SELECT *, row_number() OVER (ORDER BY correct DESC, updated_at ASC) AS ranking
+                    FROM bot.leaderboard
                     WHERE
                         game_type = $2
                         AND server_id = $1
@@ -113,7 +113,7 @@ impl Leaderboard {
         let count: i64 = sqlx::query_scalar(
             r#"
                 SELECT COUNT(*)
-                FROM leaderboard
+                FROM bot.leaderboard
                 WHERE
                     server_id = $1
                     AND game_type = $2
@@ -141,14 +141,14 @@ impl Leaderboard {
 
         let _ = sqlx::query(
             r#"
-                INSERT INTO leaderboard (game_type, user_id, server_id, correct)
+                INSERT INTO bot.leaderboard (game_type, user_id, server_id, correct)
                 VALUES ($2, $3, $1, 1)
                 ON CONFLICT (user_id, server_id, game_type)
                 DO UPDATE
-                    SET correct = leaderboard.correct + 1
-                    WHERE leaderboard.user_id = EXCLUDED.user_id
-                      AND leaderboard.server_id = EXCLUDED.server_id
-                      AND leaderboard.game_type = EXCLUDED.game_type
+                    SET correct = bot.leaderboard.correct + 1
+                    WHERE bot.leaderboard.user_id = EXCLUDED.user_id
+                      AND bot.leaderboard.server_id = EXCLUDED.server_id
+                      AND bot.leaderboard.game_type = EXCLUDED.game_type
             "#,
         )
         .bind(&server_id.0)
@@ -162,7 +162,7 @@ impl Leaderboard {
             r#"
                 WITH ranked_leaderboard AS (
                     SELECT *, row_number() OVER (ORDER BY correct DESC) AS ranking
-                    FROM leaderboard
+                    FROM bot.leaderboard
                     WHERE
                         game_type = $2
                         AND server_id = $1
@@ -197,7 +197,7 @@ impl Leaderboard {
 
         let _ = sqlx::query(
             r#"
-                DELETE FROM leaderboard
+                DELETE FROM bot.leaderboard
                 WHERE game_type = $1
             "#,
         )

@@ -11,7 +11,7 @@ use sqlx::{Pool, Postgres};
 pub mod aws;
 pub mod db;
 pub mod env;
-mod routes;
+pub mod routes;
 
 pub type BotApi =
     AddDataEndpoint<AddDataEndpoint<CorsEndpoint<Route>, Arc<AwsClient>>, Pool<Postgres>>;

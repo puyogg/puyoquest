@@ -12,6 +12,7 @@ pub enum DeploymentEnvironment {
 pub struct BotApiEnv {
     pub environment: DeploymentEnvironment,
     pub db_connection_string: String,
+    pub bot_api_port: String,
 }
 
 #[derive(Debug)]
@@ -91,6 +92,7 @@ pub async fn load_env(aws_client: &AwsClient) -> Result<BotApiEnv, poem::Error> 
             "postgres://postgres:password@localhost:35433/ppq_bot_db",
         )
         .await?,
+        bot_api_port: env_or_default("BOT_API_PORT", "3001").await?,
         environment: deployment_env,
     })
 }

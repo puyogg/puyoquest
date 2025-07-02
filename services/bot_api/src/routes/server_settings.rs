@@ -1,6 +1,6 @@
 use poem::{error::InternalServerError, web::Data};
 use poem_openapi::{
-    Object, OpenApi,
+    ApiResponse, Object, OpenApi,
     param::Path,
     payload::{Json, PlainText},
 };
@@ -12,6 +12,15 @@ pub struct ServerSettings {
     pub server_id: String,
 }
 
+#[derive(ApiResponse)]
+pub enum FetchSettingsByIdResponse {
+    #[oai(status = 200)]
+    Settings(Json<ServerSettings>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
+}
+
 pub struct ServerSettingsRouter;
 #[OpenApi(prefix_path = "/server-settings")]
 impl ServerSettingsRouter {
@@ -20,13 +29,13 @@ impl ServerSettingsRouter {
         &self,
         pool: Data<&PgPool>,
         server_id: Path<String>,
-    ) -> poem::Result<Json<Option<ServerSettings>>> {
+    ) -> poem::Result<FetchSettingsByIdResponse> {
         let pool = pool.0;
 
         let settings: Option<ServerSettings> = sqlx::query_as(
             r#"
                 SELECT *
-                FROM server_settings
+                FROM bot.server_settings
                 WHERE server_id = $1
             "#,
         )
@@ -35,7 +44,14 @@ impl ServerSettingsRouter {
         .await
         .map_err(InternalServerError)?;
 
-        Ok(Json(settings))
+        // Ok(Json(settings))
+        match settings {
+            Some(settings) => Ok(FetchSettingsByIdResponse::Settings(Json(settings))),
+            None => Ok(FetchSettingsByIdResponse::NotFound(PlainText(format!(
+                "Failed to find settings for server_id: {}",
+                &server_id.0
+            )))),
+        }
     }
 
     #[oai(path = "/", method = "post")]
@@ -49,7 +65,7 @@ impl ServerSettingsRouter {
         // TODO: update some actual settings
         let server_settings: ServerSettings = sqlx::query_as(
             r#"
-                INSERT INTO server_settings (server_id)
+                INSERT INTO bot.server_settings (server_id)
                 VALUES ($1)
                 ON CONFLICT (server_id) DO UPDATE
                     SET server_id = EXCLUDED.server_id
@@ -72,16 +88,18 @@ impl ServerSettingsRouter {
     ) -> poem::Result<PlainText<String>> {
         let pool = pool.0;
 
-        let _ = sqlx::query(
+        let delete_count = sqlx::query(
             r#"
-                DELETE FROM server_settings
+                DELETE FROM bot.server_settings
                 WHERE server_id = $1
             "#,
         )
         .bind(&server_id.0)
         .execute(pool)
         .await
-        .map_err(InternalServerError)?;
+        .map_err(InternalServerError)?
+        .rows_affected();
+        println!("Rows affected: {delete_count}");
 
         Ok(PlainText(String::from("OK!!")))
     }

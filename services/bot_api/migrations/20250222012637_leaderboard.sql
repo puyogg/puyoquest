@@ -8,3 +8,11 @@ CREATE TABLE IF NOT EXISTS bot.leaderboard (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   PRIMARY KEY(user_id, server_id, game_type)
 );
+
+CREATE TRIGGER bot_leaderboard_updated_at
+BEFORE UPDATE ON bot.leaderboard
+FOR EACH ROW EXECUTE PROCEDURE on_update_timestamp();
+
+CREATE TRIGGER bot_leaderboard_inserted_at
+BEFORE INSERT ON bot.leaderboard
+FOR EACH ROW EXECUTE PROCEDURE on_update_timestamp();
