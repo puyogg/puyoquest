@@ -4,7 +4,7 @@ use poem::http::StatusCode;
 use crate::common::{IntTestResult, create_test_client};
 
 #[tokio::test]
-async fn upsert_server_settings() -> IntTestResult<()> {
+async fn insert_server_settings() -> IntTestResult<()> {
     let client = create_test_client().await?;
 
     let expected_settings = ServerSettings {
@@ -17,6 +17,34 @@ async fn upsert_server_settings() -> IntTestResult<()> {
         .send()
         .await;
 
+    response.assert_status_is_ok();
+    response.assert_json(&expected_settings).await;
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn upsert_server_settings() -> IntTestResult<()> {
+    let client = create_test_client().await?;
+
+    let expected_settings = ServerSettings {
+        server_id: "12345".to_string(),
+    };
+
+    let response = client
+        .post("/server-settings")
+        .body_json(&ServerSettings {
+            server_id: "123".to_string(),
+        })
+        .send()
+        .await;
+    response.assert_status_is_ok();
+
+    let response = client
+        .post("/server-settings")
+        .body_json(&expected_settings)
+        .send()
+        .await;
     response.assert_status_is_ok();
     response.assert_json(&expected_settings).await;
 

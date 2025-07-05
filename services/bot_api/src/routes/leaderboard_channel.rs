@@ -1,10 +1,10 @@
 use poem::{error::InternalServerError, web::Data};
 use poem_openapi::{
-    Object, OpenApi,
+    ApiResponse, Object, OpenApi,
     param::Path,
     payload::{Json, PlainText},
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, PgPool};
 
 #[derive(Debug, Clone, Object, FromRow, Serialize)]
@@ -12,6 +12,20 @@ pub struct LeaderboardChannel {
     pub server_id: String,
     pub game_type: String,
     pub channel_id: String,
+}
+
+#[derive(Debug, Clone, Object, Serialize, Deserialize)]
+pub struct LeaderboardChannelCreate {
+    pub channel_id: String,
+}
+
+#[derive(ApiResponse)]
+enum GetLeaderboardChannelResponse {
+    #[oai(status = 200)]
+    LeaderboardChannel(Json<LeaderboardChannel>),
+
+    #[oai(status = 404)]
+    NotFound(PlainText<String>),
 }
 
 pub struct LeaderboardChannelRouter;
@@ -23,7 +37,7 @@ impl LeaderboardChannelRouter {
         pool: Data<&PgPool>,
         server_id: Path<String>,
         game_type: Path<String>,
-    ) -> poem::Result<Json<Option<LeaderboardChannel>>> {
+    ) -> poem::Result<GetLeaderboardChannelResponse> {
         let pool = pool.0;
 
         let leaderboard_channel: Option<LeaderboardChannel> = sqlx::query_as(
@@ -39,7 +53,12 @@ impl LeaderboardChannelRouter {
         .await
         .map_err(InternalServerError)?;
 
-        Ok(Json(leaderboard_channel))
+        match leaderboard_channel {
+            Some(l) => Ok(GetLeaderboardChannelResponse::LeaderboardChannel(Json(l))),
+            None => Ok(GetLeaderboardChannelResponse::NotFound(PlainText(
+                "leaderboard channel not found!".into(),
+            ))),
+        }
     }
 
     #[oai(path = "/:server_id/:game_type", method = "post")]
@@ -48,10 +67,12 @@ impl LeaderboardChannelRouter {
         pool: Data<&PgPool>,
         server_id: Path<String>,
         game_type: Path<String>,
+        body: Json<LeaderboardChannelCreate>,
     ) -> poem::Result<Json<LeaderboardChannel>> {
         let pool = pool.0;
+        let channel_id = body.0.channel_id;
 
-        let leaderboard_channel: LeaderboardChannel = sqlx::query_as(
+        let leaderboard_channel = sqlx::query_as(
             r#"
                 INSERT INTO bot.leaderboard_channel (server_id, game_type, channel_id)
                 VALUES ($1, $2, $3)
@@ -65,6 +86,7 @@ impl LeaderboardChannelRouter {
         )
         .bind(&server_id.0)
         .bind(&game_type.0)
+        .bind(&channel_id)
         .fetch_one(pool)
         .await
         .map_err(InternalServerError)?;
