@@ -1,5 +1,6 @@
 use bot_api::routes::server_settings::ServerSettings;
 use poem::http::StatusCode;
+use serde_json::json;
 
 use crate::common::{IntTestResult, create_test_client};
 
@@ -106,6 +107,43 @@ async fn delete_server_settings() -> IntTestResult<()> {
         .send()
         .await;
     fetch_response.assert_status(StatusCode::NOT_FOUND);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn existence_check() -> IntTestResult<()> {
+    let client = create_test_client().await?;
+
+    client
+        .post("/server-settings")
+        .body_json(&ServerSettings {
+            server_id: "1".into(),
+        })
+        .send()
+        .await;
+
+    client
+        .post("/server-settings")
+        .body_json(&ServerSettings {
+            server_id: "2".into(),
+        })
+        .send()
+        .await;
+
+    let response = client
+        .post("/server-settings/exists")
+        .body_json(&json!(["1", "2", "3"]))
+        .send()
+        .await;
+
+    response
+        .assert_json(json!({
+            "1": true,
+            "2": true,
+            "3": false
+        }))
+        .await;
 
     Ok(())
 }

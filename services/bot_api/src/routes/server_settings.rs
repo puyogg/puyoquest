@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use poem::{error::InternalServerError, web::Data};
 use poem_openapi::{
     ApiResponse, Object, OpenApi,
@@ -102,5 +104,42 @@ impl ServerSettingsRouter {
         println!("Rows affected: {delete_count}");
 
         Ok(PlainText(String::from("OK!!")))
+    }
+
+    /// Check if server settings exists for the provided server ids
+    #[oai(path = "/exists", method = "post")]
+    async fn exists(
+        &self,
+        pool: Data<&PgPool>,
+        server_ids: Json<Vec<String>>,
+    ) -> poem::Result<Json<HashMap<String, bool>>> {
+        let mut map: HashMap<String, bool> = HashMap::new();
+
+        let settings: Vec<ServerSettings> = sqlx::query_as(
+            r#"
+                SELECT *
+                FROM bot.server_settings
+                WHERE server_id = ANY($1)
+            "#,
+        )
+        .bind(&server_ids.0)
+        .fetch_all(pool.0)
+        .await
+        .map_err(InternalServerError)?;
+
+        for server_id in server_ids.0 {
+            let existing_setting = settings.iter().find(|s| s.server_id == server_id);
+
+            match existing_setting {
+                Some(_e) => {
+                    map.insert(server_id, true);
+                }
+                None => {
+                    map.insert(server_id, false);
+                }
+            };
+        }
+
+        Ok(Json(map))
     }
 }
