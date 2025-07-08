@@ -7,12 +7,12 @@ import {
   RESTGetAPICurrentUserGuildsResult,
   Routes,
 } from "discord-api-types/v10";
+import * as botApi from "bot_sdk_ts";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  auth.api;
 
   const accessTokenResult = await auth.api
     .getAccessToken({
@@ -34,5 +34,24 @@ export default async function DashboardPage() {
     authPrefix: "Bearer",
   })) as RESTGetAPICurrentUserGuildsResult;
 
-  return <Dashboard guilds={guilds} />;
+  // Check which guilds have Yotarou configured.
+  const guildIds = guilds.map((g) => g.id);
+  const apiConfig = botApi.createConfiguration({
+    baseServer: new botApi.ServerConfiguration("http://localhost:3001", {}),
+  });
+  const botApiInstance = new botApi.DefaultApi(apiConfig);
+  const guildExistsResponse = await botApiInstance.serverSettingsExistsPost(
+    guildIds
+  );
+  console.log(
+    `Found ${
+      Object.keys(guildExistsResponse).length
+    } servers; Yotarou exists in ${
+      Object.values(guildExistsResponse).filter((r) => r).length
+    } server.`
+  );
+
+  const availableGuilds = guilds.filter((g) => guildExistsResponse[g.id]);
+
+  return <Dashboard guilds={availableGuilds} />;
 }

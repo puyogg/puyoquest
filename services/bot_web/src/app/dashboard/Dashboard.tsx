@@ -16,7 +16,7 @@ export default function Dashboard({ guilds }: DashboardProps) {
     <main>
       <h1>Welcome {session?.user.name}</h1>
       <section>
-        <h2>Discord Servers</h2>
+        <h2>Discord Servers with Yotarou installed</h2>
         <div className="grid grid-cols-4 gap-4">
           {guilds
             .sort((guild) => (guild.owner ? 0 : 1))

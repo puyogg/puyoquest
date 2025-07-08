@@ -30,4 +30,4 @@ bot:
 # Start the bot's api
 [working-directory: 'services/bot_api']
 bot-api:
-  cargo run
+  cargo run --bin bot_api
