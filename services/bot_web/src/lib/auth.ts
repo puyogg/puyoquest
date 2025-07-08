@@ -15,6 +15,7 @@ export const auth = betterAuth({
     discord: {
       clientId: nextEnv.DISCORD_CLIENT_ID,
       clientSecret: nextEnv.DISCORD_CLIENT_SECRET,
+      scope: ["guilds"],
     },
   },
 });
