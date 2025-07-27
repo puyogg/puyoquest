@@ -2,3 +2,4 @@ packages:
   - infra
   - services/bot_web
   - packages/bot_sdk_ts
+  - packages/sdk_ts
