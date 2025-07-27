@@ -33,7 +33,7 @@ const getPublicLinks = (activePath?: string): LinkData[] => {
   return [
     {
       name: "Cards",
-      href: "/",
+      href: "/cards",
       current: activePath?.startsWith("/cards") ?? false,
     },
     {

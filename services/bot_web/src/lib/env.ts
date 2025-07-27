@@ -34,6 +34,8 @@ const SUPER_ADMINS = process.env.SUPER_ADMINS
   ? process.env.SUPER_ADMINS.split(",").filter((u) => u)
   : [];
 
+const QUEST_API_HOST = process.env.QUEST_API_HOST ?? "http://localhost:3000";
+
 export const nextEnv = {
   DISCORD_CLIENT_ID,
   DISCORD_CLIENT_SECRET,
@@ -41,4 +43,5 @@ export const nextEnv = {
   SUPER_ADMINS,
   EPPC_SERVER_ID,
   WIKI_EDITOR_ROLE_ID,
+  QUEST_API_HOST,
 };

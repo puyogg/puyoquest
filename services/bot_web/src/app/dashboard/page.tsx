@@ -8,6 +8,7 @@ import {
   Routes,
 } from "discord-api-types/v10";
 import * as botApi from "bot_sdk_ts";
+import TopNav from "@/lib/views/TopNav";
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
@@ -53,5 +54,10 @@ export default async function DashboardPage() {
 
   const availableGuilds = guilds.filter((g) => guildExistsResponse[g.id]);
 
-  return <Dashboard guilds={availableGuilds} />;
+  return (
+    <>
+      <TopNav roles={session.roles} />
+      <Dashboard guilds={availableGuilds} />
+    </>
+  );
 }
