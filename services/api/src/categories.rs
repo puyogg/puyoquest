@@ -1,7 +1,7 @@
 use crate::api_tag::ApiTag;
 use num::ToPrimitive;
 use poem::{error::InternalServerError, web::Data};
-use poem_openapi::{param::Query, payload::Json, ApiResponse, OpenApi};
+use poem_openapi::{ApiResponse, OpenApi, param::Query, payload::Json};
 use utils::normalize_name;
 use wiki::wiki_client::WikiClient;
 
@@ -56,6 +56,17 @@ impl CategoriesRouter {
             None => category_names,
             Some(i) => category_names[..std::cmp::min(category_names.len(), i)].to_vec(),
         };
+
+        Ok(CategoryListResponse::Categories(Json(category_names)))
+    }
+
+    #[oai(path = "/all", method = "get")]
+    async fn list_all(&self, wiki_client: Data<&WikiClient>) -> poem::Result<CategoryListResponse> {
+        let categories = crate::cache::ppq_categories(&wiki_client.0)
+            .await
+            .map_err(InternalServerError)?;
+
+        let category_names: Vec<String> = categories.into_iter().map(|c| c.name).collect();
 
         Ok(CategoryListResponse::Categories(Json(category_names)))
     }
