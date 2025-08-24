@@ -3,7 +3,14 @@ use std::env;
 use std::sync::LazyLock;
 
 #[derive(Debug)]
+pub enum DeploymentEnvironment {
+    Local,
+    Production,
+}
+
+#[derive(Debug)]
 pub struct Env {
+    pub environment: DeploymentEnvironment,
     pub bot_token: String,
     pub primary_server_id: u64,
     // pub client_id: u64,
@@ -31,6 +38,11 @@ fn env_u64(key: impl AsRef<str>) -> Result<u64, Box<dyn std::error::Error>> {
 
 fn load_env() -> Env {
     Env {
+        environment: match env_string("ENVIRONMENT").unwrap().as_str() {
+            "production" => DeploymentEnvironment::Production,
+            "local" => DeploymentEnvironment::Local,
+            _ => DeploymentEnvironment::Local,
+        },
         bot_token: env_string("BOT_TOKEN").unwrap(),
         primary_server_id: env_u64("PRIMARY_SERVER_ID").unwrap(),
         // client_id: env_u64("CLIENT_ID").unwrap(),

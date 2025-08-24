@@ -25,18 +25,21 @@ async fn main() {
     let sdk_config = aws_config::from_env().load().await;
     let aws_client = AwsClient::new(sdk_config);
 
-    let commands = std::vec![
+    let mut global_commands = std::vec![
         commands::char_by_id::char_by_id(),
         commands::card::card(),
         commands::whoselore::whoselore(),
         commands::categorysearch::categorysearch(),
         commands::incorrect_quote::iq(),
         commands::ppq_events::ppqevents(),
-        commands::reindex::reindex(),
         commands::server_settings::server_settings(),
         commands::ntc::ntc(),
         commands::leaderboard::leaderboard(),
     ];
+    let global_command_count = global_commands.len();
+    let mut primary_only_commands = vec![commands::reindex::reindex()];
+    global_commands.append(&mut primary_only_commands);
+    let commands = global_commands;
 
     let framework: Framework<Data, Error> = poise::Framework::builder()
         .options(poise::FrameworkOptions {
@@ -49,12 +52,51 @@ async fn main() {
         .setup(move |ctx, ready, framework: &poise::Framework<Data, _>| {
             Box::pin(async move {
                 println!("{:?}", ready);
-                poise::builtins::register_in_guild(
-                    ctx,
-                    &framework.options().commands,
-                    serenity::GuildId::new(guild_id),
-                )
-                .await?;
+
+                let commands = &framework.options().commands;
+
+                match env.environment {
+                    env_config::DeploymentEnvironment::Local => {
+                        tracing::info!("Detected local environment. Registing all commands to primary guild only.");
+                        poise::builtins::register_in_guild(
+                            ctx,
+                            &commands,
+                            serenity::GuildId::new(guild_id),
+                        )
+                        .await?;
+                    }
+                    env_config::DeploymentEnvironment::Production => {
+                        let global_commands = &commands[..global_command_count];
+                        let global_command_names = global_commands
+                            .iter()
+                            .map(|c| c.name.clone())
+                            .collect::<Vec<String>>();
+                        tracing::info!("Global commands: {:?}", global_command_names);
+
+                        let primary_only_commands = &commands[global_command_count..];
+                        let primary_only_command_names = primary_only_commands
+                            .iter()
+                            .map(|c| c.name.clone())
+                            .collect::<Vec<String>>();
+                        tracing::info!("Primary guild only commands: {:?}", primary_only_command_names);
+
+                        tracing::info!("Registering global commands.");
+                        poise::builtins::register_globally(
+                            ctx,
+                            global_commands,
+                        )
+                        .await?;
+
+                        tracing::info!("Registering primary guild only commands.");
+                        poise::builtins::register_in_guild(
+                            ctx,
+                            primary_only_commands,
+                            serenity::GuildId::new(guild_id),
+                        )
+                        .await?;
+                    }
+                };
+
                 Ok(Data {
                     api_config,
                     aws_client,
