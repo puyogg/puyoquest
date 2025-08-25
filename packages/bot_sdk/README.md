@@ -30,6 +30,7 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**kaga_delete**](docs/DefaultApi.md#kaga_delete) | **DELETE** /kaga | Delete a kaga image url
 *DefaultApi* | [**kaga_get**](docs/DefaultApi.md#kaga_get) | **GET** /kaga | Get a kaga image url
 *DefaultApi* | [**kaga_put**](docs/DefaultApi.md#kaga_put) | **PUT** /kaga | Set a kaga image url
+*DefaultApi* | [**kaga_random_get**](docs/DefaultApi.md#kaga_random_get) | **GET** /kaga/random | Get a random kaga image
 *DefaultApi* | [**leaderboard_channel_server_id_game_type_delete**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_delete) | **DELETE** /leaderboard-channel/{server_id}/{game_type} | 
 *DefaultApi* | [**leaderboard_channel_server_id_game_type_get**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_get) | **GET** /leaderboard-channel/{server_id}/{game_type} | 
 *DefaultApi* | [**leaderboard_channel_server_id_game_type_post**](docs/DefaultApi.md#leaderboard_channel_server_id_game_type_post) | **POST** /leaderboard-channel/{server_id}/{game_type} | 
@@ -38,6 +39,7 @@ Class | Method | HTTP request | Description
 *DefaultApi* | [**leaderboards_server_id_game_type_top_get**](docs/DefaultApi.md#leaderboards_server_id_game_type_top_get) | **GET** /leaderboards/{server_id}/{game_type}/top | Fetch the top 10 players for a game type on a server
 *DefaultApi* | [**leaderboards_server_id_game_type_user_id_increment_post**](docs/DefaultApi.md#leaderboards_server_id_game_type_user_id_increment_post) | **POST** /leaderboards/{server_id}/{game_type}/{user_id}/increment | Upsert a user ranking and increment their score
 *DefaultApi* | [**leaderboards_server_id_game_type_window_get**](docs/DefaultApi.md#leaderboards_server_id_game_type_window_get) | **GET** /leaderboards/{server_id}/{game_type}/window | Fetch a user's ranking and the 9 players surrounding them. This tries to show 10 users unless the leaderboard+game currently has less than 10 players.
+*DefaultApi* | [**server_settings_exists_post**](docs/DefaultApi.md#server_settings_exists_post) | **POST** /server-settings/exists | Check if server settings exists for the provided server ids
 *DefaultApi* | [**server_settings_post**](docs/DefaultApi.md#server_settings_post) | **POST** /server-settings | 
 *DefaultApi* | [**server_settings_server_id_delete**](docs/DefaultApi.md#server_settings_server_id_delete) | **DELETE** /server-settings/{server_id} | 
 *DefaultApi* | [**server_settings_server_id_get**](docs/DefaultApi.md#server_settings_server_id_get) | **GET** /server-settings/{server_id} | 
@@ -45,7 +47,9 @@ Class | Method | HTTP request | Description
 
 ## Documentation For Models
 
+ - [KagaData](docs/KagaData.md)
  - [LeaderboardChannel](docs/LeaderboardChannel.md)
+ - [LeaderboardChannelCreate](docs/LeaderboardChannelCreate.md)
  - [ServerSettings](docs/ServerSettings.md)
  - [UserRanking](docs/UserRanking.md)
 

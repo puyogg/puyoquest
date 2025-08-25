@@ -2,7 +2,9 @@
 .travis.yml
 README.md
 docs/DefaultApi.md
+docs/KagaData.md
 docs/LeaderboardChannel.md
+docs/LeaderboardChannelCreate.md
 docs/ServerSettings.md
 docs/UserRanking.md
 git_push.sh
@@ -10,7 +12,9 @@ src/apis/configuration.rs
 src/apis/default_api.rs
 src/apis/mod.rs
 src/lib.rs
+src/models/kaga_data.rs
 src/models/leaderboard_channel.rs
+src/models/leaderboard_channel_create.rs
 src/models/mod.rs
 src/models/server_settings.rs
 src/models/user_ranking.rs

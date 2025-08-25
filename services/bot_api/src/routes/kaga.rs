@@ -14,7 +14,7 @@ pub struct KagaData {
 }
 
 #[derive(ApiResponse)]
-enum GetByIdResponse {
+enum KagaResponse {
     #[oai(status = 200)]
     Kaga(Json<KagaData>),
 
@@ -31,7 +31,7 @@ impl Kaga {
         &self,
         pool: Data<&PgPool>,
         id: Query<String>,
-    ) -> poem::Result<GetByIdResponse> {
+    ) -> poem::Result<KagaResponse> {
         let id = id.0;
 
         let kaga_data: Option<KagaData> = sqlx::query_as(
@@ -47,10 +47,35 @@ impl Kaga {
         .map_err(InternalServerError)?;
 
         match kaga_data {
-            Some(k) => return Ok(GetByIdResponse::Kaga(Json(k))),
+            Some(k) => return Ok(KagaResponse::Kaga(Json(k))),
             None => {
-                return Ok(GetByIdResponse::NotFound(PlainText(format!(
+                return Ok(KagaResponse::NotFound(PlainText(format!(
                     "kaga_id {id} does not exist"
+                ))));
+            }
+        }
+    }
+
+    /// Get a random kaga image
+    #[oai(path = "/random", method = "get")]
+    async fn get_random(&self, pool: Data<&PgPool>) -> poem::Result<KagaResponse> {
+        let kaga_data: Option<KagaData> = sqlx::query_as(
+            r#"
+                SELECT *
+                FROM bot.kaga
+                ORDER BY random()
+                LIMIT 1
+            "#,
+        )
+        .fetch_optional(pool.0)
+        .await
+        .map_err(InternalServerError)?;
+
+        match kaga_data {
+            Some(k) => return Ok(KagaResponse::Kaga(Json(k))),
+            None => {
+                return Ok(KagaResponse::NotFound(PlainText(format!(
+                    "Failed to find a kaga image"
                 ))));
             }
         }
@@ -58,7 +83,11 @@ impl Kaga {
 
     /// Set a kaga image url
     #[oai(path = "/", method = "put")]
-    async fn set_kaga_image(&self, pool: Data<&PgPool>, kaga: Json<KagaData>) -> poem::Result<Json<KagaData>> {
+    async fn set_kaga_image(
+        &self,
+        pool: Data<&PgPool>,
+        kaga: Json<KagaData>,
+    ) -> poem::Result<Json<KagaData>> {
         let k: KagaData = sqlx::query_as(
             r#"
                 INSERT INTO bot.kaga (kaga_id, url)

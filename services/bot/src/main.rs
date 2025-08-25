@@ -35,9 +35,13 @@ async fn main() {
         commands::server_settings::server_settings(),
         commands::ntc::ntc(),
         commands::leaderboard::leaderboard(),
+        commands::kaga::kaga(),
     ];
     let global_command_count = global_commands.len();
-    let mut primary_only_commands = vec![commands::reindex::reindex()];
+    let mut primary_only_commands = vec![
+        commands::reindex::reindex(),
+        commands::kaga_update::kaga_update(),
+    ];
     global_commands.append(&mut primary_only_commands);
     let commands = global_commands;
 

@@ -7,14 +7,16 @@ pub mod card;
 pub mod categorysearch;
 pub mod char_by_id;
 pub mod incorrect_quote;
+pub mod kaga;
+pub mod kaga_update;
 pub mod leaderboard;
 pub mod ntc;
+pub mod pin;
 pub mod ppq_events;
 pub mod reindex;
 pub mod say_in;
 pub mod server_settings;
 pub mod whoselore;
-pub mod pin;
 
 #[allow(unused)]
 pub type Error = Box<dyn std::error::Error + Send + Sync>;
