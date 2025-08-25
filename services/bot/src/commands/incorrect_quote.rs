@@ -3,15 +3,15 @@ use std::sync::LazyLock;
 use crate::aws::s3;
 use bytes::Bytes;
 use fancy_regex::Regex;
-use poise::serenity_prelude::{CreateAttachment, CreateEmbed};
 use poise::CreateReply;
+use poise::serenity_prelude::{CreateAttachment, CreateMessage, GuildChannel};
 use ppq_imageproc::IconSide;
 use sdk::apis::{cards_api, characters_api};
 use sdk::models::Card;
 
-use crate::util::{self, PLACEHOLDER_CARD_ICON};
-use crate::util::parse_card_query::{parse_alias_and_rarity, AliasAndRarityQuery};
+use crate::util::parse_card_query::{AliasAndRarityQuery, parse_alias_and_rarity};
 use crate::util::sort_rarity::sort_rarity;
+use crate::util::{self, PLACEHOLDER_CARD_ICON};
 
 use super::{Context, Data, Error};
 
@@ -56,8 +56,6 @@ pub async fn iq(
     #[max_length = 160]
     quote8: Option<String>,
 ) -> Result<(), Error> {
-    let data = ctx.data();
-
     let input_queries: Vec<Option<String>> = vec![
         Some(quote1),
         quote2,
@@ -68,6 +66,71 @@ pub async fn iq(
         quote7,
         quote8,
     ];
+
+    _iq(ctx, input_queries, None).await?;
+
+    Ok(())
+}
+
+#[poise::command(slash_command, default_member_permissions = "ADMINISTRATOR")]
+pub async fn iq_in(
+    ctx: Context<'_>,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    channel: GuildChannel,
+    quote1: String,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    quote2: Option<String>,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    quote3: Option<String>,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    quote4: Option<String>,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    quote5: Option<String>,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    quote6: Option<String>,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    quote7: Option<String>,
+    #[description = "Format: [card:side:variant] Your quote here. -- Ex: [Arle 7:right:ep] Hi Carbuncle!"]
+    #[min_length = 1]
+    #[max_length = 160]
+    quote8: Option<String>,
+) -> Result<(), Error> {
+    let input_queries: Vec<Option<String>> = vec![
+        Some(quote1),
+        quote2,
+        quote3,
+        quote4,
+        quote5,
+        quote6,
+        quote7,
+        quote8,
+    ];
+
+    _iq(ctx, input_queries, Some(channel)).await?;
+
+    Ok(())
+}
+
+async fn _iq(
+    ctx: Context<'_>,
+    input_queries: Vec<Option<String>>,
+    channel: Option<GuildChannel>,
+) -> Result<(), Error> {
+    let data = ctx.data();
 
     // Parse card query, icon side, icon type, and quote
     let mut invalid_parsed_queries: Vec<String> = Vec::new();
@@ -180,8 +243,18 @@ pub async fn iq(
         Ok(img) => {
             let alt_text = format_alt_text(alt_text_quotes);
             let attachment = CreateAttachment::bytes(img, "iq.png").description(alt_text);
-            let reply = poise::CreateReply::default().attachment(attachment);
-            ctx.send(reply).await?;
+
+            match channel {
+                Some(guild_channel) => {
+                    guild_channel
+                        .send_message(ctx, CreateMessage::default().add_file(attachment))
+                        .await?;
+                }
+                None => {
+                    let reply = poise::CreateReply::default().attachment(attachment);
+                    ctx.send(reply).await?;
+                }
+            }
         }
         Err(_) => {
             ctx.send(CreateReply::default().reply(true).ephemeral(true).content("There was an issue creating the image for your iq request. Try again later or tell S2L.")).await?;
@@ -333,7 +406,7 @@ async fn resolve_icon(
         Err(_) => {
             return Err(LookupError::RarityLookupFailure(
                 card_query.fallback.to_string(),
-            ))
+            ));
         }
     };
     let mut cards = cards_and_materials.cards;

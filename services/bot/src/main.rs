@@ -41,6 +41,7 @@ async fn main() {
     let mut primary_only_commands = vec![
         commands::reindex::reindex(),
         commands::kaga_update::kaga_update(),
+        commands::incorrect_quote::iq_in(),
     ];
     global_commands.append(&mut primary_only_commands);
     let commands = global_commands;
