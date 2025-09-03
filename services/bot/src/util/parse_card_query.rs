@@ -1,12 +1,12 @@
 use fancy_regex::Regex;
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct AliasAndRarity {
     pub alias: String,
     pub rarity: String,
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct AliasAndRarityQuery {
     pub query: Option<AliasAndRarity>,
     pub fallback: String,
